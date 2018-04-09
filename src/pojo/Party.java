@@ -1,0 +1,13 @@
+package pojo;
+
+public enum Party {
+    REPUBLICAN
+    ,DEMOCRATIC 
+    ,VERMONTPROGRESSIVE 
+    ,LIBERTARIAN 
+    ,GREEN 
+    ,WORKINGFAMILIES 
+    ,INDEPENDENCEPARTYOFNY
+    ,INDEPENDENT
+    
+}
