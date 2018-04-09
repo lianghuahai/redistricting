@@ -15,7 +15,7 @@
 
 	<context:property-placeholder location="classpath:db.properties" />
 
-	<!-- 配置数据源 -->
+	<!-- database property -->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="${db.driver}" />
 		<property name="url" value="${db.url}" />
@@ -25,16 +25,15 @@
 		<property name="maxIdle" value="5" />
 	</bean>
 
-	<!-- 配置SqlSessionFactory -->
+	<!-- SqlSessionFactory -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<!-- 配置mybatis的全局配置文件的路径 -->
+		<!-- mybatis filePath -->
 		<property name="configLocation" value="classpath:mybatis/SqlMapConfig.xml"></property>
 		<property name="dataSource" ref="dataSource"></property>
 	</bean>
 
-	<!-- 批量生成mapper代理对象 -->
+	<!-- create mapper proxy object -->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<!-- 配置需要代理生成的mapper接口所在的包的包名 -->
 		<property name="basePackage" value="dao"></property>
 	</bean>
 </beans>

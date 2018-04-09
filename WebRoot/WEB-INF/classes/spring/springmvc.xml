@@ -13,7 +13,6 @@
 		http://www.springframework.org/schema/tx 
 		http://www.springframework.org/schema/tx/spring-tx-3.2.xsd ">
 		
-
-		<!-- 使用扫描器来加载注解方式的处理器 -->
+		<!-- Using scanner for annotation -->
 		<context:component-scan base-package="controller"></context:component-scan>
 </beans>
