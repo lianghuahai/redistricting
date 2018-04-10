@@ -4,6 +4,7 @@
 	<select id="queryUserByEmail" parameterType="String"
 		resultType="User">
 		SELECT * FROM user where email = #{email}
-		
 	</select>
+	
+	
 </mapper>
