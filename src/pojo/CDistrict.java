@@ -1,19 +1,24 @@
 package pojo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class CDistrict {
     private String name;
-    private State state;
+    private State state = new State();
 //    private HashMap<Year, Party> winnerParty;
-    private List<MapData> map;
-    private List<Precinct> precinct;
+    private Set<MapData> map = new HashSet<MapData>();
+    private List<Precinct> precinct = new ArrayList<Precinct>();
     private long population;
-    private HashMap<Race, Integer> race;
-    private HashMap<Party, Integer> votes;
-    private List<Precinct> boundaryPrecincts;
+    private HashMap<Race, Integer> race = new HashMap<Race, Integer>();
+    private HashMap<Party, Integer> votes= new HashMap<Party, Integer>();
+    private List<Precinct> boundaryPrecincts = new ArrayList<Precinct>();
     private float currentGoodness;
+    
+    //setter and getter
     public String getName() {
         return name;
     }
@@ -26,10 +31,10 @@ public class CDistrict {
     public void setState(State state) {
         this.state = state;
     }
-    public List<MapData> getMap() {
+    public Set<MapData> getMap() {
         return map;
     }
-    public void setMap(List<MapData> map) {
+    public void setMap(Set<MapData> map) {
         this.map = map;
     }
     public List<Precinct> getPrecinct() {
@@ -69,6 +74,9 @@ public class CDistrict {
         this.currentGoodness = currentGoodness;
     }
     
-    
+    //methods to be implemented
+    public int calculatePopulation (){return 1;}
+    public int calculateVotes (){return 1;}
+//    public Precinct getRandomBoundaryPrecinct (){return null;}
     
 }

@@ -1,28 +1,49 @@
 package pojo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class Precinct {
     private String name;
-    private CDistrict newCDistrict;
-    private CDistrict originCDistrict;
-    private List<MapData> map;
+    private CDistrict newCDistrict = new CDistrict();
+    private CDistrict originCDistrict = new CDistrict();
+    private CDistrict CDistrict = new CDistrict();
+    private List<MapData> map = new ArrayList<MapData>();
     private State state;
     private long population;
-    private HashMap<Race, Integer> race;
-    private HashMap<Party, Integer> votes;
+    private HashMap<Race, Integer> race = new HashMap<Race, Integer>();
+    private HashMap<Party, Integer> votes =  new HashMap<Party, Integer>();
     private boolean isPreserved;
     private boolean isBorder;
-    private List<Precinct> neighborPrecinctList;
-    private List<CDistrict> neighborCDistrictList;
+    private List<Precinct> neighborPrecincts = new ArrayList<Precinct>();
+    private List<CDistrict> neighborCDistricts = new ArrayList<CDistrict>();
     
-    
+    //getter and setter
     public String getName() {
         return name;
     }
     public void setName(String name) {
         this.name = name;
+    }
+    
+    public CDistrict getCDistrict() {
+        return CDistrict;
+    }
+    public void setCDistrict(CDistrict cDistrict) {
+        CDistrict = cDistrict;
+    }
+    public List<Precinct> getNeighborPrecincts() {
+        return neighborPrecincts;
+    }
+    public void setNeighborPrecincts(List<Precinct> neighborPrecincts) {
+        this.neighborPrecincts = neighborPrecincts;
+    }
+    public List<CDistrict> getNeighborCDistricts() {
+        return neighborCDistricts;
+    }
+    public void setNeighborCDistricts(List<CDistrict> neighborCDistricts) {
+        this.neighborCDistricts = neighborCDistricts;
     }
     public CDistrict getNewCDistrict() {
         return newCDistrict;
@@ -79,17 +100,34 @@ public class Precinct {
         this.isBorder = isBorder;
     }
     public List<Precinct> getNeighborPrecinctList() {
-        return neighborPrecinctList;
+        return neighborPrecincts;
     }
-    public void setNeighborPrecinctList(List<Precinct> neighborPrecinctList) {
-        this.neighborPrecinctList = neighborPrecinctList;
+    public void setNeighborPrecinctList(List<Precinct> neighborPrecincts) {
+        this.neighborPrecincts = neighborPrecincts;
     }
     public List<CDistrict> getNeighborCDistrictList() {
-        return neighborCDistrictList;
+        return neighborCDistricts;
     }
-    public void setNeighborCDistrictList(List<CDistrict> neighborCDistrictList) {
-        this.neighborCDistrictList = neighborCDistrictList;
+    public void setNeighborCDistrictList(List<CDistrict> neighborCDistricts) {
+        this.neighborCDistricts = neighborCDistricts;
     }
 
+    //methods to be implemented
+    public CDistrict getRandomNeighborCDistrict (){
+        List<CDistrict> neighborCDs = getNeighborCDistrictList();
+        CDistrict cd = new CDistrict();
+        if(neighborCDs.size()>0){
+            cd = neighborCDs.get(0);
+        }else{
+            return null;
+        }
+        neighborCDs.add(cd);
+        return cd;
+    }
+    public void moveToNeighborCDistrict (CDistrict cd){}
+    public void addNeighborPrecinct (Precinct precinct){}
+    public void addNeighborCDistrict (CDistrict cd){}
+    public int calculatePopulation (){return 1;}
+    
     
 }

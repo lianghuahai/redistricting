@@ -1,15 +1,16 @@
 package pojo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class State {
     private  StateName name;
 //    private HashMap<Year, Party> winnerParty;
-    private List<CDistrict> congressionalDistricts;
+    private List<CDistrict> congressionalDistricts = new ArrayList<CDistrict>();
     private long population;
-    private HashMap<Race, Integer> race;
-    private HashMap<Party, Integer> votes;
+    private HashMap<Race, Integer> race = new HashMap<Race, Integer>();
+    private HashMap<Party, Integer> votes =  new HashMap<Party, Integer>();
     private int maxRedistrictTimes;
     private int redistrictTimes;
     private float fairness;
@@ -19,13 +20,21 @@ public class State {
     private float currentGoodness;
     private double efficiencyGap;
     private Constraints constraints;
+    private HashMap<ObjectElement, Integer> preference = new HashMap<ObjectElement, Integer>(); 
     
-    
+    //setter and getter
     public StateName getName() {
         return name;
     }
     public void setName(StateName name) {
         this.name = name;
+    }
+    
+    public HashMap<ObjectElement, Integer> getPreference() {
+        return preference;
+    }
+    public void setPreference(HashMap<ObjectElement, Integer> preference) {
+        this.preference = preference;
     }
     public List<CDistrict> getCongressionalDistricts() {
         return congressionalDistricts;
@@ -107,6 +116,89 @@ public class State {
     }
     
     
+    //methods to be implemented
+    public void redistrict (){
+        Precinct startPrecinct = new Precinct();
+        boolean isMoved = true;
+        while (true){
+            if(isMoved){
+                startPrecinct =selectStartPrecinct();
+            }
+            isMoved = tryMove(startPrecinct);
+            if(checkTermination()){
+                break;
+            }
+        }
+    }
+    
+    public Precinct selectStartPrecinct(){
+        CDistrict cd = getLowestGoodnessCDistrict();
+        List<Precinct> Precincts = cd.getBoundaryPrecincts();
+        Precinct startPrecinct = Precincts.remove(0);
+        Precincts.add(startPrecinct);
+        return startPrecinct;
+    } 
+    
+    private CDistrict getLowestGoodnessCDistrict() {
+        float minGoodness = 1;
+        for (CDistrict cDistrict : congressionalDistricts) {
+            if(minGoodness > cDistrict.getCurrentGoodness()){
+                minGoodness = cDistrict.getCurrentGoodness();
+            }
+        }
+        for (CDistrict cDistrict : congressionalDistricts) {
+            if(minGoodness == cDistrict.getCurrentGoodness()){
+                return cDistrict;
+            }
+        }
+        return null;
+    }
+    
+    public boolean tryMove(Precinct selectPrecinct){
+        CDistrict randomNeighborCD = selectPrecinct.getRandomNeighborCDistrict();
+        moveToDestinationCD(selectPrecinct,randomNeighborCD);
+        CDistrict originCDistrict = selectPrecinct.getCDistrict();
+        updateData();
+        if(!isValidConstraints()){
+            moveToDestinationCD(selectPrecinct,originCDistrict);
+            updateData();
+            return false;
+        }
+        if(calculateObjectiveFunction()<currentGoodness){
+            moveToDestinationCD(selectPrecinct,originCDistrict);
+            updateData();
+            return false;
+        }
+        return true;
+    }
+
+    private void moveToDestinationCD(Precinct selectPrecinct, CDistrict destinationCD) {
+        CDistrict originCD = selectPrecinct.getCDistrict();
+        originCD.getBoundaryPrecincts().remove(selectPrecinct);
+        originCD.getPrecinct().remove(selectPrecinct);
+        originCD.getMap().remove(selectPrecinct.getName());
+        selectPrecinct.getNeighborCDistrictList().add(originCD);
+        //geo data
+        
+        originCD =  destinationCD;
+        destinationCD.getBoundaryPrecincts().add(selectPrecinct);
+        destinationCD.getPrecinct().add(selectPrecinct);
+        selectPrecinct.getNeighborCDistrictList().remove(destinationCD);
+    }
+    public boolean checkTermination(){
+        if(currentGoodness > minGoodness || redistrictTimes >= 1000){
+            return true;
+        }
+        return false;
+    }
     
     
+    public State clone(){return null;}
+    
+    public void updateData(){}
+    public boolean isValidConstraints(){return true;}
+    public boolean checkRedistrictTimes(){return true;}
+    public boolean checkGoodnessVariance(){return true;}
+    public float calculateObjectiveFunction(){return 1;}
+    public int calculatePopulation (){return 1;}
 }

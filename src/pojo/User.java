@@ -1,5 +1,7 @@
 package pojo;
 
+import java.util.List;
+
 public class User {
 
     private String email;
@@ -9,6 +11,7 @@ public class User {
     private Party preferParty;
     private UserRole role;
     
+    //getter and setter
     public String getEmail() {
         return email;
     }
@@ -52,9 +55,43 @@ public class User {
         this.role = role;
     }
     private int id;
+   
     @Override
     public String toString() {
-        return "User [email=" + email + ", password=" + password + "]";
+        return "User [email=" + email + ", password=" + password + ", firstName=" + firstName + ", lastName="
+                + lastName + ", preferParty=" + preferParty + ", role=" + role + ", id=" + id + "]";
+    }
+    //methods to be implemented
+    public boolean identifyPassword (String password){
+        return true;
+    }
+    
+    public boolean editUserEmail (String email ){
+        return true;
+    }
+    
+    public boolean editUserFName (String fname ){
+        return true;
+    }
+    
+    public boolean editUserLName (String lname ){
+        return true;
+    }
+    
+    public void logout (){
+        
+    }
+    
+    public boolean deleteUser (){
+        return true;
+    }
+    
+    public List<User> getUserList (){
+        return null;    
+    } 
+    
+    public Report getStateStatistics (){
+        return null;
     }
     
 }
