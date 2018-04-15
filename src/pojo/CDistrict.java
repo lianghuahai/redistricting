@@ -31,6 +31,7 @@ public class CDistrict {
     public void setState(State state) {
         this.state = state;
     }
+    
     public Set<MapData> getMap() {
         return map;
     }

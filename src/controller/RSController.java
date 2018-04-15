@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.google.gson.Gson;
 
-import pojo.Precinct;
 import pojo.State;
 import pojo.User;
 import service.RSService;

@@ -14,7 +14,7 @@ public class Precinct {
     private long population;
     private HashMap<Race, Integer> race = new HashMap<Race, Integer>();
     private HashMap<Party, Integer> votes =  new HashMap<Party, Integer>();
-    private boolean isPreserved;
+    private boolean isFixed;
     private boolean isBorder;
     private List<Precinct> neighborPrecincts = new ArrayList<Precinct>();
     private List<CDistrict> neighborCDistricts = new ArrayList<CDistrict>();
@@ -87,16 +87,17 @@ public class Precinct {
     public void setVotes(HashMap<Party, Integer> votes) {
         this.votes = votes;
     }
-    public boolean isPreserved() {
-        return isPreserved;
+   
+    public boolean getIsFixed() {
+        return isFixed;
     }
-    public void setPreserved(boolean isPreserved) {
-        this.isPreserved = isPreserved;
+    public void setIsFixed(boolean isFixed) {
+        this.isFixed = isFixed;
     }
-    public boolean isBorder() {
+    public boolean getIsBorder() {
         return isBorder;
     }
-    public void setBorder(boolean isBorder) {
+    public void setIsBorder(boolean isBorder) {
         this.isBorder = isBorder;
     }
     public List<Precinct> getNeighborPrecinctList() {
