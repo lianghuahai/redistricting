@@ -19,11 +19,11 @@ import service.RSService;
 @Controller
 public class RSController {
     @Autowired
-    private RSService userService;
+    private RSService rsService;
 
     @RequestMapping("login")
     public void login(User user, HttpServletRequest req, HttpServletResponse res) throws IOException {
-        User existUser = userService.login(user);
+        User existUser = rsService.login(user);
         if (null == existUser) {
             res.getWriter().print(0);
         } else {
@@ -33,7 +33,7 @@ public class RSController {
 
     @RequestMapping("register")
     public void register(User user, HttpServletRequest req, HttpServletResponse res) throws IOException {
-        User existUser = userService.register(user);
+        User existUser = rsService.register(user);
         if (null == existUser) {
             res.getWriter().print(0);
         } else {

@@ -11,10 +11,10 @@ import utils.MD5Util;
 @Service
 public class RSService {
     @Autowired
-    private RSMapper userMapper;
+    private RSMapper rsMapper;
 
     public User login(User user) {
-        User currUser = userMapper.queryUserByEmail(user.getEmail());
+        User currUser = rsMapper.queryUserByEmail(user.getEmail());
         String encrptPW = MD5Util.Encrypt(user.getPassword());
 
         if (null != currUser) {
@@ -26,7 +26,7 @@ public class RSService {
     }
 
     public User register(User user) {
-        User currUser = userMapper.saveUser(user);
+        User currUser = rsMapper.saveUser(user);
         return currUser;
     }
 
