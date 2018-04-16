@@ -11,6 +11,8 @@ public class Precinct {
     private CDistrict CDistrict = new CDistrict();
     private List<MapData> map = new ArrayList<MapData>();
     private State state;
+    private int registeredVoters;
+    private int totalVoters;
     private long population;
     private HashMap<Race, Integer> race = new HashMap<Race, Integer>();
     private HashMap<Party, Integer> votes =  new HashMap<Party, Integer>();
@@ -27,6 +29,18 @@ public class Precinct {
         this.name = name;
     }
     
+    public int getRegisteredVoters() {
+        return registeredVoters;
+    }
+    public void setRegisteredVoters(int registeredVoters) {
+        this.registeredVoters = registeredVoters;
+    }
+    public int getTotalVoters() {
+        return totalVoters;
+    }
+    public void setTotalVoters(int totalVoters) {
+        this.totalVoters = totalVoters;
+    }
     public CDistrict getCDistrict() {
         return CDistrict;
     }
@@ -112,7 +126,16 @@ public class Precinct {
     public void setNeighborCDistrictList(List<CDistrict> neighborCDistricts) {
         this.neighborCDistricts = neighborCDistricts;
     }
-
+    
+    @Override
+    public String toString() {
+        return "Precinct [name=" + name + ", newCDistrict=" + newCDistrict + ", originCDistrict="
+                + originCDistrict + ", CDistrict=" + CDistrict + ", map=" + map + ", state=" + state
+                + ", registeredVoters=" + registeredVoters + ", totalVoters=" + totalVoters + ", population="
+                + population + ", race=" + race + ", votes=" + votes + ", isFixed=" + isFixed + ", isBorder="
+                + isBorder + ", neighborPrecincts=" + neighborPrecincts + ", neighborCDistricts="
+                + neighborCDistricts + "]";
+    }
     //methods to be implemented
     public CDistrict getRandomNeighborCDistrict (){
         List<CDistrict> neighborCDs = getNeighborCDistrictList();

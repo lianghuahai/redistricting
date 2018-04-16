@@ -11,7 +11,8 @@ public class State {
 
     private StateName name;
 
-    // private HashMap<Year, Party> winnerParty;
+    private HashMap<Integer, Party> winnerParty;
+     
     private List<CDistrict> congressionalDistricts = new ArrayList<CDistrict>();
 
     private long population;
@@ -59,6 +60,14 @@ public class State {
 
     public void setCongressionalDistricts(List<CDistrict> congressionalDistricts) {
         this.congressionalDistricts = congressionalDistricts;
+    }
+
+    public HashMap<Integer, Party> getWinnerParty() {
+        return winnerParty;
+    }
+
+    public void setWinnerParty(HashMap<Integer, Party> winnerParty) {
+        this.winnerParty = winnerParty;
     }
 
     public long getPopulation() {
@@ -158,9 +167,9 @@ public class State {
 
     public Precinct selectStartPrecinct() {
         CDistrict cd = getLowestGoodnessCDistrict();
-        List<Precinct> Precincts = cd.getBoundaryPrecincts();
-        Precinct startPrecinct = Precincts.remove(0);
-        Precincts.add(startPrecinct);
+        List<Precinct> precincts = cd.getBoundaryPrecincts();
+        Precinct startPrecinct = precincts.remove(0);
+        precincts.add(startPrecinct);
         return startPrecinct;
     }
 
@@ -182,6 +191,7 @@ public class State {
     public boolean tryMove(Precinct selectPrecinct) {
         CDistrict destinationCD = selectPrecinct.getRandomNeighborCDistrict();
         CDistrict originCD = selectPrecinct.getCDistrict();
+        redistrictTimes++;
         moveToDestinationCD(selectPrecinct, destinationCD);
         updateData(selectPrecinct, originCD, destinationCD);
         if (!isValidConstraints()) {

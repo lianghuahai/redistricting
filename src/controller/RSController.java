@@ -43,8 +43,8 @@ public class RSController {
     
     @RequestMapping("redistrict")
     public void redistrict(String jsonData,HttpServletRequest req, HttpServletResponse res) throws IOException{
-        State orginalState =  new State();
-        State workingState = orginalState.clone();
+        State originalState =  new State();//???
+        State workingState = originalState.clone();
         workingState.redistrict();
         res.getWriter().print(new Gson().toJson(workingState));
     }
