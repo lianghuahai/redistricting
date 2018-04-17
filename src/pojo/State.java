@@ -275,45 +275,49 @@ public class State {
         workingState.setPopulationVariance(populationVariance);
         workingState.setCurrentGoodness(currentGoodness);
         workingState.setPreference(preference);
-
-        // - winnerParty: HashMap<Year, Party>
+        copyWinnerParty(winnerParty, workingState.getWinnerParty());
         copyRace(race, workingState.getRace());
         copyParty(votes, workingState.getVotes());
-
-        List<CDistrict> cds = workingState.getCongressionalDistricts();
-        for (CDistrict originalCD : congressionalDistricts) {
-            CDistrict workingCD = new CDistrict();
-            workingCD.setName(originalCD.getName());
-            workingCD.setState(originalCD.getState());
-            workingCD.setPopulation(originalCD.getPopulation());
-            workingCD.setCurrentGoodness(originalCD.getCurrentGoodness());
-            // - winnerParty: HashMap<Year, Party>
-            copyRace(originalCD.getRace(), workingCD.getRace());
-            copyParty(originalCD.getVotes(), workingCD.getVotes());
-
-            // - map: Set<MapData>
-            // - boundaryPrecincts: Set<Precinct>
-            List<Precinct> originalPrecincts = originalCD.getPrecinct();
-            List<Precinct> workingPrecincts = workingCD.getPrecinct();
-            for (Precinct originalP : originalPrecincts) {
-                Precinct workingP = new Precinct();
-                workingP.setName(originalP.getName());
-                workingP.setState(originalP.getState());
-                workingP.setPopulation(originalP.getPopulation());
-                workingP.setIsBorder(originalP.getIsBorder());
-                workingP.setIsFixed(originalP.getIsFixed());
-                workingP.setCDistrict(workingCD);
-                workingP.setMap(originalP.getMap());
-                copyRace(originalP.getRace(), workingP.getRace());
-                copyParty(originalP.getVotes(), workingP.getVotes());
-                // - neighborPrecinctList: Set<Precinct>
-                // - neighborCDistrictList: Set<CDistrict>
-                workingPrecincts.add(workingP);
-            }
-            cds.add(workingCD);
-        }
-
+        copyCDistricts(congressionalDistricts,workingState.getCongressionalDistricts());
         return workingState;
+    }
+
+    private void copyCDistricts(List<CDistrict> originalCDs,List<CDistrict> destinationCDs) {
+        for (CDistrict originalCD : originalCDs) {
+            CDistrict destinationCD = new CDistrict();
+            destinationCD.setName(originalCD.getName());
+            destinationCD.setState(originalCD.getState());
+            destinationCD.setPopulation(originalCD.getPopulation());
+            destinationCD.setCurrentGoodness(originalCD.getCurrentGoodness());
+            copyWinnerParty(winnerParty, destinationCD.getWinnerParty());
+            copyRace(originalCD.getRace(), destinationCD.getRace());
+            copyParty(originalCD.getVotes(), destinationCD.getVotes());
+            copyPrecincts(originalCD.getPrecinct(),destinationCD.getPrecinct(),destinationCD);
+            //ToDo  - map: Set<MapData>
+            //ToDo - boundaryPrecincts: Set<Precinct>
+            destinationCDs.add(destinationCD);
+        }
+        
+    }
+
+    private void copyPrecincts(List<Precinct> originalPrecincts, List<Precinct> destinationPrecincts,
+            CDistrict destinationCD) {
+        for (Precinct originalP : originalPrecincts) {
+            Precinct workingP = new Precinct();
+            workingP.setName(originalP.getName());
+            workingP.setState(originalP.getState());
+            workingP.setPopulation(originalP.getPopulation());
+            workingP.setIsBorder(originalP.getIsBorder());
+            workingP.setIsFixed(originalP.getIsFixed());
+            workingP.setCDistrict(destinationCD);
+            workingP.setMap(originalP.getMap());
+            copyRace(originalP.getRace(), workingP.getRace());
+            copyParty(originalP.getVotes(), workingP.getVotes());
+            //Todo - neighborPrecinctList: Set<Precinct>
+            //Todo - neighborCDistrictList: Set<CDistrict>
+            destinationPrecincts.add(workingP);
+        }
+        
     }
 
     public void copyRace(HashMap<Race, Integer> originalRace, HashMap<Race, Integer> workingRace) {
@@ -321,7 +325,11 @@ public class State {
             workingRace.put(precinctRace, originalRace.get(precinctRace));
         }
     }
-
+    public void copyWinnerParty(HashMap<Integer, Party> originalParty, HashMap<Integer, Party> destinationParty) {
+        for (int year : originalParty.keySet()) {
+            destinationParty.put(year, originalParty.get(year));
+        }
+    }
     public void copyParty(HashMap<Party, Integer> originalParty, HashMap<Party, Integer> workingParty) {
         for (Party precinctParty : originalParty.keySet()) {
             workingParty.put(precinctParty, originalParty.get(precinctParty));

@@ -40,10 +40,14 @@ public class RSController {
             res.getWriter().print(1);
         }
     }
+    @RequestMapping("displayState")
+    public void displayState(String stateName,HttpServletRequest req, HttpServletResponse res) throws IOException{
+        State displayState = rsService.getStateByName();
+        res.getWriter().print(new Gson().toJson(displayState));
+    }
     
     @RequestMapping("redistrict")
-    public void redistrict(String jsonData,HttpServletRequest req, HttpServletResponse res) throws IOException{
-        State originalState =  new State();//???
+    public void redistrict(State originalState,HttpServletRequest req, HttpServletResponse res) throws IOException{
         State workingState = originalState.clone();
         workingState.redistrict();
         res.getWriter().print(new Gson().toJson(workingState));

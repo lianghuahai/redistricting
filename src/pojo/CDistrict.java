@@ -9,7 +9,7 @@ import java.util.Set;
 public class CDistrict {
     private String name;
     private State state = new State();
-//    private HashMap<Year, Party> winnerParty;
+    private HashMap<Integer, Party> winnerParty;
     private Set<MapData> map = new HashSet<MapData>();
     private List<Precinct> precinct = new ArrayList<Precinct>();
     private long population;
@@ -27,6 +27,12 @@ public class CDistrict {
     }
     public State getState() {
         return state;
+    }
+    public HashMap<Integer, Party> getWinnerParty() {
+        return winnerParty;
+    }
+    public void setWinnerParty(HashMap<Integer, Party> winnerParty) {
+        this.winnerParty = winnerParty;
     }
     public void setState(State state) {
         this.state = state;

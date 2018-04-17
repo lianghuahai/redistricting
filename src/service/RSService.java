@@ -5,6 +5,7 @@ import dao.RSMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import pojo.State;
 import pojo.User;
 import utils.MD5Util;
 
@@ -40,6 +41,11 @@ public class RSService {
     public boolean deleteState (String stateName){return true;}
     public boolean redistrict(String jsonData){return true;}
     public boolean findState (String stateID){return true;}
+
+    public State getStateByName() {
+        // TODO Auto-generated method stub
+        return null;
+    }
     
     
 }
