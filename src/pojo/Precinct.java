@@ -6,6 +6,7 @@ import java.util.List;
 
 public class Precinct {
     private String name;
+    private String precinctCode;
     private CDistrict newCDistrict = new CDistrict();
     private CDistrict originCDistrict = new CDistrict();
     private CDistrict CDistrict = new CDistrict();
@@ -29,6 +30,12 @@ public class Precinct {
         this.name = name;
     }
     
+    public String getPrecinctCode() {
+        return precinctCode;
+    }
+    public void setPrecinctCode(String precinctCode) {
+        this.precinctCode = precinctCode;
+    }
     public int getRegisteredVoters() {
         return registeredVoters;
     }
@@ -138,20 +145,22 @@ public class Precinct {
     }
     //methods to be implemented
     public CDistrict getRandomNeighborCDistrict (){
-        List<CDistrict> neighborCDs = getNeighborCDistrictList();
-        CDistrict cd = new CDistrict();
-        if(neighborCDs.size()>0){
-            cd = neighborCDs.get(0);
-        }else{
+        int length = this.neighborCDistricts.size();
+        if(length==0){
             return null;
+        }else{
+            int index = (int)((length)*Math.random());
+            return neighborCDistricts.get(index);
         }
-        neighborCDs.add(cd);
-        return cd;
     }
     public void moveToNeighborCDistrict (CDistrict cd){}
     public void addNeighborPrecinct (Precinct precinct){}
     public void addNeighborCDistrict (CDistrict cd){}
     public int calculatePopulation (){return 1;}
+    public CDistrict getNeighborCDistrict() {
+        
+        return null;
+    }
     
     
 }

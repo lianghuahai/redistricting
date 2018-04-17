@@ -17,6 +17,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.google.gson.Gson;
+
 import pojo.CDistrict;
 import pojo.Party;
 import pojo.Precinct;
@@ -82,6 +84,8 @@ public class test {
             System.out.println(cds);
             System.out.println(cds.get(1).getPrecinct());
             System.out.println(cds.get(3).getPrecinct());
+            System.out.println("jsonData:");
+            
 
         } catch (FileNotFoundException e) {
             System.out.println("Not file existed!");

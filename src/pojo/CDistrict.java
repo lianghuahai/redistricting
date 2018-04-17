@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+
 public class CDistrict {
     private String name;
     private State state = new State();
@@ -84,6 +85,14 @@ public class CDistrict {
     //methods to be implemented
     public int calculatePopulation (){return 1;}
     public int calculateVotes (){return 1;}
-//    public Precinct getRandomBoundaryPrecinct (){return null;}
+    public Precinct getRandomBoundaryPrecinct (){
+        int length = this.boundaryPrecincts.size();
+        if(length==0){
+            return null;
+        }else{
+            int index = (int)((length)*Math.random());
+            return boundaryPrecincts.get(index);
+        }
+   }
     
 }

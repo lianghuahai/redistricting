@@ -151,49 +151,38 @@ public class State {
     }
 
     // methods to be implemented
-    public void redistrict() {
-        Precinct startPrecinct = new Precinct();
-        boolean isMoved = true;
-        while (true) {
-            if (isMoved) {
-                startPrecinct = selectStartPrecinct();
-            }
-            isMoved = tryMove(startPrecinct);
-            if (checkTermination()) {
-                break;
-            }
+    public void startAlgorithm() {
+        while(!this.checkTermination()){
+            this.redistrictTimes++;
+            Precinct  startPrecinct = this.selectStartPrecinct();
+            CDistrict neighborCD    = startPrecinct.getRandomNeighborCDistrict();
+            this.tryMove(startPrecinct,neighborCD);
         }
     }
 
     public Precinct selectStartPrecinct() {
-        CDistrict cd = getLowestGoodnessCDistrict();
-        List<Precinct> precincts = cd.getBoundaryPrecincts();
-        Precinct startPrecinct = precincts.remove(0);
-        precincts.add(startPrecinct);
+        CDistrict cd  = this.getLowestGoodnessCDistrict();
+        Precinct  startPrecinct = cd.getRandomBoundaryPrecinct();
         return startPrecinct;
     }
 
     private CDistrict getLowestGoodnessCDistrict() {
-        float minGoodness = 1;
+        float minGoodness = Float.MAX_VALUE;
+        CDistrict cd = new CDistrict();
         for (CDistrict cDistrict : congressionalDistricts) {
             if (minGoodness > cDistrict.getCurrentGoodness()) {
                 minGoodness = cDistrict.getCurrentGoodness();
+                cd=cDistrict;
             }
         }
-        for (CDistrict cDistrict : congressionalDistricts) {
-            if (minGoodness == cDistrict.getCurrentGoodness()) {
-                return cDistrict;
-            }
-        }
-        return null;
+        return cd;
     }
 
-    public boolean tryMove(Precinct selectPrecinct) {
+    public boolean tryMove(Precinct selectPrecinct,CDistrict neighborCD) {
         CDistrict destinationCD = selectPrecinct.getRandomNeighborCDistrict();
         CDistrict originCD = selectPrecinct.getCDistrict();
-        redistrictTimes++;
-        moveToDestinationCD(selectPrecinct, destinationCD);
-        updateData(selectPrecinct, originCD, destinationCD);
+        this.moveToDestinationCD(selectPrecinct, destinationCD);
+        this.updateData(selectPrecinct, originCD, destinationCD);
         if (!isValidConstraints()) {
             moveToDestinationCD(selectPrecinct, originCD);
             updateData(selectPrecinct, destinationCD, originCD);
@@ -201,20 +190,20 @@ public class State {
         }
         float goodness = calculateObjectiveFunction();
         if (goodness < currentGoodness) {
-            moveToDestinationCD(selectPrecinct, originCD);
-            updateData(selectPrecinct, destinationCD, originCD);
+            this.moveToDestinationCD(selectPrecinct, originCD);
+            this.updateData(selectPrecinct, destinationCD, originCD);
             return false;
         }
-        setCurrentGoodness(goodness);
+        this.setCurrentGoodness(goodness);
         return true;
     }
 
     private void updateData(Precinct selectPrecinct, CDistrict originCD, CDistrict destinationCD) {
         originCD.setPopulation(originCD.getPopulation() - selectPrecinct.getPopulation());
         destinationCD.setPopulation(originCD.getPopulation() + selectPrecinct.getPopulation());
-        modifyVotes(selectPrecinct, originCD, destinationCD);
-        modifyRace(selectPrecinct, originCD, destinationCD);
-        modifyPopulation(selectPrecinct, originCD, destinationCD);
+        this.modifyVotes(selectPrecinct, originCD, destinationCD);
+        this.modifyRace(selectPrecinct, originCD, destinationCD);
+        this.modifyPopulation(selectPrecinct, originCD, destinationCD);
     }
 
     private void modifyVotes(Precinct selectPrecinct, CDistrict originCD, CDistrict destinationCD) {
@@ -227,7 +216,6 @@ public class State {
         for (Party p : destinationCDVotes.keySet()) {
             precinctVotes.put(p, destinationCDVotes.get(p) + precinctVotes.get(p));
         }
-
     }
 
     private void modifyPopulation(Precinct selectPrecinct, CDistrict originCD, CDistrict destinationCD) {
@@ -251,7 +239,7 @@ public class State {
     }
 
     public boolean checkTermination() {
-        if (checkGoodness() || checkRedistrictTimes()) {
+        if (this.checkGoodness() || this.checkRedistrictTimes()) {
             return true;
         }
         return false;
@@ -275,10 +263,10 @@ public class State {
         workingState.setPopulationVariance(populationVariance);
         workingState.setCurrentGoodness(currentGoodness);
         workingState.setPreference(preference);
-        copyWinnerParty(winnerParty, workingState.getWinnerParty());
-        copyRace(race, workingState.getRace());
-        copyParty(votes, workingState.getVotes());
-        copyCDistricts(congressionalDistricts,workingState.getCongressionalDistricts());
+        this.copyWinnerParty(winnerParty, workingState.getWinnerParty());
+        this.copyRace(race, workingState.getRace());
+        this.copyParty(votes, workingState.getVotes());
+        this.copyCDistricts(congressionalDistricts,workingState.getCongressionalDistricts());
         return workingState;
     }
 
@@ -289,10 +277,10 @@ public class State {
             destinationCD.setState(originalCD.getState());
             destinationCD.setPopulation(originalCD.getPopulation());
             destinationCD.setCurrentGoodness(originalCD.getCurrentGoodness());
-            copyWinnerParty(winnerParty, destinationCD.getWinnerParty());
-            copyRace(originalCD.getRace(), destinationCD.getRace());
-            copyParty(originalCD.getVotes(), destinationCD.getVotes());
-            copyPrecincts(originalCD.getPrecinct(),destinationCD.getPrecinct(),destinationCD);
+            this.copyWinnerParty(winnerParty, destinationCD.getWinnerParty());
+            this.copyRace(originalCD.getRace(), destinationCD.getRace());
+            this.copyParty(originalCD.getVotes(), destinationCD.getVotes());
+            this.copyPrecincts(originalCD.getPrecinct(),destinationCD.getPrecinct(),destinationCD);
             //ToDo  - map: Set<MapData>
             //ToDo - boundaryPrecincts: Set<Precinct>
             destinationCDs.add(destinationCD);
@@ -311,8 +299,8 @@ public class State {
             workingP.setIsFixed(originalP.getIsFixed());
             workingP.setCDistrict(destinationCD);
             workingP.setMap(originalP.getMap());
-            copyRace(originalP.getRace(), workingP.getRace());
-            copyParty(originalP.getVotes(), workingP.getVotes());
+            this.copyRace(originalP.getRace(), workingP.getRace());
+            this.copyParty(originalP.getVotes(), workingP.getVotes());
             //Todo - neighborPrecinctList: Set<Precinct>
             //Todo - neighborCDistrictList: Set<CDistrict>
             destinationPrecincts.add(workingP);
@@ -362,11 +350,11 @@ public class State {
     }
 
     public float calculateObjectiveFunction() {
-        float compactness = calculateCompactness();
-        float populationVariance = caculatePV();
-        float partisanFairness = caculatePartisanFairness();
-        float racialFairness = caculateRacialFairness();
-        float goodness = caculateGoodness(compactness, populationVariance, partisanFairness, racialFairness);
+        float compactness = this.calculateCompactness();
+        float populationVariance = this.caculatePV();
+        float partisanFairness = this.caculatePartisanFairness();
+        float racialFairness = this.caculateRacialFairness();
+        float goodness = this.caculateGoodness(compactness, populationVariance, partisanFairness, racialFairness);
         return goodness;
     }
 
