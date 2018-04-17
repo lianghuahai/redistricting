@@ -26,7 +26,7 @@ public class RSService {
     }
 
     public User register(User user) {
-        User currUser = rsMapper.saveUser(user);
+        User currUser = rsMapper.addUser(user);
         return currUser;
     }
 
