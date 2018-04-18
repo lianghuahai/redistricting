@@ -172,7 +172,7 @@ public class State {
             moveToDestinationCD(selectPrecinct, originCD);
             updateData(selectPrecinct, destinationCD, originCD);
             return false;
-        }//
+        }
         float goodness = calculateObjectiveFunction();
         if (goodness < currentGoodness) {
             this.moveToDestinationCD(selectPrecinct, originCD);
