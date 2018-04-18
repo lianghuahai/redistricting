@@ -125,7 +125,7 @@ public class CDistrict {
     }
 
     public float calculateObjectiveFunction() {
-        float compactness = this.calculateCompactness();
+        float compactness = this.calculateCompactness(this.getState().getPreference().get(ObjectElement.CompactnessMethod));
         float populationVariance = this.caculatePV();
         float partisanFairness = this.caculatePartisanFairness();
         float racialFairness = this.caculateRacialFairness();
@@ -145,6 +145,7 @@ public class CDistrict {
     }
 
     private float caculatePartisanFairness() {
+       
         return 0;
     }
 
@@ -152,7 +153,31 @@ public class CDistrict {
         return 0;
     }
 
-    private float calculateCompactness() {
+    private float calculateCompactness(int index) {
+        if(index == 1){
+            return calculateCompactnessByReock();
+        }
+        else if(index == 2){
+            return calculateCompactnessByConvexHull();
+        }
+        else if(index == 3){
+            return calculateCompactnessByPolsbyPopper();
+        }
+        return 0;
+    }
+
+    private float calculateCompactnessByReock() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    private float calculateCompactnessByConvexHull() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    private float calculateCompactnessByPolsbyPopper() {
+        // TODO Auto-generated method stub
         return 0;
     }
 

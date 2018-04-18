@@ -1,10 +1,10 @@
 package pojo;
 
-import java.util.List;
+import java.util.Set;
 
 public class MapData {
     private String name;
-    private List<Boundary> boundaries;
+    private Set<Boundary> boundaries;
     
     public String getName() {
         return name;
@@ -12,10 +12,10 @@ public class MapData {
     public void setName(String name) {
         this.name = name;
     }
-    public List<Boundary> getBoundaries() {
+    public Set<Boundary> getBoundaries() {
         return boundaries;
     }
-    public void setBoundaries(List<Boundary> boundaries) {
+    public void setBoundaries(Set<Boundary> boundaries) {
         this.boundaries = boundaries;
     }
     
