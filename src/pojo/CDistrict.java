@@ -1,9 +1,7 @@
 package pojo;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 
@@ -12,11 +10,11 @@ public class CDistrict {
     private State state = new State();
     private HashMap<Integer, Party> winnerParty;
     private Set<MapData> map = new HashSet<MapData>();
-    private List<Precinct> precinct = new ArrayList<Precinct>();
+    private Set<Precinct> precinct = new HashSet<Precinct>();
     private long population;
     private HashMap<Race, Integer> race = new HashMap<Race, Integer>();
     private HashMap<Party, Integer> votes= new HashMap<Party, Integer>();
-    private List<Precinct> boundaryPrecincts = new ArrayList<Precinct>();
+    private Set<Precinct> boundaryPrecincts = new HashSet<Precinct>();
     private float currentGoodness;
     
     //setter and getter
@@ -45,10 +43,10 @@ public class CDistrict {
     public void setMap(Set<MapData> map) {
         this.map = map;
     }
-    public List<Precinct> getPrecinct() {
+    public Set<Precinct> getPrecinct() {
         return precinct;
     }
-    public void setPrecinct(List<Precinct> precinct) {
+    public void setPrecinct(Set<Precinct> precinct) {
         this.precinct = precinct;
     }
     public long getPopulation() {
@@ -69,10 +67,10 @@ public class CDistrict {
     public void setVotes(HashMap<Party, Integer> votes) {
         this.votes = votes;
     }
-    public List<Precinct> getBoundaryPrecincts() {
+    public Set<Precinct> getBoundaryPrecincts() {
         return boundaryPrecincts;
     }
-    public void setBoundaryPrecincts(List<Precinct> boundaryPrecincts) {
+    public void setBoundaryPrecincts(Set<Precinct> boundaryPrecincts) {
         this.boundaryPrecincts = boundaryPrecincts;
     }
     public float getCurrentGoodness() {
@@ -85,14 +83,17 @@ public class CDistrict {
     //methods to be implemented
     public int calculatePopulation (){return 1;}
     public int calculateVotes (){return 1;}
-    public Precinct getRandomBoundaryPrecinct (){
+    public Precinct getRandomBoundaryPrecinct(){
         int length = this.boundaryPrecincts.size();
-        if(length==0){
-            return null;
-        }else{
-            int index = (int)((length)*Math.random());
-            return boundaryPrecincts.get(index);
+        int index = (int)((length)*Math.random());
+        int i = 0;
+        for (Precinct precinct : boundaryPrecincts) {
+            if(i==index){
+                return precinct;
+            }
+            i++;
         }
+        return null;
    }
     
 }

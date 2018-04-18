@@ -1,8 +1,8 @@
 package pojo;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Precinct {
     private String name;
@@ -10,7 +10,7 @@ public class Precinct {
     private CDistrict newCDistrict = new CDistrict();
     private CDistrict originCDistrict = new CDistrict();
     private CDistrict CDistrict = new CDistrict();
-    private List<MapData> map = new ArrayList<MapData>();
+    private Set<MapData> map = new HashSet<MapData>();
     private State state;
     private int registeredVoters;
     private int totalVoters;
@@ -19,8 +19,8 @@ public class Precinct {
     private HashMap<Party, Integer> votes =  new HashMap<Party, Integer>();
     private boolean isFixed;
     private boolean isBorder;
-    private List<Precinct> neighborPrecincts = new ArrayList<Precinct>();
-    private List<CDistrict> neighborCDistricts = new ArrayList<CDistrict>();
+    private Set<Precinct> neighborPrecincts = new HashSet<Precinct>();
+    private Set<CDistrict> neighborCDistricts = new HashSet<CDistrict>();
     
     //getter and setter
     public String getName() {
@@ -54,16 +54,16 @@ public class Precinct {
     public void setCDistrict(CDistrict cDistrict) {
         CDistrict = cDistrict;
     }
-    public List<Precinct> getNeighborPrecincts() {
+    public Set<Precinct> getNeighborPrecincts() {
         return neighborPrecincts;
     }
-    public void setNeighborPrecincts(List<Precinct> neighborPrecincts) {
+    public void setNeighborPrecincts(Set<Precinct> neighborPrecincts) {
         this.neighborPrecincts = neighborPrecincts;
     }
-    public List<CDistrict> getNeighborCDistricts() {
+    public Set<CDistrict> getNeighborCDistricts() {
         return neighborCDistricts;
     }
-    public void setNeighborCDistricts(List<CDistrict> neighborCDistricts) {
+    public void setNeighborCDistricts(Set<CDistrict> neighborCDistricts) {
         this.neighborCDistricts = neighborCDistricts;
     }
     public CDistrict getNewCDistrict() {
@@ -78,10 +78,10 @@ public class Precinct {
     public void setOriginCDistrict(CDistrict originCDistrict) {
         this.originCDistrict = originCDistrict;
     }
-    public List<MapData> getMap() {
+    public Set<MapData> getMap() {
         return map;
     }
-    public void setMap(List<MapData> map) {
+    public void setMap(Set<MapData> map) {
         this.map = map;
     }
     public State getState() {
@@ -121,16 +121,16 @@ public class Precinct {
     public void setIsBorder(boolean isBorder) {
         this.isBorder = isBorder;
     }
-    public List<Precinct> getNeighborPrecinctList() {
+    public Set<Precinct> getNeighborPrecinctList() {
         return neighborPrecincts;
     }
-    public void setNeighborPrecinctList(List<Precinct> neighborPrecincts) {
+    public void setNeighborPrecinctList(Set<Precinct> neighborPrecincts) {
         this.neighborPrecincts = neighborPrecincts;
     }
-    public List<CDistrict> getNeighborCDistrictList() {
+    public Set<CDistrict> getNeighborCDistrictList() {
         return neighborCDistricts;
     }
-    public void setNeighborCDistrictList(List<CDistrict> neighborCDistricts) {
+    public void setNeighborCDistrictList(Set<CDistrict> neighborCDistricts) {
         this.neighborCDistricts = neighborCDistricts;
     }
     
@@ -146,12 +146,15 @@ public class Precinct {
     //methods to be implemented
     public CDistrict getRandomNeighborCDistrict (){
         int length = this.neighborCDistricts.size();
-        if(length==0){
-            return null;
-        }else{
-            int index = (int)((length)*Math.random());
-            return neighborCDistricts.get(index);
+        int index = (int)((length)*Math.random());
+        int i = 0;
+        for (CDistrict cd : neighborCDistricts) {
+            if(i==index){
+                return cd;
+            }
+            i++;
         }
+        return null;
     }
     public void moveToNeighborCDistrict (CDistrict cd){}
     public void addNeighborPrecinct (Precinct precinct){}

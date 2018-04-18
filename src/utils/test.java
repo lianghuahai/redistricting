@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -43,7 +44,7 @@ public class test {
             // Initial State
             State workingState = new State();
             // initial CDs
-            List<CDistrict> cds = workingState.getCongressionalDistricts();
+            Set<CDistrict> cds = workingState.getCongressionalDistricts();
             for (int a = 1; a <= 16; a++) {
                 CDistrict cd = new CDistrict();
                 cd.setName("cd" + a);
@@ -73,7 +74,7 @@ public class test {
                             String cdName = getCdByIndex(j);
                             CDistrict cd = getCdByName(cdName, cds);
                             workingP.setCDistrict(cd);
-                            List<Precinct> precincts = cd.getPrecinct();
+                            Set<Precinct> precincts = cd.getPrecinct();
                             precincts.add(workingP);
                             break;
                         }
@@ -82,8 +83,6 @@ public class test {
             }
             
             System.out.println(cds);
-            System.out.println(cds.get(1).getPrecinct());
-            System.out.println(cds.get(3).getPrecinct());
             System.out.println("jsonData:");
             
 
@@ -95,7 +94,7 @@ public class test {
         }
     }
 
-    private static CDistrict getCdByName(String name, List<CDistrict> cds) {
+    private static CDistrict getCdByName(String name, Set<CDistrict> cds) {
         for (CDistrict cDistrict : cds) {
             if (cDistrict.getName().equals(name)) {
                 return cDistrict;

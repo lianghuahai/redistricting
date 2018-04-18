@@ -15,7 +15,6 @@ import pojo.State;
 import pojo.User;
 import service.RSService;
 
-//@RequestMapping("/user")
 @Controller
 public class RSController {
     @Autowired
@@ -25,9 +24,9 @@ public class RSController {
     public void login(User user, HttpServletRequest req, HttpServletResponse res) throws IOException {
         User existUser = rsService.login(user);
         if (null == existUser) {
-            res.getWriter().print(0);
+            res.getWriter().print("null");
         } else {
-            res.getWriter().print(1);
+            res.getWriter().print(existUser.getRole());
         }
     }
 
@@ -35,9 +34,9 @@ public class RSController {
     public void register(User user, HttpServletRequest req, HttpServletResponse res) throws IOException {
         User existUser = rsService.register(user);
         if (null == existUser) {
-            res.getWriter().print(0);
+            res.getWriter().print("null");
         } else {
-            res.getWriter().print(1);
+            res.getWriter().print(existUser.getRole());
         }
     }
     @RequestMapping("displayState")

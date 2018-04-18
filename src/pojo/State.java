@@ -1,40 +1,26 @@
 package pojo;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class State {
     private final int MAXRUNTIME = 1000;
-
     private final double MINGOODNESS = 0.8;
-
     private StateName name;
-
     private HashMap<Integer, Party> winnerParty;
-     
-    private List<CDistrict> congressionalDistricts = new ArrayList<CDistrict>();
-
+    private Set<CDistrict> congressionalDistricts = new HashSet<CDistrict>();
     private long population;
-
     private HashMap<Race, Integer> race = new HashMap<Race, Integer>();
-
     private HashMap<Party, Integer> votes = new HashMap<Party, Integer>();
-
     private int redistrictTimes = 0;
-
     private float fairness;
-
     private float compactness;
-
     private float populationVariance;
-
     private float currentGoodness;
-
     private double efficiencyGap;
-
     private Constraints constraints;
-
     private HashMap<ObjectElement, Integer> preference = new HashMap<ObjectElement, Integer>();
 
     // setter and getter
@@ -54,11 +40,11 @@ public class State {
         this.preference = preference;
     }
 
-    public List<CDistrict> getCongressionalDistricts() {
+    public Set<CDistrict> getCongressionalDistricts() {
         return congressionalDistricts;
     }
 
-    public void setCongressionalDistricts(List<CDistrict> congressionalDistricts) {
+    public void setCongressionalDistricts(Set<CDistrict> congressionalDistricts) {
         this.congressionalDistricts = congressionalDistricts;
     }
 
@@ -178,8 +164,7 @@ public class State {
         return cd;
     }
 
-    public boolean tryMove(Precinct selectPrecinct,CDistrict neighborCD) {
-        CDistrict destinationCD = selectPrecinct.getRandomNeighborCDistrict();
+    public boolean tryMove(Precinct selectPrecinct,CDistrict destinationCD) {
         CDistrict originCD = selectPrecinct.getCDistrict();
         this.moveToDestinationCD(selectPrecinct, destinationCD);
         this.updateData(selectPrecinct, originCD, destinationCD);
@@ -266,7 +251,7 @@ public class State {
         this.copyWinnerParty(winnerParty, workingState.getWinnerParty());
         this.copyRace(race, workingState.getRace());
         this.copyParty(votes, workingState.getVotes());
-        this.copyCDistricts(congressionalDistricts,workingState.getCongressionalDistricts());
+        //this.copyCDistricts(congressionalDistricts,workingState.getCongressionalDistricts());
         return workingState;
     }
 
@@ -280,7 +265,7 @@ public class State {
             this.copyWinnerParty(winnerParty, destinationCD.getWinnerParty());
             this.copyRace(originalCD.getRace(), destinationCD.getRace());
             this.copyParty(originalCD.getVotes(), destinationCD.getVotes());
-            this.copyPrecincts(originalCD.getPrecinct(),destinationCD.getPrecinct(),destinationCD);
+            //this.copyPrecincts(originalCD.getPrecinct(),destinationCD.getPrecinct(),destinationCD);
             //ToDo  - map: Set<MapData>
             //ToDo - boundaryPrecincts: Set<Precinct>
             destinationCDs.add(destinationCD);
