@@ -115,13 +115,6 @@ public class CDistrict {
         return null;
     }
 
-    public void movePrecinctToDestinationCD(Precinct selectPrecinct, CDistrict destinationCD) {
-        
-      
-        destinationCD.getBoundaryPrecincts().add(selectPrecinct);
-        destinationCD.getPrecinct().add(selectPrecinct);
-    }
-
     public float calculateObjectiveFunction() {
     	float goodness = ObjectElement.COMPACTNESSWEIGHT.calculate() + ObjectElement.POPULATIONVARIANCEWEIGHT.calculate()
         		+ ObjectElement.RACIALFAIRNESSWEIGHT.calculate() + ObjectElement.PARTISANFAIRNESSWEIGHT.calculate() ;

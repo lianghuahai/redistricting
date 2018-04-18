@@ -170,13 +170,13 @@ public class State {
         selectPrecinct.setCDistrict(destinationCD);
         selectPrecinct.setOriginCDistrict(originCD);
         if (!isValidConstraints()) {
-        	destinationCD.removePrecinct(selectPrecinct);
+        		destinationCD.removePrecinct(selectPrecinct);
             originCD.addPrecinct(selectPrecinct);
             selectPrecinct.setCDistrict(originCD);
             return false;
         }
         if(validateGoodnessImprovement(originCD,destinationCD)){
-        	destinationCD.removePrecinct(selectPrecinct);
+        		destinationCD.removePrecinct(selectPrecinct);
             originCD.addPrecinct(selectPrecinct);
             selectPrecinct.setCDistrict(originCD);
             return false;
