@@ -1,5 +1,6 @@
 package pojo;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -116,15 +117,20 @@ public class CDistrict {
     }
 
     public float calculateObjectiveFunction() {
-    	float goodness = ObjectElement.COMPACTNESSWEIGHT.calculate() + ObjectElement.POPULATIONVARIANCEWEIGHT.calculate()
-        		+ ObjectElement.RACIALFAIRNESSWEIGHT.calculate() + ObjectElement.PARTISANFAIRNESSWEIGHT.calculate() ;
-    	
+    	float goodness = 0;
+    	Set<ObjectElement> elements= EnumSet.allOf(ObjectElement.class);
+    	for(ObjectElement obj : elements) {
+    	    goodness += obj.calculate();
+    	}
     	return goodness;
     }
 
     private float calculateCompactness() {
-        float compactness = CompactnessElement.ConvexHull.calculate() + CompactnessElement.PolsbyPopper.calculate()
-        		+ CompactnessElement.Reock.calculate();
+    	float compactness = 0;
+    	Set<CompactnessElement> elements= EnumSet.allOf(CompactnessElement.class);
+    	for(CompactnessElement obj : elements) {
+    		compactness += obj.calculate();
+    	}
         return compactness;
     }
 
