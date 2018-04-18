@@ -81,7 +81,6 @@ public class CDistrict {
     }
     
     //methods to be implemented
-    public int calculatePopulation (){return 1;}
     public int calculateVotes (){return 1;}
     public Precinct getRandomBoundaryPrecinct(){
         int length = this.boundaryPrecincts.size();
@@ -95,5 +94,56 @@ public class CDistrict {
         }
         return null;
    }
-    
+    public void movePrecinctToDestinationCD(Precinct selectPrecinct, CDistrict destinationCD) {
+        this.getBoundaryPrecincts().remove(selectPrecinct);
+        this.getPrecinct().remove(selectPrecinct);
+        selectPrecinct.getNeighborCDistrictList().remove(destinationCD);
+        selectPrecinct.getNeighborCDistrictList().add(this);
+        destinationCD.getBoundaryPrecincts().add(selectPrecinct);
+        destinationCD.getPrecinct().add(selectPrecinct);
+    }
+    public float calculateObjectiveFunction() {
+        float compactness = this.calculateCompactness();
+        float populationVariance = this.caculatePV();
+        float partisanFairness = this.caculatePartisanFairness();
+        float racialFairness = this.caculateRacialFairness();
+        float goodness = this.caculateGoodness(compactness, populationVariance, partisanFairness, racialFairness);
+        return goodness;
+    }
+
+    private float caculateGoodness(float compactness, float populationVariance, float partisanFairness,
+            float racialFairness) {
+        HashMap<ObjectElement, Integer> preference = this.getState().getPreference();
+        float compactnessWeight = preference.get(ObjectElement.COMPACTNESSWEIGHT);
+        float populationVarianceWeight = preference.get(ObjectElement.POPULATIONVARIANCEWEIGHT);
+        float racialFairnessWeight = preference.get(ObjectElement.RACIALFAIRNESSWEIGHT);
+        float partisanFairnessWeight = preference.get(ObjectElement.PARTISANFAIRNESSWEIGHT);
+        // what is formula for goodness?
+        return 0;
+    }
+
+
+    private float caculatePartisanFairness() {
+        return 0;
+    }
+
+    private float caculatePV() {
+        return 0;
+    }
+
+    private float calculateCompactness() {
+        return 0;
+    }
+
+    private float caculateRacialFairness() {
+        return 0;
+    }
+
+    public int calculatePopulation() {
+
+        return 1;
+    }
+    public float getGoodnessDiff(float cGoodness) {
+        return (cGoodness-this.currentGoodness);
+    }
 }

@@ -156,6 +156,16 @@ public class Precinct {
         }
         return null;
     }
+    private void moveToDestinationCD(Precinct selectPrecinct, CDistrict destinationCD) {
+        CDistrict originCD = selectPrecinct.getCDistrict();
+        originCD.getBoundaryPrecincts().remove(selectPrecinct);
+        originCD.getPrecinct().remove(selectPrecinct);
+        selectPrecinct.getNeighborCDistrictList().add(originCD);
+        originCD = destinationCD;
+        destinationCD.getBoundaryPrecincts().add(selectPrecinct);
+        destinationCD.getPrecinct().add(selectPrecinct);
+        selectPrecinct.getNeighborCDistrictList().remove(destinationCD);
+    }
     public void moveToNeighborCDistrict (CDistrict cd){}
     public void addNeighborPrecinct (Precinct precinct){}
     public void addNeighborCDistrict (CDistrict cd){}

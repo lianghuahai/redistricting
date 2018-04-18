@@ -2,7 +2,6 @@ package pojo;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class State {
@@ -166,24 +165,34 @@ public class State {
 
     public boolean tryMove(Precinct selectPrecinct,CDistrict destinationCD) {
         CDistrict originCD = selectPrecinct.getCDistrict();
-        this.moveToDestinationCD(selectPrecinct, destinationCD);
-        this.updateData(selectPrecinct, originCD, destinationCD);
+        originCD.movePrecinctToDestinationCD(selectPrecinct, destinationCD);
+        this.updateTwoCDsInfo(selectPrecinct, originCD, destinationCD);
         if (!isValidConstraints()) {
-            moveToDestinationCD(selectPrecinct, originCD);
-            updateData(selectPrecinct, destinationCD, originCD);
-            return false;//
-        }
-        float goodness = calculateObjectiveFunction();
-        if (goodness < currentGoodness) {
-            this.moveToDestinationCD(selectPrecinct, originCD);
-            this.updateData(selectPrecinct, destinationCD, originCD);
+            destinationCD.movePrecinctToDestinationCD(selectPrecinct, originCD);
+            updateTwoCDsInfo(selectPrecinct, destinationCD, originCD);
             return false;
         }
-        this.setCurrentGoodness(goodness);
+        if(validateGoodnessImprovement(originCD,destinationCD)){
+            destinationCD.movePrecinctToDestinationCD(selectPrecinct, originCD);
+            this.updateTwoCDsInfo(selectPrecinct, destinationCD, originCD);
+            return false;
+        }
         return true;
     }
 
-    private void updateData(Precinct selectPrecinct, CDistrict originCD, CDistrict destinationCD) {
+    private boolean validateGoodnessImprovement(CDistrict originCD, CDistrict destinationCD) {
+        float newGoodnessOCD = originCD.calculateObjectiveFunction();
+        float newGoodnessDCD = destinationCD.calculateObjectiveFunction();
+        float goodnessDiff= originCD.getGoodnessDiff(newGoodnessOCD) + destinationCD.getGoodnessDiff(newGoodnessDCD);
+        if(goodnessDiff > 0){
+            originCD.setCurrentGoodness(newGoodnessOCD);
+            destinationCD.setCurrentGoodness(newGoodnessDCD);
+            return true;
+        }
+        return false;
+    }
+
+    private void updateTwoCDsInfo(Precinct selectPrecinct, CDistrict originCD, CDistrict destinationCD) {
         originCD.setPopulation(originCD.getPopulation() - selectPrecinct.getPopulation());
         destinationCD.setPopulation(originCD.getPopulation() + selectPrecinct.getPopulation());
         this.modifyVotes(selectPrecinct, originCD, destinationCD);
@@ -212,16 +221,7 @@ public class State {
         // TODO Auto-generated method stub
     }
 
-    private void moveToDestinationCD(Precinct selectPrecinct, CDistrict destinationCD) {
-        CDistrict originCD = selectPrecinct.getCDistrict();
-        originCD.getBoundaryPrecincts().remove(selectPrecinct);
-        originCD.getPrecinct().remove(selectPrecinct);
-        selectPrecinct.getNeighborCDistrictList().add(originCD);
-        originCD = destinationCD;
-        destinationCD.getBoundaryPrecincts().add(selectPrecinct);
-        destinationCD.getPrecinct().add(selectPrecinct);
-        selectPrecinct.getNeighborCDistrictList().remove(destinationCD);
-    }
+    
 
     public boolean checkTermination() {
         if (this.checkGoodness() || this.checkRedistrictTimes()) {
@@ -251,11 +251,11 @@ public class State {
         this.copyWinnerParty(winnerParty, workingState.getWinnerParty());
         this.copyRace(race, workingState.getRace());
         this.copyParty(votes, workingState.getVotes());
-        //this.copyCDistricts(congressionalDistricts,workingState.getCongressionalDistricts());
+        this.copyCDistricts(congressionalDistricts,workingState.getCongressionalDistricts());
         return workingState;
     }
 
-    private void copyCDistricts(List<CDistrict> originalCDs,List<CDistrict> destinationCDs) {
+    private void copyCDistricts(Set<CDistrict> originalCDs,Set<CDistrict> destinationCDs) {
         for (CDistrict originalCD : originalCDs) {
             CDistrict destinationCD = new CDistrict();
             destinationCD.setName(originalCD.getName());
@@ -265,7 +265,7 @@ public class State {
             this.copyWinnerParty(winnerParty, destinationCD.getWinnerParty());
             this.copyRace(originalCD.getRace(), destinationCD.getRace());
             this.copyParty(originalCD.getVotes(), destinationCD.getVotes());
-            //this.copyPrecincts(originalCD.getPrecinct(),destinationCD.getPrecinct(),destinationCD);
+            this.copyPrecincts(originalCD.getPrecinct(),destinationCD.getPrecinct(),destinationCD);
             //ToDo  - map: Set<MapData>
             //ToDo - boundaryPrecincts: Set<Precinct>
             destinationCDs.add(destinationCD);
@@ -273,7 +273,7 @@ public class State {
         
     }
 
-    private void copyPrecincts(List<Precinct> originalPrecincts, List<Precinct> destinationPrecincts,
+    private void copyPrecincts(Set<Precinct> originalPrecincts, Set<Precinct> destinationPrecincts,
             CDistrict destinationCD) {
         for (Precinct originalP : originalPrecincts) {
             Precinct workingP = new Precinct();
@@ -334,43 +334,5 @@ public class State {
         return true;
     }
 
-    public float calculateObjectiveFunction() {
-        float compactness = this.calculateCompactness();
-        float populationVariance = this.caculatePV();
-        float partisanFairness = this.caculatePartisanFairness();
-        float racialFairness = this.caculateRacialFairness();
-        float goodness = this.caculateGoodness(compactness, populationVariance, partisanFairness, racialFairness);
-        return goodness;
-    }
-
-    private float caculateGoodness(float compactness, float populationVariance, float partisanFairness,
-            float racialFairness) {
-        float compactnessWeight = preference.get(ObjectElement.COMPACTNESSWEIGHT);
-        float populationVarianceWeight = preference.get(ObjectElement.POPULATIONVARIANCEWEIGHT);
-        float racialFairnessWeight = preference.get(ObjectElement.RACIALFAIRNESSWEIGHT);
-        float partisanFairnessWeight = preference.get(ObjectElement.PARTISANFAIRNESSWEIGHT);
-        // what is formula for goodness?
-        return 0;
-    }
-
-    private float caculatePartisanFairness() {
-        return 0;
-    }
-
-    private float caculatePV() {
-        return 0;
-    }
-
-    private float calculateCompactness() {
-        return 0;
-    }
-
-    private float caculateRacialFairness() {
-        return 0;
-    }
-
-    public int calculatePopulation() {
-
-        return 1;
-    }
+   
 }
