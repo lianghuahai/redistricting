@@ -165,16 +165,20 @@ public class State {
 
     public boolean tryMove(Precinct selectPrecinct,CDistrict destinationCD) {
         CDistrict originCD = selectPrecinct.getCDistrict();
-        originCD.movePrecinctToDestinationCD(selectPrecinct, destinationCD);
-        this.updateTwoCDsInfo(selectPrecinct, originCD, destinationCD);
+        originCD.removePrecinct(selectPrecinct);
+        destinationCD.addPrecinct(selectPrecinct);
+        selectPrecinct.setCDistrict(destinationCD);
+        selectPrecinct.setOriginCDistrict(originCD);
         if (!isValidConstraints()) {
-            destinationCD.movePrecinctToDestinationCD(selectPrecinct, originCD);
-            updateTwoCDsInfo(selectPrecinct, destinationCD, originCD);
+        	destinationCD.removePrecinct(selectPrecinct);
+            originCD.addPrecinct(selectPrecinct);
+            selectPrecinct.setCDistrict(originCD);
             return false;
         }
         if(validateGoodnessImprovement(originCD,destinationCD)){
-            destinationCD.movePrecinctToDestinationCD(selectPrecinct, originCD);
-            this.updateTwoCDsInfo(selectPrecinct, destinationCD, originCD);
+        	destinationCD.removePrecinct(selectPrecinct);
+            originCD.addPrecinct(selectPrecinct);
+            selectPrecinct.setCDistrict(originCD);
             return false;
         }
         return true;
@@ -191,37 +195,6 @@ public class State {
         }
         return false;
     }
-
-    private void updateTwoCDsInfo(Precinct selectPrecinct, CDistrict originCD, CDistrict destinationCD) {
-        originCD.setPopulation(originCD.getPopulation() - selectPrecinct.getPopulation());
-        destinationCD.setPopulation(originCD.getPopulation() + selectPrecinct.getPopulation());
-        this.modifyVotes(selectPrecinct, originCD, destinationCD);
-        this.modifyRace(selectPrecinct, originCD, destinationCD);
-        this.modifyPopulation(selectPrecinct, originCD, destinationCD);
-    }
-
-    private void modifyVotes(Precinct selectPrecinct, CDistrict originCD, CDistrict destinationCD) {
-        HashMap<Party, Integer> precinctVotes = selectPrecinct.getVotes();
-        HashMap<Party, Integer> originCDVotes = originCD.getVotes();
-        HashMap<Party, Integer> destinationCDVotes = destinationCD.getVotes();
-        for (Party p : originCDVotes.keySet()) {
-            precinctVotes.put(p, originCDVotes.get(p) - precinctVotes.get(p));
-        }
-        for (Party p : destinationCDVotes.keySet()) {
-            precinctVotes.put(p, destinationCDVotes.get(p) + precinctVotes.get(p));
-        }
-    }
-
-    private void modifyPopulation(Precinct selectPrecinct, CDistrict originCD, CDistrict destinationCD) {
-        originCD.setPopulation(originCD.getPopulation() - selectPrecinct.getPopulation());
-        destinationCD.setPopulation(destinationCD.getPopulation() + selectPrecinct.getPopulation());
-    }
-
-    private void modifyRace(Precinct selectPrecinct, CDistrict originCD, CDistrict destinationCD) {
-        // TODO Auto-generated method stub
-    }
-
-    
 
     public boolean checkTermination() {
         if (this.checkGoodness() || this.checkRedistrictTimes()) {

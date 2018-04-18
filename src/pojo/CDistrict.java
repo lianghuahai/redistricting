@@ -116,81 +116,80 @@ public class CDistrict {
     }
 
     public void movePrecinctToDestinationCD(Precinct selectPrecinct, CDistrict destinationCD) {
-        this.getBoundaryPrecincts().remove(selectPrecinct);
-        this.getPrecinct().remove(selectPrecinct);
-        selectPrecinct.getNeighborCDistrictList().remove(destinationCD);
-        selectPrecinct.getNeighborCDistrictList().add(this);
+        
+      
         destinationCD.getBoundaryPrecincts().add(selectPrecinct);
         destinationCD.getPrecinct().add(selectPrecinct);
     }
 
     public float calculateObjectiveFunction() {
-        float compactness = this.calculateCompactness(this.getState().getPreference().get(ObjectElement.COMPACTNESSMETHOD));
-        float populationVariance = this.caculatePV();
-        float partisanFairness = this.caculatePartisanFairness();
-        float racialFairness = this.caculateRacialFairness();
-        float goodness = this.caculateGoodness(compactness, populationVariance, partisanFairness,racialFairness);
-        return goodness;
+    	float goodness = ObjectElement.COMPACTNESSWEIGHT.calculate() + ObjectElement.POPULATIONVARIANCEWEIGHT.calculate()
+        		+ ObjectElement.RACIALFAIRNESSWEIGHT.calculate() + ObjectElement.PARTISANFAIRNESSWEIGHT.calculate() ;
+    	
+    	return goodness;
     }
 
-    private float caculateGoodness(float compactness, float populationVariance, float partisanFairness,float racialFairness) {
-        HashMap<ObjectElement, Integer> preference = this.getState().getPreference();
-        float compactnessWeight = preference.get(ObjectElement.COMPACTNESSWEIGHT);
-        float populationVarianceWeight = preference.get(ObjectElement.POPULATIONVARIANCEWEIGHT);
-        float racialFairnessWeight = preference.get(ObjectElement.RACIALFAIRNESSWEIGHT);
-        float partisanFairnessWeight = preference.get(ObjectElement.PARTISANFAIRNESSWEIGHT);
-        float goodness = compactnessWeight * compactness + populationVarianceWeight * populationVariance
-                        + partisanFairness * partisanFairnessWeight + racialFairnessWeight + racialFairness;
-        return goodness;
-    }
-
-    private float caculatePartisanFairness() {
-       
-        return 0;
-    }
-
-    private float caculatePV() {
-        return 0;
-    }
-
-    private float calculateCompactness(int index) {
-        if(index == 1){
-            return calculateCompactnessByReock();
-        }
-        else if(index == 2){
-            return calculateCompactnessByConvexHull();
-        }
-        else if(index == 3){
-            return calculateCompactnessByPolsbyPopper();
-        }
-        return 0;
-    }
-
-    private float calculateCompactnessByReock() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    private float calculateCompactnessByConvexHull() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    private float calculateCompactnessByPolsbyPopper() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    private float caculateRacialFairness() {
-        return 0;
-    }
-
-    public int calculatePopulation() {
-
-        return 1;
+    private float calculateCompactness() {
+        float compactness = CompactnessElement.ConvexHull.calculate() + CompactnessElement.PolsbyPopper.calculate()
+        		+ CompactnessElement.Reock.calculate();
+        return compactness;
     }
 
     public float getGoodnessDiff(float cGoodness) {
         return (cGoodness - this.currentGoodness);
     }
+
+	public void removePrecinct(Precinct p) {
+		this.precinct.remove(p);
+		if(p.getIsBorder()){
+			this.boundaryPrecincts.remove(p);
+		}
+		p.getNeighborCDistrictList().add(this);
+		this.population -= p.getPopulation();
+		this.subtractVotes(p);
+        this.subtractRace(p);
+	}
+
+	public void addPrecinct(Precinct p) {
+		this.precinct.add(p);
+		if(p.getIsBorder()){
+			this.boundaryPrecincts.add(p);
+		}
+		p.getNeighborCDistrictList().remove(this);
+		this.population += p.getPopulation();
+		this.addVotes(p);
+        this.addRace(p);
+		
+	}
+
+    private void addVotes(Precinct precinct) {
+    	 HashMap<Party, Integer> precinctVotes = precinct.getVotes();
+         for (Party p : this.votes.keySet()) {
+             precinctVotes.put(p, votes.get(p) + precinctVotes.get(p));
+         }
+		
+	}
+
+	private void addRace(Precinct precinct) {
+		HashMap<Race, Integer> precinctRace = precinct.getRace();
+        for (Race r : this.race.keySet()) {
+            precinctRace.put(r, race.get(r) + precinctRace.get(r));
+        }
+		
+	}
+
+	private void subtractVotes(Precinct precinct) {
+        HashMap<Party, Integer> precinctVotes = precinct.getVotes();
+        for (Party p : this.votes.keySet()) {
+            precinctVotes.put(p, votes.get(p) - precinctVotes.get(p));
+        }
+    }
+
+    private void subtractRace(Precinct precinct) {
+    	HashMap<Race, Integer> precinctRace = precinct.getRace();
+        for (Race r : this.race.keySet()) {
+            precinctRace.put(r, race.get(r) - precinctRace.get(r));
+        }
+    }
+
 }
