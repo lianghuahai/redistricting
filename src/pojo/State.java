@@ -171,7 +171,7 @@ public class State {
         if (!isValidConstraints()) {
             moveToDestinationCD(selectPrecinct, originCD);
             updateData(selectPrecinct, destinationCD, originCD);
-            return false;//
+            return false;
         }
         float goodness = calculateObjectiveFunction();
         if (goodness < currentGoodness) {
