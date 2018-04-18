@@ -125,7 +125,7 @@ public class CDistrict {
     }
 
     public float calculateObjectiveFunction() {
-        float compactness = this.calculateCompactness(this.getState().getPreference().get(ObjectElement.CompactnessMethod));
+        float compactness = this.calculateCompactness(this.getState().getPreference().get(ObjectElement.COMPACTNESSMETHOD));
         float populationVariance = this.caculatePV();
         float partisanFairness = this.caculatePartisanFairness();
         float racialFairness = this.caculateRacialFairness();
