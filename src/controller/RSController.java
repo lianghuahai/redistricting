@@ -2,6 +2,8 @@ package controller;
 
 import java.io.IOException;
 
+import javassist.expr.NewArray;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,9 +26,9 @@ public class RSController {
     public void login(User user, HttpServletRequest req, HttpServletResponse res) throws IOException {
         User existUser = rsService.login(user);
         if (null == existUser) {
-            res.getWriter().print("null");
+            res.getWriter().print(new Gson().toJson("null"));
         } else {
-            res.getWriter().print(existUser.getRole());
+            res.getWriter().print(new Gson().toJson(existUser.getRole()));
         }
     }
 

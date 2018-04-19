@@ -134,14 +134,15 @@ public class Precinct {
         this.neighborCDistricts = neighborCDistricts;
     }
     
+  
     @Override
     public String toString() {
-        return "Precinct [name=" + name + ", newCDistrict=" + newCDistrict + ", originCDistrict="
-                + originCDistrict + ", CDistrict=" + CDistrict + ", map=" + map + ", state=" + state
-                + ", registeredVoters=" + registeredVoters + ", totalVoters=" + totalVoters + ", population="
-                + population + ", race=" + race + ", votes=" + votes + ", isFixed=" + isFixed + ", isBorder="
-                + isBorder + ", neighborPrecincts=" + neighborPrecincts + ", neighborCDistricts="
-                + neighborCDistricts + "]";
+        return "Precinct [name=" + name + ", precinctCode=" + precinctCode + ", newCDistrict=" + newCDistrict
+                + ", originCDistrict=" + originCDistrict + ", CDistrict=" + CDistrict + ", map=" + map
+                + ", state=" + state + ", registeredVoters=" + registeredVoters + ", totalVoters="
+                + totalVoters + ", population=" + population + ", race=" + race + ", votes=" + votes
+                + ", isFixed=" + isFixed + ", isBorder=" + isBorder + ", neighborPrecincts="
+                + neighborPrecincts + ", neighborCDistricts=" + neighborCDistricts + "]";
     }
     //methods to be implemented
     public CDistrict getRandomNeighborCDistrict (){

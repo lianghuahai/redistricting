@@ -43,6 +43,6 @@
 	<classpathentry kind="lib" path="F:/java_Tools/tomcat/Tomcat-7.0.6/lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/gson-2.2.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/ojdbc6-11.jar"/>
-	<classpathentry kind="lib" path="/Users/yushanzhou/Documents/apache-tomcat-7.0.77/lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/java-json.jar"/>
 	<classpathentry kind="output" path="WebRoot/WEB-INF/classes"/>
 </classpath>

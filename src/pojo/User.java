@@ -2,6 +2,8 @@ package pojo;
 
 import java.util.List;
 
+import utils.MD5Util;
+
 public class User {
 
     private String email;
@@ -92,6 +94,9 @@ public class User {
     
     public Report getStateStatistics (){
         return null;
+    }
+    public void encrptPW() {
+        this.password = MD5Util.Encrypt(this.password);
     }
     
 }

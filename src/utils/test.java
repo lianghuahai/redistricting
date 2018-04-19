@@ -1,12 +1,13 @@
 package utils;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,17 +18,16 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import com.google.gson.Gson;
+import org.junit.Test;
 
 import pojo.CDistrict;
 import pojo.Party;
 import pojo.Precinct;
 import pojo.State;
 
-public class test {
-    private String name;
+import com.google.gson.JsonParser;
 
+public class test {
     /**
      * ohio.xlsx is the file that contains the relation between congressional districts and
      * precincts(determine that a precinct belongs to which CD) president.xlsx is the file that
@@ -55,12 +55,25 @@ public class test {
             test excelReader = new test(filepath);
             Map<Integer, Map<Integer, Object>> map = excelReader.readExcelContent();
             System.out.println("Excel Data:");
+            String temp ="Adams";
+            int count = 1;
             for (int i = 1; i <= map.size(); i++) {
                 if (i >= 4 && i <= 35) {
                     Map<Integer, Object> row = map.get(i); //election data row
                     Map<Integer, Object> row2 = map2.get(i); //relation row(cd and precinct)
                     Precinct workingP = new Precinct();
                     // set up precinct data
+                    if(!temp.equals((String)row.get(0))){
+                       temp = (String)row.get(0);
+                       count+=2;
+                    }
+                    if(count<10){
+                        workingP.setPrecinctCode("00"+count+(String)row.get(2));
+                    }else if(count>=10 && count <100){
+                        workingP.setPrecinctCode("0"+count+(String)row.get(2));
+                    }else{
+                        workingP.setPrecinctCode(count+(String)row.get(2));
+                    }
                     workingP.setName((String) row.get(1));
                     workingP.setRegisteredVoters(((int) (Double.parseDouble((String) row.get(5)))));
                     workingP.setTotalVoters(((int) (Double.parseDouble((String) row.get(6)))));
@@ -84,7 +97,14 @@ public class test {
             
             System.out.println(cds);
             System.out.println("jsonData:");
-            
+            for (CDistrict cDistrict : cds) {
+                Set<Precinct> precincts = cDistrict.getPrecinct();
+                if(cDistrict.getName().equals("cd2")){
+                    for (Precinct precinct : precincts) {
+                        System.out.println(precinct);
+                    }
+                }
+            }
 
         } catch (FileNotFoundException e) {
             System.out.println("Not file existed!");
@@ -238,12 +258,5 @@ public class test {
         }
         return content;
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    
 }

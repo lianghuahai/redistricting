@@ -14,19 +14,19 @@ public class RSService {
     @Autowired
     private RSMapper rsMapper;
 
-    public User login(User user) {
-        User currUser = rsMapper.queryUserByEmail(user.getEmail());
-        String encrptPW = MD5Util.Encrypt(user.getPassword());
-
-        if (null != currUser) {
-            if (encrptPW.equals(currUser.getPassword())) {
-                return currUser;
+    public User login(User currUser) {
+        User existUser = rsMapper.queryUserByEmail(currUser.getEmail());
+        if (null != existUser) {
+            currUser.encrptPW();
+            if (currUser.getPassword().equals(existUser.getPassword())) {
+                return existUser;
             }
         }
         return null;
     }
 
     public User register(User user) {
+        user.encrptPW();
         User currUser = rsMapper.addUser(user);
         return currUser;
     }
