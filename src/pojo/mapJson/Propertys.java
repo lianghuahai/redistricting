@@ -16,6 +16,7 @@ public class Propertys {
     private String AWATER10;
     private String INTPTLAT10;
     private String INTPTLON10;
+    private String fill;
     public String getProperties() {
         return properties;
     }
@@ -30,6 +31,12 @@ public class Propertys {
     }
     public String getCOUNTYFP10() {
         return COUNTYFP10;
+    }
+    public String getFill() {
+        return fill;
+    }
+    public void setFill(String color) {
+        this.fill = color;
     }
     public void setCOUNTYFP10(String cOUNTYFP10) {
         COUNTYFP10 = cOUNTYFP10;

@@ -306,6 +306,14 @@ public class State {
     private boolean checkContiguityConstraints() {
         return true;
     }
-
-   
+    
+    public void initialStateByNumOfCDs( int NumOfCDs){
+        Set<CDistrict> cds = this.getCongressionalDistricts();
+        for (int a = 1; a <= NumOfCDs; a++) {
+            CDistrict cd = new CDistrict();
+            cd.setName("cd" + a);
+            cds.add(cd);
+        }
+        
+    }
 }

@@ -2,6 +2,7 @@ package utils;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
@@ -16,10 +17,15 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import com.google.gson.Gson;
+
 import pojo.CDistrict;
 import pojo.Party;
 import pojo.Precinct;
 import pojo.State;
+import pojo.mapJson.Feature;
+import pojo.mapJson.precinctJson;
 
 
 public class test {
@@ -31,6 +37,9 @@ public class test {
      * @param args
      * @throws IOException
      */
+    private final static int ohioNumOfCDs =16;
+    private final static int NewHampshireNumOfCDs =2;
+    private final static int coloradoNumOfCDs =7;
     public static void main(String[] args) throws IOException {
         try {
             String filepath2 = "ohio.xlsx";
@@ -38,13 +47,8 @@ public class test {
             Map<Integer, Map<Integer, Object>> map2 = excelReader2.readExcelContent();
             // Initial State
             State workingState = new State();
-            // initial CDs
-            Set<CDistrict> cds = workingState.getCongressionalDistricts();
-            for (int a = 1; a <= 16; a++) {
-                CDistrict cd = new CDistrict();
-                cd.setName("cd" + a);
-                cds.add(cd);
-            }
+            workingState.initialStateByNumOfCDs(ohioNumOfCDs);
+            
             // load election data for every precinct
             String filepath = "president.xlsx";
             test excelReader = new test(filepath);
@@ -52,8 +56,7 @@ public class test {
             System.out.println("Excel Data:");
             String temp ="Adams";
             int count = 1;
-            for (int i = 1; i <= map.size(); i++) {
-                if (i >= 4 && i <= 35) {
+            for (int i = 4; i <= map.size(); i++) {
                     Map<Integer, Object> row = map.get(i); //election data row
                     Map<Integer, Object> row2 = map2.get(i); //relation row(cd and precinct)
                     Precinct workingP = new Precinct();
@@ -66,6 +69,7 @@ public class test {
                         workingP.setPrecinctCode("00"+count+(String)row.get(2));
                     }else if(count>=10 && count <100){
                         workingP.setPrecinctCode("0"+count+(String)row.get(2));
+                        
                     }else{
                         workingP.setPrecinctCode(count+(String)row.get(2));
                     }
@@ -77,29 +81,44 @@ public class test {
                     votes.put(Party.REPUBLICAN, ((int) (Double.parseDouble((String) row.get(30)))));
                     votes.put(Party.GREEN, ((int) (Double.parseDouble((String) row.get(27)))));
                     // Add the precinct to its congressional district
-                    for (int j = 14; j < 30; j++) {
+                    for (int j = 14; j < 59; j++) {
                         if (((int) (Double.parseDouble((String) row2.get(j)))) != 0) {
                             String cdName = getCdByIndex(j);
-                            CDistrict cd = getCdByName(cdName, cds);
+                            CDistrict cd = getCdByName(cdName, workingState.getCongressionalDistricts());
                             workingP.setCDistrict(cd);
                             Set<Precinct> precincts = cd.getPrecinct();
                             precincts.add(workingP);
                             break;
                         }
                     }
-                }
+//                }
             }
-            
-            System.out.println(cds);
-            System.out.println("jsonData:");
-            for (CDistrict cDistrict : cds) {
-                Set<Precinct> precincts = cDistrict.getPrecinct();
-                if(cDistrict.getName().equals("cd2")){
-                    for (Precinct precinct : precincts) {
-                        System.out.println(precinct);
+            //load geo json
+            LoadJsonData ld = new LoadJsonData();
+            precinctJson ohioJsonData = ld.getOhioJsonData();
+            // set up each color of congressional districts  
+            int count1 = 1;
+            Set<CDistrict> cdss = workingState.getCongressionalDistricts();
+            for (CDistrict cd : cdss) {
+                Set<Precinct> precincts = cd.getPrecinct();
+                for (Precinct p : precincts) {
+                    for (Feature ff : ohioJsonData.getFeatures()) {
+                        if(p.getPrecinctCode().equals(ff.getProperties().getVTDST10())){
+                            ff.getProperties().setFill(String.valueOf(count1));
+                            break;
+                        }
                     }
                 }
+                count1++;
             }
+            String outputJson = new Gson().toJson(ohioJsonData);
+            try {  
+                FileOutputStream out = new FileOutputStream("d:/wendeyipi.json"); // 输出文件路径  
+                out.write(outputJson.getBytes());  
+                out.close();  
+            } catch (Exception e) {  
+                e.printStackTrace();  
+            }  
 
         } catch (FileNotFoundException e) {
             System.out.println("Not file existed!");
@@ -108,6 +127,7 @@ public class test {
             e.printStackTrace();
         }
     }
+
 
     private static CDistrict getCdByName(String name, Set<CDistrict> cds) {
         for (CDistrict cDistrict : cds) {
@@ -135,7 +155,7 @@ public class test {
             return "cd7";
         } else if (num >= 32 & num <= 34) {
             return "cd8";
-        } else if (num >= 35 & num <= 371) {
+        } else if (num >= 35 & num <= 37) {
             return "cd9";
         } else if (num >= 38 & num <= 41) {
             return "cd10";
@@ -143,16 +163,14 @@ public class test {
             return "cd11";
         } else if (num >= 44 & num <= 47) {
             return "cd12";
-        } else if (num >= 44 & num <= 47) {
-            return "cd13";
         } else if (num >= 48 & num <= 50) {
-            return "cd14";
+            return "cd13";
         } else if (num >= 51 & num <= 53) {
-            return "cd15";
+            return "cd14";
         } else if (num >= 54 & num <= 55) {
-            return "cd16";
+            return "cd15";
         } else if (num >= 56 & num <= 57) {
-            return "cd17";
+            return "cd16";
         } else {
             return "";
         }

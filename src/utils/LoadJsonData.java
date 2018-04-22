@@ -1,6 +1,7 @@
 package utils;
 
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 
 import org.junit.Test;
@@ -12,18 +13,30 @@ import com.google.gson.Gson;
 
 public class LoadJsonData {
     @Test
-    public void ts(){
-        System.out.println("test:");
-        String jsonData = readFile("ohiogood.json");
-        //System.out.println(jsonData);
+    public void adx(){
+        String jsonData = readFile("user.json");
         precinctJson fromJson = new Gson().fromJson(jsonData, precinctJson.class);
-        //System.out.println(new Gson().toJson(fromJson));
-        int count=0;
-        for (Feature f : fromJson.getFeatures()) {
-            //System.out.println(new Gson().toJson(f));
-            count++;
-        }
-        System.out.println(count);
+        
+        System.out.println(new Gson().toJson(fromJson));
+    }
+    @Test
+    public void writeFile(){
+        String jsonData = readFile("NewHampshire_precinct.json");
+        precinctJson fromJson = new Gson().fromJson(jsonData, precinctJson.class);
+//        System.out.println(new Gson().toJson(fromJson));
+        try {  
+            FileOutputStream out = new FileOutputStream("d:/zzzzzz.json"); // 输出文件路径  
+            out.write(new Gson().toJson(fromJson).getBytes());  
+            out.close();  
+        } catch (Exception e) {  
+            e.printStackTrace();  
+        }  
+    }
+    public precinctJson getOhioJsonData(){
+        System.out.println("getOhioJsonData:");
+        String jsonData = readFile("ohiogood.json");
+        precinctJson fromJson = new Gson().fromJson(jsonData, precinctJson.class);
+        return fromJson;
     }
     public  String readFile(String filename) {
         String result = "";
