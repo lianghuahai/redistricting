@@ -4,16 +4,18 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import utils.BasicConfiguration;
+
 public class State {
-    private final int MAXRUNTIME = 1000;
-    private final double MINGOODNESS = 0.8;
+    private final int MAXRUNTIME = Integer.parseInt((BasicConfiguration.getInstance().getValue("state.MAXRUNTIME")));
+    private final double MINGOODNESS = Double.parseDouble((BasicConfiguration.getInstance().getValue("state.MINGOODNESS")));
     private StateName name;
     private HashMap<Integer, Party> winnerParty;
     private Set<CDistrict> congressionalDistricts = new HashSet<CDistrict>();
     private long population;
     private HashMap<Race, Integer> race = new HashMap<Race, Integer>();
     private HashMap<Party, Integer> votes = new HashMap<Party, Integer>();
-    private int redistrictTimes = 0;
+    private int redistrictTimes;
     private float fairness;
     private float compactness;
     private float populationVariance;
@@ -21,6 +23,14 @@ public class State {
     private double efficiencyGap;
     private Constraints constraints;
     private HashMap<ObjectElement, Integer> preference = new HashMap<ObjectElement, Integer>();
+
+    public int getMAXRUNTIME() {
+        return MAXRUNTIME;
+    }
+
+    public double getMINGOODNESS() {
+        return MINGOODNESS;
+    }
 
     // setter and getter
     public StateName getName() {

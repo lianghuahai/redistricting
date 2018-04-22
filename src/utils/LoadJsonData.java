@@ -6,6 +6,7 @@ import java.io.FileReader;
 
 import org.junit.Test;
 
+import pojo.State;
 import pojo.mapJson.Feature;
 import pojo.mapJson.precinctJson;
 
@@ -14,10 +15,10 @@ import com.google.gson.Gson;
 public class LoadJsonData {
     @Test
     public void adx(){
-        String jsonData = readFile("user.json");
-        precinctJson fromJson = new Gson().fromJson(jsonData, precinctJson.class);
-        
-        System.out.println(new Gson().toJson(fromJson));
+//        BasicConfiguration configuration = BasicConfiguration.getInstance(); 
+//        String a =configuration.getValue("state.maxTime");
+        State state = new State();
+        System.out.println(state.getMAXRUNTIME());
     }
     @Test
     public void writeFile(){

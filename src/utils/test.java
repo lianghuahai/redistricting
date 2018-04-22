@@ -37,9 +37,9 @@ public class test {
      * @param args
      * @throws IOException
      */
-    private final static int ohioNumOfCDs =16;
-    private final static int NewHampshireNumOfCDs =2;
-    private final static int coloradoNumOfCDs =7;
+    private final static int ohioNumOfCDs =Integer.parseInt((BasicConfiguration.getInstance().getValue("state.ohioNumOfCDs")));
+    private final static int newHampshireNumOfCDs =Integer.parseInt((BasicConfiguration.getInstance().getValue("state.newHampshireNumOfCDs")));
+    private final static int coloradoNumOfCDs =Integer.parseInt((BasicConfiguration.getInstance().getValue("state.coloradoNumOfCDs")));
     public static void main(String[] args) throws IOException {
         try {
             String filepath2 = "ohio.xlsx";
