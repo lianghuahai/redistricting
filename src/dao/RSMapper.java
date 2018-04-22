@@ -3,11 +3,11 @@ package dao;
 import pojo.User;
 
 public interface RSMapper {
-    public User addUser (User user);
+    public User createUser (User user);
     public boolean deleteUserByEmail (User user);
     public boolean updateUserByEmail (User user);
     public User queryUserByEmail(String email);
-    
+    //Todo
     public boolean validateUser (User user);
     public boolean getMouthlyReport (String mouth);
     public boolean validateEmail (String email);

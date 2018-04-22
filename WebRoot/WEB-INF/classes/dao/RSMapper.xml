@@ -4,13 +4,14 @@
 	<select id="queryUserByEmail" parameterType="String" resultType="User">
 		SELECT * FROM user where email = #{email}
 	</select>
-	<insert id="addUser" parameterType="pojo.User">
-
+	<insert id="createUser" parameterType="pojo.User">
+		INSERT INTO user(email,password,firstName,lastName,preferParty,role) VALUES
+		(#{email},#{password},#{firstName},#{lastName},#{preferParty},#{role})
 	</insert>
-	<update id="updateUserByEmail" parameterType="pojo.User">
+	<delete id="deleteUserByEmail" parameterType="String">
+			DELETE FROM user where email = #{email}
+	</delete>
+		<update id="updateUserByEmail" parameterType="pojo.User">
 
 	</update>
-	<delete id="deleteUserByEmail" parameterType="String">
-
-	</delete>
 </mapper>
