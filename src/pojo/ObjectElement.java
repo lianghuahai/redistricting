@@ -1,10 +1,12 @@
 package pojo;
 
+import utils.PropertyManager;
+
 public enum ObjectElement {
-    COMPACTNESSWEIGHT(25),
-    PARTISANFAIRNESSWEIGHT(25),
-    POPULATIONVARIANCEWEIGHT(25),
-    RACIALFAIRNESSWEIGHT(25);
+    COMPACTNESSWEIGHT(Integer.parseInt((PropertyManager.getInstance().getValue("objElement.COMPACTNESSWEIGHT")))),
+    PARTISANFAIRNESSWEIGHT(Integer.parseInt((PropertyManager.getInstance().getValue("objElement.PARTISANFAIRNESSWEIGHT")))),
+    POPULATIONVARIANCEWEIGHT(Integer.parseInt((PropertyManager.getInstance().getValue("objElement.POPULATIONVARIANCEWEIGHT")))),
+    RACIALFAIRNESSWEIGHT(Integer.parseInt((PropertyManager.getInstance().getValue("objElement.RACIALFAIRNESSWEIGHT"))));
     private int weight;
     
     ObjectElement(int weight){

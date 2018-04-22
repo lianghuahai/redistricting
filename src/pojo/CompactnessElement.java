@@ -1,11 +1,12 @@
 package pojo;
 
+import utils.PropertyManager;
+
 public enum CompactnessElement {
-	Reock(1),
-	ConvexHull(1),
-	PolsbyPopper(1);
+	Reock(Integer.parseInt((PropertyManager.getInstance().getValue("compactnessElement.Reock")))),
+	ConvexHull(Integer.parseInt((PropertyManager.getInstance().getValue("compactnessElement.ConvexHull")))),
+	PolsbyPopper(Integer.parseInt((PropertyManager.getInstance().getValue("compactnessElement.PolsbyPopper"))));
 	private int weight;
-	
 	CompactnessElement(int weight){
         this.weight=weight;
     }

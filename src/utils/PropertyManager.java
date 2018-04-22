@@ -6,13 +6,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class BasicConfiguration {  
+public class PropertyManager {  
     
-    private static BasicConfiguration configuration = null;  
+    private static PropertyManager configuration = null;  
     private Properties pros = null;  
-    public static synchronized BasicConfiguration getInstance(){  
+    public static synchronized PropertyManager getInstance(){  
         if(configuration == null){  
-            configuration = new BasicConfiguration();  
+            configuration = new PropertyManager();  
         }  
         return configuration;  
     }  
@@ -20,7 +20,7 @@ public class BasicConfiguration {
         return pros.getProperty(key);  
     }  
       
-    private BasicConfiguration(){  
+    private PropertyManager(){  
         readConfig();  
     }  
     private void readConfig() {  

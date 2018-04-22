@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import utils.BasicConfiguration;
+import utils.PropertyManager;
 
 public class State {
-    private final int MAXRUNTIME = Integer.parseInt((BasicConfiguration.getInstance().getValue("state.MAXRUNTIME")));
-    private final double MINGOODNESS = Double.parseDouble((BasicConfiguration.getInstance().getValue("state.MINGOODNESS")));
+    private final int MAXRUNTIME = Integer.parseInt((PropertyManager.getInstance().getValue("state.MAXRUNTIME")));
+    private final double MINGOODNESS = Double.parseDouble((PropertyManager.getInstance().getValue("state.MINGOODNESS")));
     private StateName name;
     private HashMap<Integer, Party> winnerParty;
     private Set<CDistrict> congressionalDistricts = new HashSet<CDistrict>();

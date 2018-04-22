@@ -37,12 +37,12 @@ public class test {
      * @param args
      * @throws IOException
      */
-    private final static int ohioNumOfCDs =Integer.parseInt((BasicConfiguration.getInstance().getValue("state.ohioNumOfCDs")));
-    private final static int newHampshireNumOfCDs =Integer.parseInt((BasicConfiguration.getInstance().getValue("state.newHampshireNumOfCDs")));
-    private final static int coloradoNumOfCDs =Integer.parseInt((BasicConfiguration.getInstance().getValue("state.coloradoNumOfCDs")));
+    private final static int ohioNumOfCDs =Integer.parseInt((PropertyManager.getInstance().getValue("state.ohioNumOfCDs")));
+    private final static int newHampshireNumOfCDs =Integer.parseInt((PropertyManager.getInstance().getValue("state.newHampshireNumOfCDs")));
+    private final static int coloradoNumOfCDs =Integer.parseInt((PropertyManager.getInstance().getValue("state.coloradoNumOfCDs")));
     public static void main(String[] args) throws IOException {
         try {
-            String filepath2 = "ohio.xlsx";
+            String filepath2 = "ohio_relationCD_Ps.xlsx";
             test excelReader2 = new test(filepath2);
             Map<Integer, Map<Integer, Object>> map2 = excelReader2.readExcelContent();
             // Initial State
@@ -50,7 +50,7 @@ public class test {
             workingState.initialStateByNumOfCDs(ohioNumOfCDs);
             
             // load election data for every precinct
-            String filepath = "president.xlsx";
+            String filepath = "ohio_president.xlsx";
             test excelReader = new test(filepath);
             Map<Integer, Map<Integer, Object>> map = excelReader.readExcelContent();
             System.out.println("Excel Data:");
