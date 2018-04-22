@@ -1,0 +1,39 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -71.009964,
+              44.284783
+            ],
+            [
+              -71.009621,
+              44.273782999999995
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "STATEFP10": "33",
+        "COUNTYFP10": "003",
+        "VTDST10": "CHAT01",
+        "GEOID10": "33003CHAT01",
+        "VTDI10": "A",
+        "NAME10": "TOWN OF CHATHAM",
+        "NAMELSAD10": "TOWN OF CHATHAM Voting District",
+        "LSAD10": "V2",
+        "MTFCC10": "G5240",
+        "FUNCSTAT10": "N",
+        "ALAND10": 147106235,
+        "AWATER10": 1427759,
+        "INTPTLAT10": "+44.1273878",
+        "INTPTLON10": "-071.0608532"
+      }
+    }
+  ]
+}

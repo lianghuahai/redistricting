@@ -1,5 +1,6 @@
 package pojo.mapJson;
 
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,4 +19,9 @@ public class precinctJson {
     public void setFeatures(Set<Feature> features) {
         this.features = features;
     }
+    @Override
+    public String toString() {
+        return "precinctJson [type=" + type + ", features=" + features + "]";
+    }
+    
 }

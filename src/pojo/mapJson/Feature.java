@@ -1,29 +1,31 @@
 package pojo.mapJson;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class Feature {
     private String type;
-    private Set<Geometry> geometry = new HashSet<Geometry>();
-    private Set<Property> properties = new HashSet<Property>();
+    private Geometry geometry = new Geometry();
+    private Propertys properties = new Propertys();
     public String getType() {
         return type;
     }
     public void setType(String type) {
         this.type = type;
     }
-    public Set<Geometry> getGeometry() {
+    public Geometry getGeometry() {
         return geometry;
     }
-    public void setGeometry(Set<Geometry> geometry) {
+    public void setGeometry(Geometry geometry) {
         this.geometry = geometry;
     }
-    public Set<Property> getProperties() {
+    public Propertys getProperties() {
         return properties;
     }
-    public void setProperties(Set<Property> properties) {
+    public void setProperties(Propertys properties) {
         this.properties = properties;
     }
+    @Override
+    public String toString() {
+        return "Feature [type=" + type + ", geometry=" + geometry + ", properties=" + properties + "]";
+    }
+    
     
 }

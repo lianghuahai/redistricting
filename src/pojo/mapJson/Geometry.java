@@ -1,22 +1,28 @@
 package pojo.mapJson;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Geometry {
     private String type;
-    private Set<Coordinate> coordinates  = new HashSet<Coordinate>();
+    private List<List<List<Double>>> coordinates = new ArrayList<List<List<Double>>>();
+    
     public String getType() {
         return type;
     }
     public void setType(String type) {
         this.type = type;
     }
-    public Set<Coordinate> getCoordinates() {
+    public List<List<List<Double>>> getCoordinates() {
         return coordinates;
     }
-    public void setCoordinates(Set<Coordinate> coordinates) {
+    public void setCoordinates(List<List<List<Double>>> coordinates) {
         this.coordinates = coordinates;
     }
+    @Override
+    public String toString() {
+        return "Geometry [type=" + type + ", coordinates=" + coordinates + "]";
+    }
+   
 
 }
