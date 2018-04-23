@@ -1,12 +1,15 @@
 package dao;
 
+import java.util.List;
+
 import pojo.User;
 
 public interface RSMapper {
-    public User createUser (User user);
+    public int createUser (User user);
     public boolean deleteUserByEmail (User user);
     public boolean updateUserByEmail (User user);
-    public User queryUserByEmail(String email);
+    public User getUserByEmail(String email);
+    public List<User> getUsers();
     //Todo
     public boolean validateUser (User user);
     public boolean getMouthlyReport (String mouth);
@@ -17,4 +20,5 @@ public interface RSMapper {
     public boolean deleteState (String stateName);
     public boolean redistrict(String jsonData);
     public boolean findState (String stateID);
+    
 }

@@ -1,5 +1,7 @@
 package service;
 
+import java.util.List;
+
 import dao.RSMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import pojo.State;
 import pojo.User;
+import pojo.UserRole;
 import utils.MD5Util;
 
 @Service
@@ -15,7 +18,7 @@ public class RSService {
     private RSMapper rsMapper;
 
     public User login(User currUser) {
-        User existedUser = rsMapper.queryUserByEmail(currUser.getEmail());
+        User existedUser = rsMapper.getUserByEmail(currUser.getEmail());
         if (null != existedUser) {
             currUser.encrptPW();
             if (currUser.getPassword().equals(existedUser.getPassword())) {
@@ -25,17 +28,22 @@ public class RSService {
         return null;
     }
 
-    public User register(User user) {
+    public boolean register(User user) {
         user.encrptPW();
-        User currUser = rsMapper.createUser(user);
-        return currUser;
+        user.setRole(UserRole.USER);
+        int successCode = rsMapper.createUser(user);
+        if(successCode==1){
+            return true;
+        }else{
+            return false;
+        }
     }
     public boolean validateEmail (String email){
-        User existedUser = rsMapper.queryUserByEmail(email);
+        User existedUser = rsMapper.getUserByEmail(email);
         if(null == existedUser){
-            return false;
-        }else{
             return true;
+        }else{
+            return false;
         }
     }
     public boolean addUser (User user){return true;}
@@ -52,6 +60,10 @@ public class RSService {
     public State getStateByName() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public List<User> getUsers() {
+        return rsMapper.getUsers();
     }
     
     

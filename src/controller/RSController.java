@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import javassist.expr.NewArray;
 
@@ -35,14 +36,30 @@ public class RSController {
 
     @RequestMapping("register")
     public void register(User user, HttpServletRequest req, HttpServletResponse res) throws IOException {
-        User existUser = rsService.register(user);
+        boolean createdUser = rsService.register(user);
         Gson gson = new Gson();
-        if (null == existUser) {
-            res.getWriter().print(gson.toJson("false"));
-        } else {
-            res.getWriter().print(gson.toJson("true"));
-        }
+        res.getWriter().print(gson.toJson(createdUser));
     }
+    
+    @RequestMapping("ValidateEmail")
+    public void validateEmail(String email,HttpServletRequest req, HttpServletResponse res) throws IOException{
+        System.out.println("ValidateEmail");
+        boolean qualifiedEmail = rsService.validateEmail(email);
+        res.getWriter().print(new Gson().toJson(qualifiedEmail));
+    }
+    @RequestMapping("getUsers")
+    public void getUsers(HttpServletRequest req, HttpServletResponse res) throws IOException{
+        System.out.println("getUsers");
+        List<User> users = rsService.getUsers();
+        res.getWriter().print(new Gson().toJson(users));
+    }
+    @RequestMapping("deleteUserByEmail")
+    public void deleteUserByEmail(String email,HttpServletRequest req, HttpServletResponse res) throws IOException{
+        System.out.println("deleteUserByEmail");
+        List<User> qualifiedEmail = rsService.getUsers();
+        res.getWriter().print(new Gson().toJson(qualifiedEmail));
+    }
+    
     @RequestMapping("displayState")
     public void displayState(String stateName,HttpServletRequest req, HttpServletResponse res) throws IOException{
         State displayState = rsService.getStateByName();
@@ -55,22 +72,11 @@ public class RSController {
         workingState.startAlgorithm();
         res.getWriter().print(new Gson().toJson(workingState));
     }
-    
-    
-    
+    //Todo
     public boolean addUser (User user){return true;}
-    public boolean validateUser (User user){return true;}
     public boolean getMouthlyReport (String mouth){return true;}
-    public boolean login (User user){return true;}
-    public boolean register(User user){return true;}
-    public boolean login (String email, String pw){return true;}
     public boolean addNewState (String stateName){return true;}
     public boolean getState (String stateName){return true;}
     public boolean deleteState (String stateName){return true;}
     public boolean findState (String stateID){return true;}
-    @RequestMapping("validateEmail")
-    public void validateEmail(String email,HttpServletRequest req, HttpServletResponse res) throws IOException{
-        boolean qualifiedEmail = rsService.validateEmail(email);
-        res.getWriter().print(qualifiedEmail);
-    }
 }
