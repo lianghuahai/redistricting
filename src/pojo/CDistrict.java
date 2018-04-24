@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import pojo.mapJson.Feature;
+
 public class CDistrict {
     private String name;
     private State state = new State();
-    private HashMap<Integer, Party> winnerParty;
+    private HashMap<Integer, Party> winnerParty=new HashMap<Integer, Party>();
     private Set<MapData> map = new HashSet<MapData>();
     private Set<Precinct> precinct = new HashSet<Precinct>();
     private long population;
@@ -16,18 +18,39 @@ public class CDistrict {
     private HashMap<Party, Integer> votes = new HashMap<Party, Integer>();
     private Set<Precinct> boundaryPrecincts = new HashSet<Precinct>();
     private float currentGoodness;
-
+    private Feature feature = new Feature();
+    private int cdCode;
     // setter and getter
     public String getName() {
         return name;
     }
-
+    public CDistrict(){
+        super();
+        votes.put(Party.DEMOCRATIC, 0);
+        votes.put(Party.REPUBLICAN, 0);
+    }
     public void setName(String name) {
         this.name = name;
     }
 
     public State getState() {
         return state;
+    }
+
+    public int getCdCode() {
+        return cdCode;
+    }
+
+    public void setCdCode(int cdCode) {
+        this.cdCode = cdCode;
+    }
+
+    public Feature getFeature() {
+        return feature;
+    }
+
+    public void setFeature(Feature feature) {
+        this.feature = feature;
     }
 
     public HashMap<Integer, Party> getWinnerParty() {

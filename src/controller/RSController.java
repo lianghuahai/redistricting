@@ -25,12 +25,12 @@ public class RSController {
 
     @RequestMapping("login")
     public void login(User user, HttpServletRequest req, HttpServletResponse res) throws IOException {
-        User existUser = rsService.login(user);
+        User existedUser = rsService.login(user);
         Gson gson = new Gson();
-        if (null == existUser) {
+        if (null == existedUser) {
             res.getWriter().print(gson.toJson("null"));
         } else {
-            res.getWriter().print(gson.toJson(existUser.getRole()));
+            res.getWriter().print(gson.toJson(existedUser.getRole()));
         }
     }
 
@@ -79,4 +79,19 @@ public class RSController {
     public boolean getState (String stateName){return true;}
     public boolean deleteState (String stateName){return true;}
     public boolean findState (String stateID){return true;}
+    @RequestMapping("logintest")
+    public void logintest( HttpServletRequest req, HttpServletResponse res) throws IOException {
+            User user = new User();
+            user.setEmail("nihao");
+            Gson gson = new Gson();
+            req.getSession().setAttribute("user", gson.toJson(user));
+            res.getWriter().print(gson.toJson(user));
+    }
+    @RequestMapping("testlogin")
+    public void testlogin( HttpServletRequest req, HttpServletResponse res) throws IOException {
+            String jsonUser = (String) req.getSession().getAttribute("user");
+            Gson gson = new Gson();
+            User user = gson.fromJson(jsonUser, User.class);
+            System.out.println(user.getEmail());
+    }
 }

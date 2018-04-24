@@ -4,9 +4,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import pojo.mapJson.Feature;
+
 public class Precinct {
     private String name;
     private String precinctCode;
+    private String secondStylePrecinctCode;
     private CDistrict newCDistrict = new CDistrict();
     private CDistrict originCDistrict = new CDistrict();
     private CDistrict CDistrict = new CDistrict();
@@ -21,7 +24,7 @@ public class Precinct {
     private boolean isBorder;
     private Set<Precinct> neighborPrecincts = new HashSet<Precinct>();
     private Set<CDistrict> neighborCDistricts = new HashSet<CDistrict>();
-    
+    private  Feature feature = new Feature();
     //getter and setter
     public String getName() {
         return name;
@@ -29,9 +32,21 @@ public class Precinct {
     public void setName(String name) {
         this.name = name;
     }
-    
+    public String getSecondStylePrecinctCode() {
+        return secondStylePrecinctCode;
+    }
+    public void setSecondStylePrecinctCode(String secondStylePrecinctCode) {
+        this.secondStylePrecinctCode = secondStylePrecinctCode;
+    }
     public String getPrecinctCode() {
         return precinctCode;
+    }
+    
+    public Feature getFeature() {
+        return feature;
+    }
+    public void setFeature(Feature feature) {
+        this.feature = feature;
     }
     public void setPrecinctCode(String precinctCode) {
         this.precinctCode = precinctCode;

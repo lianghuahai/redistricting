@@ -21,4 +21,8 @@ public class JunitTest {
         System.out.println(ObjectElement.POPULATIONVARIANCEWEIGHT.getWeight());
         System.out.println(ObjectElement.RACIALFAIRNESSWEIGHT.getWeight());
     }
+    @Test  //Testing PropertyManager
+    public void juniTest2(){
+        System.out.println(3901%100);
+    }
 }

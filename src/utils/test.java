@@ -67,11 +67,13 @@ public class test {
                     }
                     if(count<10){
                         workingP.setPrecinctCode("00"+count+(String)row.get(2));
+                        workingP.setSecondStylePrecinctCode(count+"-"+(String)row.get(2));
                     }else if(count>=10 && count <100){
                         workingP.setPrecinctCode("0"+count+(String)row.get(2));
-                        
+                        workingP.setSecondStylePrecinctCode(count+"-"+(String)row.get(2));
                     }else{
                         workingP.setPrecinctCode(count+(String)row.get(2));
+                        workingP.setSecondStylePrecinctCode(count+"-"+(String)row.get(2));
                     }
                     workingP.setName((String) row.get(1));
                     workingP.setRegisteredVoters(((int) (Double.parseDouble((String) row.get(5)))));
@@ -93,27 +95,89 @@ public class test {
                     }
 //                }
             }
+            FileOutputStream out11 = new FileOutputStream("d:/precinctCode.json"); // 输出文件路径
             //load geo json
             LoadJsonData ld = new LoadJsonData();
             precinctJson ohioJsonData = ld.getOhioJsonData();
+            System.out.println(new Gson().toJson(ohioJsonData));
             // set up each color of congressional districts  
             int count1 = 1;
+            int same=0;
+            int diff=0;
+            boolean flag=true;
             Set<CDistrict> cdss = workingState.getCongressionalDistricts();
             for (CDistrict cd : cdss) {
                 Set<Precinct> precincts = cd.getPrecinct();
                 for (Precinct p : precincts) {
-                    for (Feature ff : ohioJsonData.getFeatures()) {
-                        if(p.getPrecinctCode().equals(ff.getProperties().getVTDST10())){
-                            ff.getProperties().setFill(String.valueOf(count1));
-                            break;
+                    cd.setPopulation(cd.getPopulation()+p.getRegisteredVoters()*p.getRegisteredVoters()/p.getTotalVoters());
+                    int cdCode = getCdsCode(p.getPrecinctCode());
+                    if(cdCode!=1){
+                        p.getCDistrict().setCdCode(cdCode);
+                        int num = cdCode%100;
+                        if(num<10){
+                            p.getCDistrict().setName("0"+cdCode);
+                        }else{
+                            p.getCDistrict().setName(Integer.toString(cdCode));
                         }
                     }
+//                    for (Feature ff : ohioJsonData.getFeatures()) {
+//                        if(p.getPrecinctCode().equals(ff.getProperties().getVTDST10())){
+//                            ff.getProperties().setColor(count1);
+//                            flag=false;
+//                            same++;
+//                            break;
+//                        }
+//                    }
+//                    if(flag){
+//                        out11.write(p.getPrecinctCode().getBytes());
+//                        out11.write("\n".getBytes());
+//                        diff++;
+//                        flag =true;
+//                        break;
+//                    }
                 }
                 count1++;
             }
+            for (CDistrict cd : cdss) {
+                Set<Precinct> ps = cd.getPrecinct();
+                HashMap<Party, Integer> votes = cd.getVotes();
+                for (Precinct p : ps) {
+                    cd.setPopulation(p.getPopulation()+cd.getPopulation());
+                    HashMap<Party, Integer> pvotes = p.getVotes();
+                    votes.put(Party.DEMOCRATIC,(votes.get(Party.DEMOCRATIC)+pvotes.get(Party.DEMOCRATIC)));
+                    votes.put(Party.REPUBLICAN,(votes.get(Party.REPUBLICAN)+pvotes.get(Party.REPUBLICAN)));
+                }
+                cd.setVotes(votes);
+            }
+            for (CDistrict cd : cdss) {
+                for (Feature ff : ohioJsonData.getFeatures()) {
+                      if(cd.getCdCode()==Integer.parseInt(ff.getProperties().getGEOID())){
+                          ff.getProperties().setPOPULATION(cd.getPopulation());
+                          ff.getProperties().setRVOTES(cd.getVotes().get(Party.REPUBLICAN));
+                          ff.getProperties().setDVOTES(cd.getVotes().get(Party.DEMOCRATIC));
+                      }
+                }
+            }
+            out11.close();
+//            System.out.println(same);
+//            System.out.println(diff);
+//            int fs=0;
+//            for (Feature ff : ohioJsonData.getFeatures()) {
+//                fs++;
+//            }
+//            System.out.println(fs);
+           
+//            
+//          try {  
+//              FileOutputStream out = new FileOutputStream("d:/cdsInfor.json"); // 输出文件路径  
+//              out.write(outputJson.getBytes());  
+//              out.close();  
+//          } catch (Exception e) {  
+//              e.printStackTrace();  
+//          }
             String outputJson = new Gson().toJson(ohioJsonData);
             try {  
-                FileOutputStream out = new FileOutputStream("d:/wendeyipi.json"); // 输出文件路径  
+                FileOutputStream out = new FileOutputStream("d:/absolutelyRight.json"); // 输出文件路径  
                 out.write(outputJson.getBytes());  
                 out.close();  
             } catch (Exception e) {  
@@ -126,6 +190,44 @@ public class test {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    private static int getCdsCode(String precinctCode) {
+        if(precinctCode.equals("061BOH")){
+            return  3901;
+        }else if(precinctCode.equals("015ACQ")){
+            return  3902;
+        }else if(precinctCode.equals("049ABT")){
+            return  3903;
+        }else if(precinctCode.equals("149AAM")){
+            return  3904;
+        }else if(precinctCode.equals("125AAY")){
+            return  3905;
+        }else if(precinctCode.equals("067AAM")){
+            return  3906;
+        }else if(precinctCode.equals("075AAA")){
+            return  3907;
+        }else if(precinctCode.equals("135ABG")){
+            return  3908;
+        }else if(precinctCode.equals("095ART")){
+            return  3909;
+        }else if(precinctCode.equals("047AAY")){
+            return  3910;
+        }else if(precinctCode.equals("035AYN")){
+            return  3911;
+        }else if(precinctCode.equals("089ADO")){
+            return  3912;
+        }else if(precinctCode.equals("099ACC")){
+            return  3913;
+        }else if(precinctCode.equals("007AEB")){
+            return  3914;
+        }else if(precinctCode.equals("141ABJ")){
+            return  3915;
+        }else if(precinctCode.equals("169ADU")){
+            return  3916;
+        }
+        return 1;
     }
 
 

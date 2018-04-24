@@ -3,13 +3,9 @@ package utils;
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.util.HashMap;
 
 import org.junit.Test;
 
-import pojo.ObjectElement;
-import pojo.State;
-import pojo.mapJson.Feature;
 import pojo.mapJson.precinctJson;
 
 import com.google.gson.Gson;
@@ -28,7 +24,8 @@ public class LoadJsonData {
         }  
     }
     public precinctJson getOhioJsonData(){
-        String jsonData = readFile("ohio_precints.json");
+//        String jsonData = readFile("ohio_precints.json");
+        String jsonData = readFile("ohio_congressional _district.json");
         precinctJson fromJson = new Gson().fromJson(jsonData, precinctJson.class);
         return fromJson;
     }

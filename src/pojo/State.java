@@ -149,16 +149,16 @@ public class State {
     public void startAlgorithm() {
         while(!this.checkTermination()){
             this.redistrictTimes++;
-            Precinct  startPrecinct = this.selectStartPrecinct();
-            CDistrict neighborCD    = startPrecinct.getRandomNeighborCDistrict();
-            this.tryMove(startPrecinct,neighborCD);
+            Precinct  startedPrecinct = this.selectStartPrecinct();
+            CDistrict neighborCD    = startedPrecinct.getRandomNeighborCDistrict();
+            this.tryMove(startedPrecinct,neighborCD);
         }
     }
 
     public Precinct selectStartPrecinct() {
         CDistrict cd  = this.getLowestGoodnessCDistrict();
-        Precinct  startPrecinct = cd.getRandomBoundaryPrecinct();
-        return startPrecinct;
+        Precinct  startedPrecinct = cd.getRandomBoundaryPrecinct();
+        return startedPrecinct;
     }
 
     private CDistrict getLowestGoodnessCDistrict() {
@@ -173,22 +173,22 @@ public class State {
         return cd;
     }
 
-    public boolean tryMove(Precinct selectPrecinct,CDistrict destinationCD) {
-        CDistrict originCD = selectPrecinct.getCDistrict();
-        originCD.removePrecinct(selectPrecinct);
-        destinationCD.addPrecinct(selectPrecinct);
-        selectPrecinct.setCDistrict(destinationCD);
-        selectPrecinct.setOriginCDistrict(originCD);
+    public boolean tryMove(Precinct selectedPrecinct,CDistrict destinationCD) {
+        CDistrict originCD = selectedPrecinct.getCDistrict();
+        originCD.removePrecinct(selectedPrecinct);
+        destinationCD.addPrecinct(selectedPrecinct);
+        selectedPrecinct.setCDistrict(destinationCD);
+        selectedPrecinct.setOriginCDistrict(originCD);
         if (!isValidConstraints()) {
-        		destinationCD.removePrecinct(selectPrecinct);
-            originCD.addPrecinct(selectPrecinct);
-            selectPrecinct.setCDistrict(originCD);
+        		destinationCD.removePrecinct(selectedPrecinct);
+            originCD.addPrecinct(selectedPrecinct);
+            selectedPrecinct.setCDistrict(originCD);
             return false;
         }
         if(validateGoodnessImprovement(originCD,destinationCD)){
-        		destinationCD.removePrecinct(selectPrecinct);
-            originCD.addPrecinct(selectPrecinct);
-            selectPrecinct.setCDistrict(originCD);
+        		destinationCD.removePrecinct(selectedPrecinct);
+            originCD.addPrecinct(selectedPrecinct);
+            selectedPrecinct.setCDistrict(originCD);
             return false;
         }
         return true;

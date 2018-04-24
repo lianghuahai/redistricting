@@ -16,7 +16,22 @@ public class Propertys {
     private String AWATER10;
     private String INTPTLAT10;
     private String INTPTLON10;
-    private String fill;
+    //cd property
+    private String STATEFP;
+    private String CD115FP;
+    private String AFFGEOID;
+    private String GEOID;
+    private String LSAD;
+    private String CDSESSN;
+    private String ALAND;
+    private String AWATER;
+    private long POPULATION;
+    private int TOTALVOTERS;
+    private int REGISTERVOTERS;
+    private int ORIGINALDISTRICT;
+    private int RVOTES;
+    private int DVOTES;
+    private int color;
     public String getProperties() {
         return properties;
     }
@@ -32,11 +47,48 @@ public class Propertys {
     public String getCOUNTYFP10() {
         return COUNTYFP10;
     }
-    public String getFill() {
-        return fill;
+   
+    public int getTOTALVOTERS() {
+        return TOTALVOTERS;
     }
-    public void setFill(String color) {
-        this.fill = color;
+    public void setTOTALVOTERS(int tOTALVOTERS) {
+        TOTALVOTERS = tOTALVOTERS;
+    }
+    public int getREGISTERVOTERS() {
+        return REGISTERVOTERS;
+    }
+    public void setREGISTERVOTERS(int rEGISTERVOTERS) {
+        REGISTERVOTERS = rEGISTERVOTERS;
+    }
+    public int getORIGINALDISTRICT() {
+        return ORIGINALDISTRICT;
+    }
+    public void setORIGINALDISTRICT(int oRIGINALDISTRICT) {
+        ORIGINALDISTRICT = oRIGINALDISTRICT;
+    }
+    public int getRVOTES() {
+        return RVOTES;
+    }
+    public void setRVOTES(int rVOTES) {
+        RVOTES = rVOTES;
+    }
+    public int getDVOTES() {
+        return DVOTES;
+    }
+    public void setDVOTES(int dVOTES) {
+        DVOTES = dVOTES;
+    }
+    public long getPOPULATION() {
+        return POPULATION;
+    }
+    public void setPOPULATION(long pOPULATION) {
+        POPULATION = pOPULATION;
+    }
+    public int getColor() {
+        return color;
+    }
+    public void setColor(int color) {
+        this.color = color;
     }
     public void setCOUNTYFP10(String cOUNTYFP10) {
         COUNTYFP10 = cOUNTYFP10;
@@ -113,4 +165,54 @@ public class Propertys {
     public void setINTPTLON10(String iNTPTLON10) {
         INTPTLON10 = iNTPTLON10;
     }
+    //cd property
+    public String getSTATEFP() {
+        return STATEFP;
+    }
+    public void setSTATEFP(String sTATEFP) {
+        STATEFP = sTATEFP;
+    }
+    public String getCD115FP() {
+        return CD115FP;
+    }
+    public void setCD115FP(String cD115FP) {
+        CD115FP = cD115FP;
+    }
+    public String getAFFGEOID() {
+        return AFFGEOID;
+    }
+    public void setAFFGEOID(String aFFGEOID) {
+        AFFGEOID = aFFGEOID;
+    }
+    public String getGEOID() {
+        return GEOID;
+    }
+    public void setGEOID(String gEOID) {
+        GEOID = gEOID;
+    }
+    public String getLSAD() {
+        return LSAD;
+    }
+    public void setLSAD(String lSAD) {
+        LSAD = lSAD;
+    }
+    public String getCDSESSN() {
+        return CDSESSN;
+    }
+    public void setCDSESSN(String cDSESSN) {
+        CDSESSN = cDSESSN;
+    }
+    public String getALAND() {
+        return ALAND;
+    }
+    public void setALAND(String aLAND) {
+        ALAND = aLAND;
+    }
+    public String getAWATER() {
+        return AWATER;
+    }
+    public void setAWATER(String aWATER) {
+        AWATER = aWATER;
+    }
+    
 }

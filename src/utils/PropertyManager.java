@@ -27,7 +27,7 @@ public class PropertyManager {
         pros = new Properties();          
         InputStream in = null;  
         try {  
-            in = new FileInputStream("./config/staticValues.properties");  
+            in = new FileInputStream("./config/constants.properties");  
             pros.load(in);  
         } catch (FileNotFoundException e) {  
             e.printStackTrace();  
