@@ -24,6 +24,12 @@ public class State {
     private Constraints constraints;
     private HashMap<ObjectElement, Integer> preference = new HashMap<ObjectElement, Integer>();
 
+    
+    public State(){
+        super();
+        votes.put(Party.DEMOCRATIC, 0);
+        votes.put(Party.REPUBLICAN, 0);
+    }
     public int getMAXRUNTIME() {
         return MAXRUNTIME;
     }

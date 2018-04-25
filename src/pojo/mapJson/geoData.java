@@ -3,7 +3,7 @@ package pojo.mapJson;
 import java.util.HashSet;
 import java.util.Set;
 
-public class geoData {
+public class GeoData {
     private Set<Double> coordinates = new HashSet<Double>();
 
     public Set<Double> getCoordinates() {

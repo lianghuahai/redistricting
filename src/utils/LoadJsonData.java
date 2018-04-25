@@ -6,7 +6,7 @@ import java.io.FileReader;
 
 import org.junit.Test;
 
-import pojo.mapJson.precinctJson;
+import pojo.mapJson.PrecinctJson;
 
 import com.google.gson.Gson;
 
@@ -14,7 +14,7 @@ public class LoadJsonData {
     @Test
     public void writeFile(){
         String jsonData = readFile("NewHampshire_precinct.json");
-        precinctJson fromJson = new Gson().fromJson(jsonData, precinctJson.class);
+        PrecinctJson fromJson = new Gson().fromJson(jsonData, PrecinctJson.class);
         try {  
             FileOutputStream out = new FileOutputStream("d:/zzzzzz.json"); // 输出文件路径  
             out.write(new Gson().toJson(fromJson).getBytes());  
@@ -23,10 +23,11 @@ public class LoadJsonData {
             e.printStackTrace();  
         }  
     }
-    public precinctJson getOhioJsonData(){
+    public PrecinctJson getOhioJsonData(){
 //        String jsonData = readFile("ohio_precints.json");
-        String jsonData = readFile("ohio_congressional _district.json");
-        precinctJson fromJson = new Gson().fromJson(jsonData, precinctJson.class);
+        String jsonData = readFile("NewHampshire_precinct.json");
+        PrecinctJson fromJson = new Gson().fromJson(jsonData, PrecinctJson.class);
+        System.out.println(jsonData);
         return fromJson;
     }
     public  String readFile(String filename) {

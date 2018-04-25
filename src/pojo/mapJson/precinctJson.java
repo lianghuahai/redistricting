@@ -4,7 +4,7 @@ package pojo.mapJson;
 import java.util.HashSet;
 import java.util.Set;
 
-public class precinctJson {
+public class PrecinctJson {
     private String type;
     private Set<Feature> features  = new HashSet<Feature>();
     public String getType() {

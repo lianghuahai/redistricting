@@ -109,6 +109,13 @@ public class CDistrict {
         return boundaryPrecincts;
     }
 
+    @Override
+    public String toString() {
+        return "CDistrict [name=" + name + ", state=" + state + ", winnerParty=" + winnerParty + ", map="
+                + map +  ", population=" + population + ", race=" + race
+                + ", votes=" + votes  + ", currentGoodness="
+                + currentGoodness + ", feature=" + feature + ", cdCode=" + cdCode + "]";
+    }
     public void setBoundaryPrecincts(Set<Precinct> boundaryPrecincts) {
         this.boundaryPrecincts = boundaryPrecincts;
     }

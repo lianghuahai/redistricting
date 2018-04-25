@@ -25,7 +25,7 @@ import pojo.Party;
 import pojo.Precinct;
 import pojo.State;
 import pojo.mapJson.Feature;
-import pojo.mapJson.precinctJson;
+import pojo.mapJson.PrecinctJson;
 
 
 public class test {
@@ -98,7 +98,7 @@ public class test {
             FileOutputStream out11 = new FileOutputStream("d:/precinctCode.json"); // 输出文件路径
             //load geo json
             LoadJsonData ld = new LoadJsonData();
-            precinctJson ohioJsonData = ld.getOhioJsonData();
+            PrecinctJson ohioJsonData = ld.getOhioJsonData();
             System.out.println(new Gson().toJson(ohioJsonData));
             // set up each color of congressional districts  
             int count1 = 1;

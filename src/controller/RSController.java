@@ -41,7 +41,7 @@ public class RSController {
         res.getWriter().print(gson.toJson(createdUser));
     }
     
-    @RequestMapping("ValidateEmail")
+    @RequestMapping("validateEmail")
     public void validateEmail(String email,HttpServletRequest req, HttpServletResponse res) throws IOException{
         System.out.println("ValidateEmail");
         boolean qualifiedEmail = rsService.validateEmail(email);
