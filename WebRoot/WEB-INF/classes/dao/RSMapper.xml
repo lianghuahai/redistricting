@@ -20,4 +20,16 @@
 	<update id="updateUserByEmail" parameterType="pojo.User">
 
 	</update>
+	
+	<insert id="saveCds" parameterType="java.util.Set" >
+			insert into cdistrict
+            ( name,stateId,population)
+            values
+             <foreach collection ="list" item="cdistrict" index= "index" separator =",">
+                 (
+                 #{cdistrict.name}, #{cdistrict.code},
+                 #{cdistrict.type},
+                 )
+             </foreach >
+	</insert>
 </mapper>

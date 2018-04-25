@@ -1,7 +1,10 @@
 package dao;
 
 import java.util.List;
+import java.util.Set;
 
+import pojo.CDistrict;
+import pojo.Precinct;
 import pojo.User;
 
 public interface RSMapper {
@@ -20,5 +23,9 @@ public interface RSMapper {
     public boolean deleteState (String stateName);
     public boolean redistrict(String jsonData);
     public boolean findState (String stateID);
+    
+    //
+    public void saveCds(Set<CDistrict> cds);
+    public void savePrecincts(Set<Precinct> precincts);
     
 }

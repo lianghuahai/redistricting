@@ -2,6 +2,7 @@ package controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import javassist.expr.NewArray;
 
@@ -14,9 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.google.gson.Gson;
 
+import pojo.CDistrict;
+import pojo.Precinct;
 import pojo.State;
 import pojo.User;
 import service.RSService;
+import utils.LoadNHData;
 
 @Controller
 public class RSController {
@@ -94,4 +98,26 @@ public class RSController {
             User user = gson.fromJson(jsonUser, User.class);
             System.out.println(user.getEmail());
     }
+    @RequestMapping("testsaveCD")
+    public void testsaveCD( HttpServletRequest req, HttpServletResponse res) throws IOException {
+        System.out.println("testsaveCD");
+        State workingState= new State();
+        //save to database
+        Set<CDistrict> cds = workingState.getCongressionalDistricts();
+        for (CDistrict cDistrict : cds) {
+            cDistrict.setName("cdsadfadf");
+            cDistrict.setPopulation(1100121);
+            cDistrict.setStateId(1);
+            Set<Precinct> precinct = cDistrict.getPrecinct();
+        }
+        rsService.saveCds(cds);
+    }
+    @RequestMapping("aaa")
+    public void a( HttpServletRequest req, HttpServletResponse res) throws Exception {
+//        LoadNHData a = new LoadNHData();
+//        a.getState();
+        State workingState= new State();
+        
+    }
+    
 }

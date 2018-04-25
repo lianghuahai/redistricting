@@ -1,12 +1,15 @@
 package service;
 
 import java.util.List;
+import java.util.Set;
 
 import dao.RSMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import pojo.CDistrict;
+import pojo.Precinct;
 import pojo.State;
 import pojo.User;
 import pojo.UserRole;
@@ -66,5 +69,10 @@ public class RSService {
         return rsMapper.getUsers();
     }
     
-    
+    public void saveCds(Set<CDistrict> cds){
+        rsMapper.saveCds(cds);
+    }
+    public void savePrecincts(Set<Precinct> precincts){
+        rsMapper.savePrecincts(precincts);
+    }
 }

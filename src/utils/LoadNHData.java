@@ -25,14 +25,29 @@ import pojo.Precinct;
 import pojo.State;
 import pojo.mapJson.Feature;
 import pojo.mapJson.PrecinctJson;
+import service.RSService;
 
 import com.google.gson.Gson;
+
+import dao.RSMapper;
 
 public class LoadNHData {
     @Test
     public void test() throws Exception{
-        State workingState = getState();
+       // State workingState = getState();
+        State workingState= new State();
+        
         //save to database
+        Set<CDistrict> cds = workingState.getCongressionalDistricts();
+        
+        for (CDistrict cDistrict : cds) {
+            cDistrict.setName("cdsadfadf");
+            cDistrict.setPopulation(1100121);
+            cDistrict.setStateId(1);
+            Set<Precinct> precinct = cDistrict.getPrecinct();
+        }
+        RSService rsService =  new RSService();
+        rsService.saveCds(cds);
     }
     //cd2 647464   cd1 669006
     public State getState() throws Exception{
@@ -55,18 +70,19 @@ public class LoadNHData {
         //set up population
         setUpPopulationAndVotes(workingState);
         
+        
         //set up geo precincts
-        LoadJsonData ld = new LoadJsonData();
-        PrecinctJson jsonData = ld.getOhioJsonData();
+//        LoadJsonData ld = new LoadJsonData();
+//        PrecinctJson jsonData = ld.getOhioJsonData();
         //setUpGeoPrecincts(workingState,jsonData);
         //setUpGeoCds(workingState,jsonData);
         
         
-        FileOutputStream of = new FileOutputStream("d:/NHcds.json"); // 输出文件路径
-        Gson gson = new Gson();
-        String json = gson.toJson(jsonData);
-        of.write(json.getBytes());
-        of.close();
+//        FileOutputStream of = new FileOutputStream("d:/NHcds.json"); // 输出文件路径
+//        Gson gson = new Gson();
+//        String json = gson.toJson(jsonData);
+//        of.write(json.getBytes());
+//        of.close();
         return workingState;
     }
     //my method

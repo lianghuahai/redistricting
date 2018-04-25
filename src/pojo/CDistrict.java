@@ -21,6 +21,7 @@ public class CDistrict {
     private Feature feature = new Feature();
     private int cdCode;
     // setter and getter
+    private int stateId;
     public String getName() {
         return name;
     }
@@ -33,6 +34,12 @@ public class CDistrict {
         this.name = name;
     }
 
+    public int getStateId() {
+        return stateId;
+    }
+    public void setStateId(int stateId) {
+        this.stateId = stateId;
+    }
     public State getState() {
         return state;
     }

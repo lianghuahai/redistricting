@@ -4,7 +4,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.util.Properties;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class PropertyManager {  
     
@@ -24,10 +27,17 @@ public class PropertyManager {
         readConfig();  
     }  
     private void readConfig() {  
-        pros = new Properties();          
+        pros = new Properties();   
+        String path="";
         InputStream in = null;  
         try {  
-            in = new FileInputStream("./config/constants.properties");  
+            try {
+                 path = this.getClass().getClassLoader().getResource("/").toURI().getPath();
+            } catch (URISyntaxException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            in = new FileInputStream(path+"/constants.properties");  
             pros.load(in);  
         } catch (FileNotFoundException e) {  
             e.printStackTrace();  
