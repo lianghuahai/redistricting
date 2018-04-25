@@ -24,8 +24,8 @@ public class LoadJsonData {
         }  
     }
     public PrecinctJson getOhioJsonData(){
-//        String jsonData = readFile("ohio_precints.json");
-        String jsonData = readFile("NewHampshire_precinct.json");
+//        String jsonData = readFile("NewHampshire_precinct.json");
+        String jsonData = readFile("new_hampshire_congressional_district.json");
         PrecinctJson fromJson = new Gson().fromJson(jsonData, PrecinctJson.class);
         System.out.println(jsonData);
         return fromJson;

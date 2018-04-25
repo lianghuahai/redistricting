@@ -31,9 +31,10 @@ import com.google.gson.Gson;
 public class LoadNHData {
     @Test
     public void test() throws Exception{
-        getState();
+        State workingState = getState();
+        //save to database
     }
-    
+    //cd2 647464   cd1 669006
     public State getState() throws Exception{
         State workingState = new State();
         workingState.initialStateByNumOfCDs(2);
@@ -57,9 +58,11 @@ public class LoadNHData {
         //set up geo precincts
         LoadJsonData ld = new LoadJsonData();
         PrecinctJson jsonData = ld.getOhioJsonData();
-        setUpGeoPrecincts(workingState,jsonData);
+        //setUpGeoPrecincts(workingState,jsonData);
+        //setUpGeoCds(workingState,jsonData);
         
-        FileOutputStream of = new FileOutputStream("d:/NHprecincts.json"); // 输出文件路径
+        
+        FileOutputStream of = new FileOutputStream("d:/NHcds.json"); // 输出文件路径
         Gson gson = new Gson();
         String json = gson.toJson(jsonData);
         of.write(json.getBytes());
@@ -69,6 +72,23 @@ public class LoadNHData {
     //my method
     
     
+    private void setUpGeoCds(State workingState, PrecinctJson jsonData) {
+        CDistrict cd1 = getCdByName("cd1", workingState.getCongressionalDistricts());
+        CDistrict cd2 = getCdByName("cd2", workingState.getCongressionalDistricts());
+        Set<Feature> features = jsonData.getFeatures();
+        for (Feature feature : features) {
+            if(feature.getProperties().getCD115FP().equals("01")){
+                feature.getProperties().setPOPULATION(cd1.getPopulation());
+                feature.getProperties().setRVOTES(cd1.getVotes().get(Party.REPUBLICAN));
+                feature.getProperties().setDVOTES(cd1.getVotes().get(Party.DEMOCRATIC));
+            }else{
+                feature.getProperties().setPOPULATION(cd2.getPopulation());
+                feature.getProperties().setRVOTES(cd2.getVotes().get(Party.REPUBLICAN));
+                feature.getProperties().setDVOTES(cd2.getVotes().get(Party.DEMOCRATIC));
+            }
+        }
+    }
+
     private void setUpGeoPrecincts(State workingState,PrecinctJson precinctJson) {
         Set<CDistrict> cds = workingState.getCongressionalDistricts();
         int count=0;
