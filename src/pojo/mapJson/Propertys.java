@@ -31,7 +31,7 @@ public class Propertys {
     private int ORIGINALDISTRICT;
     private int RVOTES;
     private int DVOTES;
-    private int color;
+    private String fill;
     public String getProperties() {
         return properties;
     }
@@ -84,11 +84,12 @@ public class Propertys {
     public void setPOPULATION(long pOPULATION) {
         POPULATION = pOPULATION;
     }
-    public int getColor() {
-        return color;
+ 
+    public String getFill() {
+        return fill;
     }
-    public void setColor(int color) {
-        this.color = color;
+    public void setFill(String fill) {
+        this.fill = fill;
     }
     public void setCOUNTYFP10(String cOUNTYFP10) {
         COUNTYFP10 = cOUNTYFP10;

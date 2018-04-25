@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-import javassist.expr.NewArray;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,14 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.google.gson.Gson;
-
 import pojo.CDistrict;
 import pojo.Precinct;
 import pojo.State;
 import pojo.User;
+import pojo.mapJson.PrecinctJson;
 import service.RSService;
+import utils.LoadJsonData;
 import utils.LoadNHData;
+
+import com.google.gson.Gson;
 
 @Controller
 public class RSController {
@@ -65,9 +65,16 @@ public class RSController {
     }
     
     @RequestMapping("displayState")
-    public void displayState(String stateName,HttpServletRequest req, HttpServletResponse res) throws IOException{
-        State displayState = rsService.getStateByName();
-        res.getWriter().print(new Gson().toJson(displayState));
+    public void displayState(String stateName,HttpServletRequest req, HttpServletResponse res) throws IOException, Exception{
+        System.out.println("displayState");
+        CDistrict cd = rsService.getCdById(1);
+        Set<Precinct> precinct = cd.getPrecinct();
+        for (Precinct p : precinct) {
+            System.out.println(p.getName()+","+p.getPopulation()+","+p.getTotalVoters()+","+p.getRegisteredVoters()+p.getPrecinctCode());
+        }
+//        System.out.println(cd);
+//        State displayState = rsService.getStateByName(stateName);
+//        res.getWriter().print(new Gson().toJson(displayState));
     }
     
     @RequestMapping("redistrict")
@@ -76,6 +83,8 @@ public class RSController {
         workingState.startAlgorithm();
         res.getWriter().print(new Gson().toJson(workingState));
     }
+    
+    
     //Todo
     public boolean addUser (User user){return true;}
     public boolean getMouthlyReport (String mouth){return true;}
@@ -88,6 +97,7 @@ public class RSController {
             User user = new User();
             user.setEmail("nihao");
             Gson gson = new Gson();
+            req.getSession().getAttribute("user");
             req.getSession().setAttribute("user", gson.toJson(user));
             res.getWriter().print(gson.toJson(user));
     }
@@ -110,14 +120,8 @@ public class RSController {
             cDistrict.setStateId(1);
             Set<Precinct> precinct = cDistrict.getPrecinct();
         }
-        rsService.saveCds(cds);
+       // rsService.saveCds(cds);
     }
-    @RequestMapping("aaa")
-    public void a( HttpServletRequest req, HttpServletResponse res) throws Exception {
-//        LoadNHData a = new LoadNHData();
-//        a.getState();
-        State workingState= new State();
-        
-    }
+    
     
 }

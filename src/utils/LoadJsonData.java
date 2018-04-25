@@ -3,6 +3,7 @@ package utils;
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.net.URISyntaxException;
 
 import org.junit.Test;
 
@@ -11,9 +12,13 @@ import pojo.mapJson.PrecinctJson;
 import com.google.gson.Gson;
 
 public class LoadJsonData {
+    String path ;
+    public LoadJsonData() throws URISyntaxException{
+        this.path=this.getClass().getClassLoader().getResource("/").toURI().getPath();
+    }
     @Test
     public void writeFile(){
-        String jsonData = readFile("NewHampshire_precinct.json");
+        String jsonData = readFile(path+"/"+ "NewHampshire_precinct.json");
         PrecinctJson fromJson = new Gson().fromJson(jsonData, PrecinctJson.class);
         try {  
             FileOutputStream out = new FileOutputStream("d:/zzzzzz.json"); // 输出文件路径  
@@ -24,8 +29,8 @@ public class LoadJsonData {
         }  
     }
     public PrecinctJson getOhioJsonData(){
-//        String jsonData = readFile("NewHampshire_precinct.json");
-        String jsonData = readFile("new_hampshire_congressional_district.json");
+        String jsonData = readFile(path+"/"+"NewHampshire_precinct.json");
+//        String jsonData = readFile("new_hampshire_congressional_district.json");
         PrecinctJson fromJson = new Gson().fromJson(jsonData, PrecinctJson.class);
         System.out.println(jsonData);
         return fromJson;

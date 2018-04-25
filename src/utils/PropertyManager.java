@@ -38,6 +38,7 @@ public class PropertyManager {
                 e.printStackTrace();
             }
             in = new FileInputStream(path+"/constants.properties");  
+//            in = new FileInputStream("constants.properties");  
             pros.load(in);  
         } catch (FileNotFoundException e) {  
             e.printStackTrace();  

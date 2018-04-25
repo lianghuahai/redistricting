@@ -21,15 +21,50 @@
 
 	</update>
 	
-	<insert id="saveCds" parameterType="java.util.Set" >
-			insert into cdistrict
-            ( name,stateId,population)
-            values
-             <foreach collection ="list" item="cdistrict" index= "index" separator =",">
-                 (
-                 #{cdistrict.name}, #{cdistrict.code},
-                 #{cdistrict.type},
-                 )
-             </foreach >
+	<insert id="saveCds" parameterType="pojo.CDistrict" >
+  	  			  INSERT INTO cdistrict  
+	            (cdName,population,stateId)  
+	            VALUES 
+	             (  
+                    #{name,jdbcType=VARCHAR},  
+                    #{population,jdbcType=NUMERIC},  
+                    #{stateId,jdbcType=NUMERIC}
+		          )  
 	</insert>
+	<insert id="savePrecincts" parameterType="pojo.Precinct" >
+  	  			  INSERT INTO precinct  
+	            (pName,population,registerVoters,totalVoters,cdistrictId,pCode)  
+	            VALUES 
+	             (  
+                    #{name,jdbcType=VARCHAR},  
+                    #{population,jdbcType=NUMERIC},  
+                    #{registeredVoters,jdbcType=NUMERIC},
+                    #{totalVoters,jdbcType=NUMERIC},
+                    #{CDistrict.cdCode,jdbcType=NUMERIC},
+                    #{precinctCode,jdbcType=VARCHAR}
+		          )  
+	</insert>
+	
+	
+	<resultMap type="pojo.CDistrict" id="Precincts">
+		<result column="cp" property="population"/>
+		<result column="cdName" property="name"/>
+		<result column="cid" property="cdCode"/>
+			<collection property="precinct" ofType="pojo.Precinct">
+				<result column="pName" property="name"/>
+				<result column="registerVoters" property="registeredVoters"/>
+				<result column="totalVoters" property="totalVoters"/>
+				<result column="pp" property="population"/>
+				<result column="pCode" property="precinctCode"/>
+			</collection>
+	
+	</resultMap>
+	
+	<select id="getCdById" parameterType="int" resultMap="Precincts">
+			SELECT  p.pName,p.cdistrictId,p.registerVoters ,p.totalVoters,p.population AS pp, pCode, cid,cdName,c.population AS cp
+				FROM precinct AS p, cdistrict AS c
+				WHERE p.cdistrictId=#{id} AND p.cdistrictId=c.cid
+	
+	</select>
+	
 </mapper>

@@ -60,19 +60,22 @@ public class RSService {
     public boolean redistrict(String jsonData){return true;}
     public boolean findState (String stateID){return true;}
 
-    public State getStateByName() {
-        // TODO Auto-generated method stub
-        return null;
+    public State getStateByName(String stateName) {
+        
+        return rsMapper.getStateByName(stateName);
     }
-
+    public CDistrict getCdById(int id) {
+        
+        return rsMapper.getCdById(id);
+    }
     public List<User> getUsers() {
         return rsMapper.getUsers();
     }
     
-    public void saveCds(Set<CDistrict> cds){
+    public void saveCds(CDistrict cds){
         rsMapper.saveCds(cds);
     }
-    public void savePrecincts(Set<Precinct> precincts){
-        rsMapper.savePrecincts(precincts);
+    public void savePrecincts(Precinct p){
+        rsMapper.savePrecincts(p);
     }
 }

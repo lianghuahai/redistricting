@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 public class Geometry {
     private String type;
     private List<List<List<Double>>> coordinates = new ArrayList<List<List<Double>>>();
-    @SerializedName("coordinates") 
+//    @SerializedName("coordinates") 
     private List<List<List<List<Double>>>> mcoordinates = new ArrayList<List<List<List<Double>>>>();
     
     public String getType() {

@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,35 +20,24 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.Test;
 
+import com.google.gson.Gson;
+
 import pojo.CDistrict;
 import pojo.Party;
 import pojo.Precinct;
 import pojo.State;
 import pojo.mapJson.Feature;
 import pojo.mapJson.PrecinctJson;
-import service.RSService;
-
-import com.google.gson.Gson;
-
-import dao.RSMapper;
 
 public class LoadNHData {
+    String path ;
+    public LoadNHData() throws URISyntaxException{
+        this.path=this.getClass().getClassLoader().getResource("/").toURI().getPath();
+    }
     @Test
     public void test() throws Exception{
        // State workingState = getState();
         State workingState= new State();
-        
-        //save to database
-        Set<CDistrict> cds = workingState.getCongressionalDistricts();
-        
-        for (CDistrict cDistrict : cds) {
-            cDistrict.setName("cdsadfadf");
-            cDistrict.setPopulation(1100121);
-            cDistrict.setStateId(1);
-            Set<Precinct> precinct = cDistrict.getPrecinct();
-        }
-        RSService rsService =  new RSService();
-        rsService.saveCds(cds);
     }
     //cd2 647464   cd1 669006
     public State getState() throws Exception{
@@ -56,11 +46,13 @@ public class LoadNHData {
         workingState.setPopulation(1316470);
         //load precincts to cds
         CDistrict cd1 = getCdByName("cd1", workingState.getCongressionalDistricts());
+        cd1.setCdCode(1);
         CDistrict cd2 = getCdByName("cd2", workingState.getCongressionalDistricts());
+        cd2.setCdCode(2);
         int numOfPrecinctCd1=117;
         int numOfPrecinctCd2=209;
-        loadPrecinctToCd("Representatives in Congress Results  By CD By Precinct/Congressional District 1-excek.xlsx",cd1,numOfPrecinctCd1);
-        loadPrecinctToCd("Representatives in Congress Results  By CD By Precinct/Congressional District 2-excel.xlsx",cd2,numOfPrecinctCd2);
+        loadPrecinctToCd(path+"/"+"Representatives/Congressional District 1-excek.xlsx",cd1,numOfPrecinctCd1);
+        loadPrecinctToCd(path+"/"+"Representatives/Congressional District 2-excel.xlsx",cd2,numOfPrecinctCd2);
         //read relation file
         setUpPrecinctCode(workingState.getCongressionalDistricts());
         //read president votes
@@ -74,11 +66,11 @@ public class LoadNHData {
         //set up geo precincts
 //        LoadJsonData ld = new LoadJsonData();
 //        PrecinctJson jsonData = ld.getOhioJsonData();
-        //setUpGeoPrecincts(workingState,jsonData);
+//        setUpGeoPrecincts(workingState,jsonData);
         //setUpGeoCds(workingState,jsonData);
         
         
-//        FileOutputStream of = new FileOutputStream("d:/NHcds.json"); // 输出文件路径
+//        FileOutputStream of = new FileOutputStream("d:NHcds.json"); // 输出文件路径
 //        Gson gson = new Gson();
 //        String json = gson.toJson(jsonData);
 //        of.write(json.getBytes());
@@ -119,7 +111,7 @@ public class LoadNHData {
                         f.getProperties().setTOTALVOTERS(p.getTotalVoters());
                         f.getProperties().setRVOTES(p.getVotes().get(Party.REPUBLICAN));
                         f.getProperties().setDVOTES(p.getVotes().get(Party.DEMOCRATIC));
-                        f.getProperties().setColor(colorCount);
+                        f.getProperties().setFill(Integer.toString(colorCount));
                         count++;
                         break;
                     }
@@ -150,7 +142,7 @@ public class LoadNHData {
     }
 
     public void setRegister(State workingState) throws Exception{
-        String filepath = "registerAndTotalVoters.xlsx";
+        String filepath = path+"/"+"registerAndTotalVoters.xlsx";
         test excelReader = new test(filepath);
         Map<Integer, Map<Integer, Object>> map = excelReader.readExcelContent();
         for (int i = 2; i <= map.size(); i++) {
@@ -163,7 +155,7 @@ public class LoadNHData {
     }
     
     public void setVotesForPrecincts(State workingState) throws Exception{
-        String filepath = "President Election Results By County By Precinct/President ALL Counties.xlsx";
+        String filepath = path+"/"+"President Election/President ALL Counties.xlsx";
         test excelReader = new test(filepath);
         Map<Integer, Map<Integer, Object>> map = excelReader.readExcelContent();
         for (int i = 1; i <= map.size(); i++) {
@@ -215,7 +207,7 @@ public class LoadNHData {
 
 
     private void setUpPrecinctCode(Set<CDistrict> cds) throws IOException{
-        File file = new File("new_hampshire_st33_nh_vtd.txt");
+        File file = new File(path+"/"+"new_hampshire_st33_nh_vtd.txt");
         BufferedReader br = new BufferedReader(new FileReader(file));
         ArrayList<String> relationList = new ArrayList<String>();
         String st;
