@@ -49,17 +49,8 @@ public class RSService {
             return false;
         }
     }
-    public boolean addUser (User user){return true;}
-    public boolean validateUser (User user){return true;}
-    public boolean getMouthlyReport (String mouth){return true;}
-    
-    public boolean login (String email, String pw){return true;}
-    public boolean addNewState (String stateName){return true;}
-    public boolean getState (String stateName){return true;}
-    public boolean deleteState (String stateName){return true;}
-    public boolean redistrict(String jsonData){return true;}
-    public boolean findState (String stateID){return true;}
-    public State getStateByName(String stateName) {
+   
+    public State initializeState(String stateName) {
         State state = rsMapper.getStateByName(stateName);
         int stateId = rsMapper.getStateId(stateName);
         int numOfCds = rsMapper.getNumOfCDs(stateId);
@@ -83,4 +74,16 @@ public class RSService {
     public void savePrecincts(Precinct p){
         rsMapper.savePrecincts(p);
     }
+    
+    //Todo
+    public boolean addUser (User user){return true;}
+    public boolean validateUser (User user){return true;}
+    public boolean getMouthlyReport (String mouth){return true;}
+    
+    public boolean login (String email, String pw){return true;}
+    public boolean addNewState (String stateName){return true;}
+    public boolean getState (String stateName){return true;}
+    public boolean deleteState (String stateName){return true;}
+    public boolean redistrict(String jsonData){return true;}
+    public boolean findState (String stateID){return true;}
 }

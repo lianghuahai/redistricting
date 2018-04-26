@@ -350,6 +350,7 @@ public class State {
         CDistrict cd2 = getCdByName("cd2");
         for (Feature feature : features) {
             if(feature.getProperties().getCD115FP().equals("01")){
+                System.out.println(cd1.getPopulation());
                 feature.getProperties().setPOPULATION(cd1.getPopulation());
                 feature.getProperties().setFill(PropertyManager.getInstance().getValue("color"+feature.getProperties().getCD115FP()));
                 feature.getProperties().setRVOTES(cd1.getVotes().get(Party.REPUBLICAN));
@@ -361,7 +362,6 @@ public class State {
                 feature.getProperties().setDVOTES(cd2.getVotes().get(Party.DEMOCRATIC));
             }
         }
-        
     }
     private  CDistrict getCdByName(String name) {
         for (CDistrict cDistrict : this.congressionalDistricts) {

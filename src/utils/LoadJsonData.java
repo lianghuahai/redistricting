@@ -12,13 +12,13 @@ import pojo.mapJson.PrecinctJson;
 import com.google.gson.Gson;
 
 public class LoadJsonData {
-    String path ;
+    String serverPath ;
     public LoadJsonData() throws URISyntaxException{
-        this.path=this.getClass().getClassLoader().getResource("/").toURI().getPath();
+        this.serverPath=this.getClass().getClassLoader().getResource("/").toURI().getPath();
     }
     
     public PrecinctJson getJsonData(String stateName ,String dLevel){
-        String jsonData = readFile(path+"/"+PropertyManager.getInstance().getValue(stateName+dLevel));
+        String jsonData = readFile(serverPath+"/"+PropertyManager.getInstance().getValue(stateName+dLevel));
         PrecinctJson fromJson = new Gson().fromJson(jsonData, PrecinctJson.class);
         return fromJson;
     }
