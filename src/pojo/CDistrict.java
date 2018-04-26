@@ -10,29 +10,46 @@ import utils.PropertyManager;
 
 public class CDistrict {
     private String name;
+
     private State state = new State();
-    private HashMap<Integer, Party> winnerParty=new HashMap<Integer, Party>();
+
+    private HashMap<Integer, Party> winnerParty = new HashMap<Integer, Party>();
+
     private Set<MapData> map = new HashSet<MapData>();
+
     private Set<Precinct> precinct = new HashSet<Precinct>();
+
     private long population;
+
     private HashMap<Race, Integer> race = new HashMap<Race, Integer>();
+
     private HashMap<Party, Integer> votes = new HashMap<Party, Integer>();
+
     private Set<Precinct> boundaryPrecincts = new HashSet<Precinct>();
+
     private float currentGoodness;
+
     private Feature feature = new Feature();
+
     private int cdCode;
+
     private int registerVoters;
+
     private int totalVoters;
+
     // setter and getter
     private int stateId;
+
     public String getName() {
         return name;
     }
-    public CDistrict(){
+
+    public CDistrict() {
         super();
         votes.put(Party.DEMOCRATIC, 0);
         votes.put(Party.REPUBLICAN, 0);
     }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -40,10 +57,11 @@ public class CDistrict {
     public int getStateId() {
         return stateId;
     }
+
     public void setStateId(int stateId) {
         this.stateId = stateId;
     }
-    
+
     public State getState() {
         return state;
     }
@@ -51,15 +69,19 @@ public class CDistrict {
     public int getRegisterVoters() {
         return registerVoters;
     }
+
     public void setRegisterVoters(int registerVoters) {
         this.registerVoters = registerVoters;
     }
+
     public int getTotalVoters() {
         return totalVoters;
     }
+
     public void setTotalVoters(int totalVoters) {
         this.totalVoters = totalVoters;
     }
+
     public int getCdCode() {
         return cdCode;
     }
@@ -135,10 +157,11 @@ public class CDistrict {
     @Override
     public String toString() {
         return "CDistrict [name=" + name + ", state=" + state + ", winnerParty=" + winnerParty + ", map="
-                + map +  ", population=" + population + ", race=" + race
-                + ", votes=" + votes  + ", currentGoodness="
-                + currentGoodness + ", feature=" + feature + ", cdCode=" + cdCode + "]";
+                + map + ", population=" + population + ", race=" + race + ", votes=" + votes
+                + ", currentGoodness=" + currentGoodness + ", feature=" + feature + ", cdCode=" + cdCode
+                + "]";
     }
+
     public void setBoundaryPrecincts(Set<Precinct> boundaryPrecincts) {
         this.boundaryPrecincts = boundaryPrecincts;
     }
@@ -170,67 +193,81 @@ public class CDistrict {
     }
 
     public float calculateObjectiveFunction() {
-    	float goodness = 0;
-    	Set<ObjectElement> elements= EnumSet.allOf(ObjectElement.class);
-    	for(ObjectElement obj : elements) {
-    	    goodness += obj.calculate();
-    	}
-    	return goodness;
+        float goodness = 0;
+        goodness += ObjectElement.values()[0].getWeight() * calculateCompactness();
+        goodness += ObjectElement.values()[1].getWeight() * calculatePartisanFairness();
+        goodness += ObjectElement.values()[2].getWeight() * calculatePopulationVariance();
+        goodness += ObjectElement.values()[3].getWeight() * calculateRacialFairness();
+        return goodness;
     }
 
     private float calculateCompactness() {
-    	float compactness = 0;
-    	Set<CompactnessElement> elements= EnumSet.allOf(CompactnessElement.class);
-    	for(CompactnessElement obj : elements) {
-    		compactness += obj.calculate();
-    	}
+        float compactness = 0;
+        for (CompactnessElement element : CompactnessElement.values()) {
+            compactness += element.getWeight() * element.calculate();
+        }
         return compactness;
+    }
+
+    private float calculatePartisanFairness() {
+        float pFairness = 0;
+        return pFairness;
+    }
+
+    private float calculatePopulationVariance() {
+        int numOfCDs = this.getState().getCongressionalDistricts().size();
+        float variance = (float) Math.sqrt(this.population - this.getState().getPopulationMean());
+        return variance/numOfCDs;
+    }
+
+    private int calculateRacialFairness() {
+        return 0;
     }
 
     public float getGoodnessDiff(float cGoodness) {
         return (cGoodness - this.currentGoodness);
     }
 
-	public void removePrecinct(Precinct p) {
-		this.precinct.remove(p);
-		if(p.getIsBorder()){
-			this.boundaryPrecincts.remove(p);
-		}
-		p.getNeighborCDistrictList().add(this);
-		this.population -= p.getPopulation();
-		this.subtractVotes(p);
+    public void removePrecinct(Precinct p) {
+        this.precinct.remove(p);
+        if (p.getIsBorder()) {
+            this.boundaryPrecincts.remove(p);
+        }
+        p.getNeighborCDistrictList().add(this);
+        this.population -= p.getPopulation();
+        this.subtractVotes(p);
         this.subtractRace(p);
-	}
+    }
 
-	public void addPrecinct(Precinct p) {
-		this.precinct.add(p);
-		if(p.getIsBorder()){
-			this.boundaryPrecincts.add(p);
-		}
-		p.getNeighborCDistrictList().remove(this);
-		this.population += p.getPopulation();
-		this.addVotes(p);
+    public void addPrecinct(Precinct p) {
+        this.precinct.add(p);
+        if (p.getIsBorder()) {
+            this.boundaryPrecincts.add(p);
+        }
+        p.getNeighborCDistrictList().remove(this);
+        this.population += p.getPopulation();
+        this.addVotes(p);
         this.addRace(p);
-		
-	}
+
+    }
 
     private void addVotes(Precinct precinct) {
-    	 HashMap<Party, Integer> precinctVotes = precinct.getVotes();
-         for (Party p : this.votes.keySet()) {
-             precinctVotes.put(p, votes.get(p) + precinctVotes.get(p));
-         }
-		
-	}
+        HashMap<Party, Integer> precinctVotes = precinct.getVotes();
+        for (Party p : this.votes.keySet()) {
+            precinctVotes.put(p, votes.get(p) + precinctVotes.get(p));
+        }
 
-	private void addRace(Precinct precinct) {
-		HashMap<Race, Integer> precinctRace = precinct.getRace();
+    }
+
+    private void addRace(Precinct precinct) {
+        HashMap<Race, Integer> precinctRace = precinct.getRace();
         for (Race r : this.race.keySet()) {
             precinctRace.put(r, race.get(r) + precinctRace.get(r));
         }
-		
-	}
 
-	private void subtractVotes(Precinct precinct) {
+    }
+
+    private void subtractVotes(Precinct precinct) {
         HashMap<Party, Integer> precinctVotes = precinct.getVotes();
         for (Party p : this.votes.keySet()) {
             precinctVotes.put(p, votes.get(p) - precinctVotes.get(p));
@@ -238,25 +275,26 @@ public class CDistrict {
     }
 
     private void subtractRace(Precinct precinct) {
-    	HashMap<Race, Integer> precinctRace = precinct.getRace();
+        HashMap<Race, Integer> precinctRace = precinct.getRace();
         for (Race r : this.race.keySet()) {
             precinctRace.put(r, race.get(r) - precinctRace.get(r));
         }
     }
-    public void setUpPrecinctMapJson(Set<Feature> features,int colorCount) {
-            Set<Precinct> ps = this.getPrecinct();
-            for (Precinct p : ps) {
-                for (Feature f : features) {
-                    if(f.getProperties().getVTDST10().equals(p.getPrecinctCode())){
-                        f.getProperties().setPOPULATION(p.getPopulation());
-                        f.getProperties().setREGISTERVOTERS(p.getRegisteredVoters());
-                        f.getProperties().setTOTALVOTERS(p.getTotalVoters());
-                        f.getProperties().setFill(PropertyManager.getInstance().getValue("color0"+colorCount));
-                        break;
-                    }
+
+    public void setUpPrecinctMapJson(Set<Feature> features, int colorCount) {
+        Set<Precinct> ps = this.getPrecinct();
+        for (Precinct p : ps) {
+            for (Feature f : features) {
+                if (f.getProperties().getVTDST10().equals(p.getPrecinctCode())) {
+                    f.getProperties().setPOPULATION(p.getPopulation());
+                    f.getProperties().setREGISTERVOTERS(p.getRegisteredVoters());
+                    f.getProperties().setTOTALVOTERS(p.getTotalVoters());
+                    f.getProperties().setFill(PropertyManager.getInstance().getValue("color0" + colorCount));
+                    break;
                 }
             }
-            
+        }
+
     }
 
 }

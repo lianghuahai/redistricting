@@ -67,24 +67,33 @@ public class RSController {
     public void displayState(String stateName,String dLevel,HttpServletRequest req, HttpServletResponse res) throws IOException, Exception{
         State displayState = rsService.initializeState(stateName);
         PrecinctJson mapJson = new LoadJsonData().getJsonData(stateName,dLevel);
-        if(dLevel.equals("CD")){
-            displayState.setUpCdMapJson(mapJson.getFeatures());
-        }else{
+        if(dLevel.equals("PD")){
             int colorCount=1;
             for (CDistrict cd : displayState.getCongressionalDistricts()) {
                 cd.setUpPrecinctMapJson(mapJson.getFeatures(),colorCount);
                 colorCount++;
             }
+        }else{
+            displayState.setUpCdMapJson(mapJson.getFeatures());
         }
+        req.getSession().setAttribute("workingState",displayState);
         res.getWriter().print(new Gson().toJson(mapJson));
     }
     
     @RequestMapping("redistrict")
-    public void redistrict(State originalState,HttpServletRequest req, HttpServletResponse res) throws IOException{
-        State workingState = originalState.clone();
-        workingState.startAlgorithm();
-        res.getWriter().print(new Gson().toJson(workingState));
-        req.getSession().setAttribute("flag",true);
+    public void redistrict(HttpServletRequest req, HttpServletResponse res) throws IOException{
+//        State originalState= (State) req.getSession().getAttribute("workingState");
+//        State workingState = originalState.clone();
+//        Precinct movedPrecinct = workingState.startAlgorithm();
+//        if(!workingState.checkTermination()){
+//            while(movedPrecinct==null){
+//                movedPrecinct = workingState.startAlgorithm();
+//            }
+//            req.getSession().setAttribute("workingState",workingState);
+//            res.getWriter().print(new Gson().toJson(movedPrecinct));
+//        }else{
+//            res.getWriter().print(new Gson().toJson("{terminated:true}"));
+//        }
         PrecinctProperty precinctProperty =  new PrecinctProperty();
         precinctProperty.setFill("#f3370f");
         precinctProperty.setVTDI10("A");
@@ -93,7 +102,10 @@ public class RSController {
     
     @RequestMapping("process")
     public void process(State originalState,HttpServletRequest req, HttpServletResponse res) throws IOException{
-//        State workingState = req.getSession().getAttribute("workingState");
+//        State workingState = (State)req.getSession().getAttribute("workingState");
+//        Precinct movedPrecinct = workingState.startAlgorithm();
+//        req.getSession().setAttribute("workingState",workingState);
+//        res.getWriter().print(new Gson().toJson(movedPrecinct));
         PrecinctProperty precinctProperty =  new PrecinctProperty();
         precinctProperty.setVTDI10("A");
         Random rd = new Random(); 
@@ -106,12 +118,11 @@ public class RSController {
             precinctProperty.setFill("#DC143C");
         }
             res.getWriter().print(new Gson().toJson(precinctProperty));
-            
     }
     
     @RequestMapping("stop")
     public void stop(State originalState,HttpServletRequest req, HttpServletResponse res) throws IOException{
-      req.getSession().getAttribute("workingState");
+      req.getSession().removeAttribute("workingState");
       res.getWriter().print(new Gson().toJson("ok"));
   }
     

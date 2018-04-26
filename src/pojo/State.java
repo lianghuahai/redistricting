@@ -26,6 +26,7 @@ public class State {
     private Constraints constraints;
     private int stateId;
     private String sName;
+    private float populationMean;
     
     public State(){
         super();
@@ -40,6 +41,12 @@ public class State {
         return MINGOODNESS;
     }
 
+    public float getPopulationMean() {
+        return populationMean;
+    }
+    public void setPopulationMean(float populationMean) {
+        this.populationMean = populationMean;
+    }
     // setter and getter
     public StateName getName() {
         return name;
@@ -165,12 +172,14 @@ public class State {
     }
 
     // methods to be implemented
-    public void startAlgorithm() {
-        while(!this.checkTermination()){
-            this.redistrictTimes++;
-            Precinct  startedPrecinct = this.selectStartPrecinct();
-            CDistrict neighborCD    = startedPrecinct.getRandomNeighborCDistrict();
-            this.tryMove(startedPrecinct,neighborCD);
+    public Precinct startAlgorithm() {
+        this.redistrictTimes++;
+        Precinct  startedPrecinct = this.selectStartPrecinct();
+        CDistrict neighborCD    = startedPrecinct.getRandomNeighborCDistrict();
+        if(this.tryMove(startedPrecinct,neighborCD)){
+            return startedPrecinct;
+        }else{
+            return null;
         }
     }
 
