@@ -68,9 +68,8 @@ public class RSController {
     public void displayState(String stateName,String dLevel,HttpServletRequest req, HttpServletResponse res) throws IOException, Exception{
         System.out.println("displayState");
         State displayState = rsService.getStateByName(stateName);
-        System.out.println(stateName+","+dLevel);
+        //System.out.println(stateName+","+dLevel);
         PrecinctJson mapJson = new LoadJsonData().getJsonData(stateName,dLevel);
-        //System.out.println(new Gson().toJson(mapJson));
         if(dLevel.equals("CD")){
             displayState.setUpCdMapJson(mapJson.getFeatures());
         }else{
@@ -80,16 +79,31 @@ public class RSController {
                 colorCount++;
             }
         }
-        System.out.println(new Gson().toJson(mapJson));
+        //System.out.println(new Gson().toJson(mapJson));
         res.getWriter().print(new Gson().toJson(mapJson));
     }
     
     @RequestMapping("redistrict")
     public void redistrict(State originalState,HttpServletRequest req, HttpServletResponse res) throws IOException{
-        State workingState = originalState.clone();
-        workingState.startAlgorithm();
-        res.getWriter().print(new Gson().toJson(workingState));
+//        State workingState = originalState.clone();
+//        workingState.startAlgorithm();
+//        res.getWriter().print(new Gson().toJson(workingState));
+//        req.getSession().setAttribute("flag",true);
+        res.getWriter().print(new Gson().toJson("{pricienctID: 'OSSI01',fill: '#000000'}"));
     }
+    
+    @RequestMapping("process")
+    public void process(State originalState,HttpServletRequest req, HttpServletResponse res) throws IOException{
+//        boolean flag = (Boolean) req.getSession().getAttribute("flag");
+            res.getWriter().print(new Gson().toJson("{pricienctID: 'OSSI01',fill: '#f3370f'}"));
+            
+    }
+    
+    @RequestMapping("stop")
+    public void stop(State originalState,HttpServletRequest req, HttpServletResponse res) throws IOException{
+      req.getSession().getAttribute("flag");
+      res.getWriter().print(new Gson().toJson("ok"));
+  }
     
     
     //Todo
