@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import pojo.mapJson.Feature;
 import utils.PropertyManager;
 
 public class State {
@@ -15,6 +16,7 @@ public class State {
     private long population;
     private HashMap<Race, Integer> race = new HashMap<Race, Integer>();
     private HashMap<Party, Integer> votes = new HashMap<Party, Integer>();
+    private HashMap<ObjectElement, Integer> preference = new HashMap<ObjectElement, Integer>();
     private int redistrictTimes;
     private float fairness;
     private float compactness;
@@ -22,8 +24,8 @@ public class State {
     private float currentGoodness;
     private double efficiencyGap;
     private Constraints constraints;
-    private HashMap<ObjectElement, Integer> preference = new HashMap<ObjectElement, Integer>();
-
+    private int stateId;
+    private String sName;
     
     public State(){
         super();
@@ -42,7 +44,18 @@ public class State {
     public StateName getName() {
         return name;
     }
-
+    public String getsName() {
+        return sName;
+    }
+    public void setsName(String sName) {
+        this.sName = sName;
+    }
+    public int getStateId() {
+        return stateId;
+    }
+    public void setStateId(int stateId) {
+        this.stateId = stateId;
+    }
     public void setName(StateName name) {
         this.name = name;
     }
@@ -331,5 +344,31 @@ public class State {
             cds.add(cd);
         }
         
+    }
+    public void setUpCdMapJson(Set<Feature> features) {
+        CDistrict cd1 = getCdByName("cd1");
+        CDistrict cd2 = getCdByName("cd2");
+        for (Feature feature : features) {
+            if(feature.getProperties().getCD115FP().equals("01")){
+                feature.getProperties().setPOPULATION(cd1.getPopulation());
+                feature.getProperties().setFill(PropertyManager.getInstance().getValue("color"+feature.getProperties().getCD115FP()));
+                feature.getProperties().setRVOTES(cd1.getVotes().get(Party.REPUBLICAN));
+                feature.getProperties().setDVOTES(cd1.getVotes().get(Party.DEMOCRATIC));
+            }else{
+                feature.getProperties().setPOPULATION(cd2.getPopulation());
+                feature.getProperties().setFill(PropertyManager.getInstance().getValue("color"+feature.getProperties().getCD115FP()));
+                feature.getProperties().setRVOTES(cd2.getVotes().get(Party.REPUBLICAN));
+                feature.getProperties().setDVOTES(cd2.getVotes().get(Party.DEMOCRATIC));
+            }
+        }
+        
+    }
+    private  CDistrict getCdByName(String name) {
+        for (CDistrict cDistrict : this.congressionalDistricts) {
+            if (cDistrict.getName().equals(name)) {
+                return cDistrict;
+            }
+        }
+        return null;
     }
 }

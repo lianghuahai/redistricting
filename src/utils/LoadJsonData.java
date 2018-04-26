@@ -16,23 +16,10 @@ public class LoadJsonData {
     public LoadJsonData() throws URISyntaxException{
         this.path=this.getClass().getClassLoader().getResource("/").toURI().getPath();
     }
-    @Test
-    public void writeFile(){
-        String jsonData = readFile(path+"/"+ "NewHampshire_precinct.json");
+    
+    public PrecinctJson getJsonData(String stateName ,String dLevel){
+        String jsonData = readFile(path+"/"+PropertyManager.getInstance().getValue(stateName+dLevel));
         PrecinctJson fromJson = new Gson().fromJson(jsonData, PrecinctJson.class);
-        try {  
-            FileOutputStream out = new FileOutputStream("d:/zzzzzz.json"); // 输出文件路径  
-            out.write(new Gson().toJson(fromJson).getBytes());  
-            out.close();  
-        } catch (Exception e) {  
-            e.printStackTrace();  
-        }  
-    }
-    public PrecinctJson getOhioJsonData(){
-        String jsonData = readFile(path+"/"+"NewHampshire_precinct.json");
-//        String jsonData = readFile("new_hampshire_congressional_district.json");
-        PrecinctJson fromJson = new Gson().fromJson(jsonData, PrecinctJson.class);
-        System.out.println(jsonData);
         return fromJson;
     }
     public  String readFile(String filename) {

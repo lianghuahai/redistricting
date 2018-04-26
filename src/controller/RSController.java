@@ -65,16 +65,23 @@ public class RSController {
     }
     
     @RequestMapping("displayState")
-    public void displayState(String stateName,HttpServletRequest req, HttpServletResponse res) throws IOException, Exception{
+    public void displayState(String stateName,String dLevel,HttpServletRequest req, HttpServletResponse res) throws IOException, Exception{
         System.out.println("displayState");
-        CDistrict cd = rsService.getCdById(1);
-        Set<Precinct> precinct = cd.getPrecinct();
-        for (Precinct p : precinct) {
-            System.out.println(p.getName()+","+p.getPopulation()+","+p.getTotalVoters()+","+p.getRegisteredVoters()+p.getPrecinctCode());
+        State displayState = rsService.getStateByName(stateName);
+        System.out.println(stateName+","+dLevel);
+        PrecinctJson mapJson = new LoadJsonData().getJsonData(stateName,dLevel);
+        //System.out.println(new Gson().toJson(mapJson));
+        if(dLevel.equals("CD")){
+            displayState.setUpCdMapJson(mapJson.getFeatures());
+        }else{
+            int colorCount=1;
+            for (CDistrict cd : displayState.getCongressionalDistricts()) {
+                cd.setUpPrecinctMapJson(mapJson.getFeatures(),colorCount);
+                colorCount++;
+            }
         }
-//        System.out.println(cd);
-//        State displayState = rsService.getStateByName(stateName);
-//        res.getWriter().print(new Gson().toJson(displayState));
+        System.out.println(new Gson().toJson(mapJson));
+        res.getWriter().print(new Gson().toJson(mapJson));
     }
     
     @RequestMapping("redistrict")

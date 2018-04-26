@@ -59,10 +59,15 @@ public class RSService {
     public boolean deleteState (String stateName){return true;}
     public boolean redistrict(String jsonData){return true;}
     public boolean findState (String stateID){return true;}
-
     public State getStateByName(String stateName) {
-        
-        return rsMapper.getStateByName(stateName);
+        State state = rsMapper.getStateByName(stateName);
+        int stateId = rsMapper.getStateId(stateName);
+        int numOfCds = rsMapper.getNumOfCDs(stateId);
+        for (int i = 1; i <= numOfCds; i++) {
+            CDistrict cd = rsMapper.getCdById(i);
+            state.getCongressionalDistricts().add(cd);
+        }
+        return state;
     }
     public CDistrict getCdById(int id) {
         

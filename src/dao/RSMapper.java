@@ -17,7 +17,9 @@ public interface RSMapper {
     public User getUserByEmail(String email);
     public List<User> getUsers();
     public State getStateByName(String stateName);
+    public int getStateId(String stateName);
     public CDistrict getCdById(int id);
+    public int getNumOfCDs(int id);
     //Todo
     public boolean validateUser (User user);
     public boolean getMouthlyReport (String mouth);

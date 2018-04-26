@@ -98,7 +98,7 @@ public class test {
             FileOutputStream out11 = new FileOutputStream("d:/precinctCode.json"); // 输出文件路径
             //load geo json
             LoadJsonData ld = new LoadJsonData();
-            PrecinctJson ohioJsonData = ld.getOhioJsonData();
+            PrecinctJson ohioJsonData = ld.getJsonData("","");
             System.out.println(new Gson().toJson(ohioJsonData));
             // set up each color of congressional districts  
             int count1 = 1;

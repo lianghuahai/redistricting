@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import pojo.mapJson.Feature;
+import utils.PropertyManager;
 
 public class CDistrict {
     private String name;
@@ -20,6 +21,8 @@ public class CDistrict {
     private float currentGoodness;
     private Feature feature = new Feature();
     private int cdCode;
+    private int registerVoters;
+    private int totalVoters;
     // setter and getter
     private int stateId;
     public String getName() {
@@ -40,10 +43,23 @@ public class CDistrict {
     public void setStateId(int stateId) {
         this.stateId = stateId;
     }
+    
     public State getState() {
         return state;
     }
 
+    public int getRegisterVoters() {
+        return registerVoters;
+    }
+    public void setRegisterVoters(int registerVoters) {
+        this.registerVoters = registerVoters;
+    }
+    public int getTotalVoters() {
+        return totalVoters;
+    }
+    public void setTotalVoters(int totalVoters) {
+        this.totalVoters = totalVoters;
+    }
     public int getCdCode() {
         return cdCode;
     }
@@ -226,6 +242,21 @@ public class CDistrict {
         for (Race r : this.race.keySet()) {
             precinctRace.put(r, race.get(r) - precinctRace.get(r));
         }
+    }
+    public void setUpPrecinctMapJson(Set<Feature> features,int colorCount) {
+            Set<Precinct> ps = this.getPrecinct();
+            for (Precinct p : ps) {
+                for (Feature f : features) {
+                    if(f.getProperties().getVTDST10().equals(p.getPrecinctCode())){
+                        f.getProperties().setPOPULATION(p.getPopulation());
+                        f.getProperties().setREGISTERVOTERS(p.getRegisteredVoters());
+                        f.getProperties().setTOTALVOTERS(p.getTotalVoters());
+                        f.getProperties().setFill(PropertyManager.getInstance().getValue("color0"+colorCount));
+                        break;
+                    }
+                }
+            }
+            
     }
 
 }
