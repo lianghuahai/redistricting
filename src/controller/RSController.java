@@ -89,7 +89,7 @@ public class RSController {
 //        workingState.startAlgorithm();
 //        res.getWriter().print(new Gson().toJson(workingState));
 //        req.getSession().setAttribute("flag",true);
-        res.getWriter().print(new Gson().toJson("{pricienctID: 'OSSI01',fill: '#000000'}"));
+        res.getWriter().print(new Gson().toJson("[pricienctID: 'OSSI01',fill: '#f3370f']"));
     }
     
     @RequestMapping("process")
