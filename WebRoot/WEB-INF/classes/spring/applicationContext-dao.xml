@@ -24,7 +24,12 @@
 		<property name="maxActive" value="10"/>
 		<property name="maxIdle" value="5"/>
 	</bean>
-
+	<bean id="DAY" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">    
+        <property name="staticField" value="utils.ReportType.DAY" />    
+    </bean>  
+	<bean id="dayReportJob" class="utils.ReportJob">  
+        <property name="reportType" ref="DAY" />  
+    </bean> 
 	<!-- SqlSessionFactory -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<!-- mybatis filePath -->

@@ -41,9 +41,15 @@ public class Precinct {
     public String getPrecinctCode() {
         return precinctCode;
     }
-    
     public Feature getFeature() {
         return feature;
+    }
+    private HashMap<String, Integer> vote =  new HashMap<String, Integer>();
+    public HashMap<String, Integer> getVote() {
+        return vote;
+    }
+    public void setVote(HashMap<String, Integer> vote) {
+        this.vote = vote;
     }
     public void setFeature(Feature feature) {
         this.feature = feature;

@@ -15,4 +15,5 @@
 		
 		<!-- Using scanner for annotation -->
 		<context:component-scan base-package="controller"></context:component-scan>
+		
 </beans>

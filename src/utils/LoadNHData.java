@@ -36,8 +36,7 @@ public class LoadNHData {
     }
     @Test
     public void test() throws Exception{
-       // State workingState = getState();
-        State workingState= new State();
+        State workingState = getState();
     }
     //cd2 647464   cd1 669006
     public State getState() throws Exception{
@@ -119,15 +118,15 @@ public class LoadNHData {
             }
             colorCount++;
         }
-        System.out.println(count);
-        
     }
 
     private void setUpPopulationAndVotes(State workingState) throws Exception {
         Set<CDistrict> cds = workingState.getCongressionalDistricts();
         HashMap<Party, Integer> voteState = workingState.getVotes();
         //set up State votes
+        int registerVote=0;
         for (CDistrict cDistrict : cds) {
+            registerVote=registerVote+cDistrict.getRegisterVoters();
             voteState.put(Party.REPUBLICAN, cDistrict.getVotes().get(Party.REPUBLICAN)+voteState.get(Party.REPUBLICAN));
             voteState.put(Party.DEMOCRATIC, cDistrict.getVotes().get(Party.DEMOCRATIC)+voteState.get(Party.DEMOCRATIC));
         }
@@ -135,7 +134,7 @@ public class LoadNHData {
         for (CDistrict cDistrict : cds) {
             Set<Precinct> ps = cDistrict.getPrecinct();
             for (Precinct p : ps) {
-                p.setPopulation((workingState.getPopulation())*p.getRegisteredVoters()/(voteState.get(Party.REPUBLICAN)+voteState.get(Party.DEMOCRATIC)));
+                p.setPopulation((workingState.getPopulation())*p.getRegisteredVoters()/registerVote);
                 cDistrict.setPopulation(cDistrict.getPopulation()+p.getPopulation());
             }
         }
@@ -151,6 +150,13 @@ public class LoadNHData {
             if(p!=null){
                 p.setRegisteredVoters((int) (Double.parseDouble((String) row.get(4))));
             }
+        }
+        Set<CDistrict> cds = workingState.getCongressionalDistricts();
+        for (CDistrict cd : cds) {
+            Set<Precinct> ps = cd.getPrecinct();
+                for (Precinct p : ps) {
+                    cd.setRegisterVoters(cd.getRegisterVoters()+p.getRegisteredVoters());
+                }
         }
     }
     
@@ -174,6 +180,7 @@ public class LoadNHData {
             HashMap<Party, Integer> votes = cd.getVotes();
             Set<Precinct> ps = cd.getPrecinct();
                 for (Precinct p : ps) {
+                    cd.setRegisterVoters(cd.getRegisterVoters()+p.getRegisteredVoters());
                     votes.put(Party.REPUBLICAN, votes.get(Party.REPUBLICAN) + p.getVotes().get(Party.REPUBLICAN));
                     votes.put(Party.DEMOCRATIC, votes.get(Party.DEMOCRATIC) + p.getVotes().get(Party.DEMOCRATIC));
                 }

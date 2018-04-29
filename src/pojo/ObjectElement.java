@@ -9,7 +9,7 @@ public enum ObjectElement {
     RACIALFAIRNESSWEIGHT(Integer.parseInt((PropertyManager.getInstance().getValue("objElement.RACIALFAIRNESSWEIGHT"))));
     private int weight;
     
-    ObjectElement(int weight){
+    private ObjectElement(int weight){
         this.weight=weight;
     }
     

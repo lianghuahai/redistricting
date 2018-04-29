@@ -34,6 +34,10 @@ public interface RSMapper {
     //
     public void saveCds(CDistrict cd);
     public void savePrecincts(Precinct p);
+    public void updatePrecinctField(String precinctCode, Integer rVotes, Integer dVotes);
+    public void updatePrecinctPopulation(Precinct precinct);
+    public int getPrecinctId(String precinctCode);
+    public void savePrecinctVotes(String pCode, int rVotes, int dVotes,int totalVoters,int registerVoters,int year);
     
     
     

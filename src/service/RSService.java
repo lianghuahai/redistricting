@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import pojo.CDistrict;
+import pojo.Party;
 import pojo.Precinct;
 import pojo.State;
 import pojo.User;
@@ -86,4 +87,27 @@ public class RSService {
     public boolean deleteState (String stateName){return true;}
     public boolean redistrict(String jsonData){return true;}
     public boolean findState (String stateID){return true;}
+
+    public void updatePrecinctField(Precinct precinct) {
+        System.out.println(precinct.getPrecinctCode()+","+precinct.getVotes().get(Party.REPUBLICAN)+","+precinct.getVotes().get(Party.REPUBLICAN));
+        rsMapper.updatePrecinctField(precinct.getPrecinctCode(),precinct.getVotes().get(Party.REPUBLICAN),precinct.getVotes().get(Party.DEMOCRATIC));
+    }
+
+    public void updatePrecinctPopulation(Precinct precinct) {
+        rsMapper.updatePrecinctPopulation(precinct);
+    }
+
+    public void updatePrecinctVotes(Precinct p) {
+        //1 R   2 D
+//        int pid = rsMapper.getPrecinctId(precinct.getPrecinctCode());
+//        if(pid!=0){
+        if(p.getPrecinctCode()==null){
+            System.out.println(p);
+        }
+        if(p.getPrecinctCode()!=null){
+            rsMapper.savePrecinctVotes(p.getPrecinctCode(),p.getVotes().get(Party.REPUBLICAN)
+                    ,p.getVotes().get(Party.DEMOCRATIC),p.getTotalVoters(),p.getRegisteredVoters(),2016);
+        }
+//        }
+    }
 }

@@ -23,7 +23,7 @@ public class State {
     private float populationVariance;
     private float currentGoodness;
     private double efficiencyGap;
-    private Constraints constraints;
+    private Preference constraints;
     private int stateId;
     private String sName;
     private float populationMean;
@@ -163,11 +163,11 @@ public class State {
         this.efficiencyGap = efficiencyGap;
     }
 
-    public Constraints getConstraints() {
+    public Preference getConstraints() {
         return constraints;
     }
 
-    public void setConstraints(Constraints constraints) {
+    public void setConstraints(Preference constraints) {
         this.constraints = constraints;
     }
 
@@ -251,18 +251,18 @@ public class State {
 
     public State clone() {
         State workingState = new State();
-        workingState.setName(name);
-        workingState.setPopulation(population);
-        workingState.setEfficiencyGap(efficiencyGap);
-        workingState.setFairness(fairness);
-        workingState.setCompactness(compactness);
-        workingState.setPopulationVariance(populationVariance);
-        workingState.setCurrentGoodness(currentGoodness);
-        workingState.setPreference(preference);
-        this.copyWinnerParty(winnerParty, workingState.getWinnerParty());
-        this.copyRace(race, workingState.getRace());
-        this.copyParty(votes, workingState.getVotes());
-        this.copyCDistricts(congressionalDistricts,workingState.getCongressionalDistricts());
+        workingState.setName(this.name);
+        workingState.setPopulation(this.population);
+        workingState.setEfficiencyGap(this.efficiencyGap);
+        workingState.setFairness(this.fairness);
+        workingState.setCompactness(this.compactness);
+        workingState.setPopulationVariance(this.populationVariance);
+        workingState.setCurrentGoodness(this.currentGoodness);
+        workingState.setPreference(this.preference);
+        this.copyWinnerParty(this.winnerParty, workingState.getWinnerParty());
+        this.copyRace(this.race, workingState.getRace());
+        this.copyParty(this.votes, workingState.getVotes());
+        this.copyCDistricts(this.congressionalDistricts,workingState.getCongressionalDistricts());
         return workingState;
     }
 
@@ -289,7 +289,10 @@ public class State {
         for (Precinct originalP : originalPrecincts) {
             Precinct workingP = new Precinct();
             workingP.setName(originalP.getName());
-            workingP.setState(originalP.getState());
+            workingP.setPrecinctCode(originalP.getPrecinctCode());
+            workingP.setRegisteredVoters(originalP.getRegisteredVoters());
+            workingP.setTotalVoters(originalP.getTotalVoters());
+            workingP.setState(originalP.getState()); 
             workingP.setPopulation(originalP.getPopulation());
             workingP.setIsBorder(originalP.getIsBorder());
             workingP.setIsFixed(originalP.getIsFixed());
@@ -305,18 +308,24 @@ public class State {
     }
 
     public void copyRace(HashMap<Race, Integer> originalRace, HashMap<Race, Integer> workingRace) {
-        for (Race precinctRace : originalRace.keySet()) {
-            workingRace.put(precinctRace, originalRace.get(precinctRace));
+        if(originalRace!=null){
+            for (Race precinctRace : originalRace.keySet()) {
+                workingRace.put(precinctRace, originalRace.get(precinctRace));
+            }
         }
     }
     public void copyWinnerParty(HashMap<Integer, Party> originalParty, HashMap<Integer, Party> destinationParty) {
-        for (int year : originalParty.keySet()) {
-            destinationParty.put(year, originalParty.get(year));
+        if(originalParty!=null){
+            for (int year : originalParty.keySet()) {
+                destinationParty.put(year, originalParty.get(year));
+            }
         }
     }
     public void copyParty(HashMap<Party, Integer> originalParty, HashMap<Party, Integer> workingParty) {
-        for (Party precinctParty : originalParty.keySet()) {
-            workingParty.put(precinctParty, originalParty.get(precinctParty));
+        if(originalParty!=null){
+            for (Party precinctParty : originalParty.keySet()) {
+                workingParty.put(precinctParty, originalParty.get(precinctParty));
+            }
         }
     }
 
