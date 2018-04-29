@@ -3,6 +3,7 @@ package pojo;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import pojo.mapJson.Feature;
@@ -194,14 +195,15 @@ public class CDistrict {
 
     public float calculateObjectiveFunction() {
         float goodness = 0;
-        goodness += ObjectElement.values()[0].getWeight() * calculateCompactness();
-        goodness += ObjectElement.values()[1].getWeight() * calculatePartisanFairness();
-        goodness += ObjectElement.values()[2].getWeight() * calculatePopulationVariance();
-        goodness += ObjectElement.values()[3].getWeight() * calculateRacialFairness();
+        Map<ObjectElement, Integer> objectElementMap = this.getState().getPreference().getObjectElementMap();
+        goodness += objectElementMap.get(ObjectElement.COMPACTNESSWEIGHT) * calculateCompactness();
+        goodness += objectElementMap.get(ObjectElement.PARTISANFAIRNESSWEIGHT) * calculatePartisanFairness();
+        goodness += objectElementMap.get(ObjectElement.POPULATIONVARIANCEWEIGHT) * calculatePopulationVariance();
+        goodness += objectElementMap.get(ObjectElement.RACIALFAIRNESSWEIGHT) * calculateRacialFairness();
         return goodness;
     }
 
-    private float calculateCompactness() {
+    public float calculateCompactness() {
         float compactness = 0;
         for (CompactnessElement element : CompactnessElement.values()) {
             compactness += element.getWeight() * element.calculate();
@@ -209,18 +211,18 @@ public class CDistrict {
         return compactness;
     }
 
-    private float calculatePartisanFairness() {
+    public float calculatePartisanFairness() {
         float pFairness = 0;
         return pFairness;
     }
 
-    private float calculatePopulationVariance() {
+    public float calculatePopulationVariance() {
         int numOfCDs = this.getState().getCongressionalDistricts().size();
-        float variance = (float) Math.sqrt(this.population - this.getState().getPopulationMean());
+        float variance = (float)Math.pow((double)(this.population - this.getState().getPopulationMean()),(double) 2);
         return variance/numOfCDs;
     }
 
-    private int calculateRacialFairness() {
+    public int calculateRacialFairness() {
         return 0;
     }
 

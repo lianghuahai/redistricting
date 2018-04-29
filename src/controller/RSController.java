@@ -94,16 +94,14 @@ public class RSController {
         System.out.println("redistrict");
 //            State originalState= (State) req.getSession().getAttribute(stateName+"originalState");
         State originalState= (State) req.getSession().getAttribute("originalState");
-        //测试colne state
-            State workingState= originalState.clone();
-       System.out.println(workingState.getCongressionalDistricts().size());     
-                Set<CDistrict> cds = workingState.getCongressionalDistricts();
-                for (CDistrict cDistrict : cds) {
-                    Set<Precinct> precinct = cDistrict.getPrecinct();
-                        for (Precinct p : precinct) {
-                            System.out.println(p.getPrecinctCode()+","+p.getName()+","+p.getPopulation()+","+p.getRegisteredVoters()+","+p.getTotalVoters()+","+p.getVote().get("REPUBLICAN")+","+","+p.getVote().get("DEMOCRATIC"));
-                    }
-                }
+        State workingState= originalState.clone();
+        workingState.setPreference(preference);
+        Set<CDistrict> cds = workingState.getCongressionalDistricts();
+        for (CDistrict cDistrict : cds) {
+            float pv = cDistrict.calculatePopulationVariance();
+           // System.out.println(pv);
+        }
+        //测试object function
             
             
 //            Precinct movedPrecinct = workingState.startAlgorithm();

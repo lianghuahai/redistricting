@@ -14,8 +14,6 @@ public class JunitTest {
 //        String a =configuration.getValue("state.maxTime");
         State state = new State();
         System.out.println(state.getMAXRUNTIME());
-        HashMap<ObjectElement, Integer> preference = state.getPreference();
-        System.out.println(preference.get(ObjectElement.COMPACTNESSWEIGHT));
         System.out.println(ObjectElement.COMPACTNESSWEIGHT.getWeight());
         System.out.println(ObjectElement.PARTISANFAIRNESSWEIGHT.getWeight());
         System.out.println(ObjectElement.POPULATIONVARIANCEWEIGHT.getWeight());

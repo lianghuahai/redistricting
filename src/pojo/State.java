@@ -11,12 +11,12 @@ public class State {
     private final int MAXRUNTIME = Integer.parseInt((PropertyManager.getInstance().getValue("state.MAXRUNTIME")));
     private final double MINGOODNESS = Double.parseDouble((PropertyManager.getInstance().getValue("state.MINGOODNESS")));
     private StateName name;
-    private HashMap<Integer, Party> winnerParty;
+    private HashMap<Integer, Party> winnerParty = new HashMap<Integer, Party>();
     private Set<CDistrict> congressionalDistricts = new HashSet<CDistrict>();
     private long population;
     private HashMap<Race, Integer> race = new HashMap<Race, Integer>();
     private HashMap<Party, Integer> votes = new HashMap<Party, Integer>();
-    private HashMap<ObjectElement, Integer> preference = new HashMap<ObjectElement, Integer>();
+    private Preference preference = new Preference();
     private int redistrictTimes;
     private float fairness;
     private float compactness;
@@ -66,15 +66,12 @@ public class State {
     public void setName(StateName name) {
         this.name = name;
     }
-
-    public HashMap<ObjectElement, Integer> getPreference() {
+    public Preference getPreference() {
         return preference;
     }
-
-    public void setPreference(HashMap<ObjectElement, Integer> preference) {
+    public void setPreference(Preference preference) {
         this.preference = preference;
     }
-
     public Set<CDistrict> getCongressionalDistricts() {
         return congressionalDistricts;
     }
@@ -208,7 +205,7 @@ public class State {
         selectedPrecinct.setCDistrict(destinationCD);
         selectedPrecinct.setOriginCDistrict(originCD);
         if (!isValidConstraints()) {
-        		destinationCD.removePrecinct(selectedPrecinct);
+            destinationCD.removePrecinct(selectedPrecinct);
             originCD.addPrecinct(selectedPrecinct);
             selectedPrecinct.setCDistrict(originCD);
             return false;
@@ -251,44 +248,45 @@ public class State {
 
     public State clone() {
         State workingState = new State();
-        workingState.setName(this.name);
         workingState.setPopulation(this.population);
+        workingState.setName(this.name);
+        workingState.setPopulationMean(this.getPopulation()/this.getCongressionalDistricts().size());
         workingState.setEfficiencyGap(this.efficiencyGap);
         workingState.setFairness(this.fairness);
         workingState.setCompactness(this.compactness);
         workingState.setPopulationVariance(this.populationVariance);
         workingState.setCurrentGoodness(this.currentGoodness);
-        workingState.setPreference(this.preference);
         this.copyWinnerParty(this.winnerParty, workingState.getWinnerParty());
         this.copyRace(this.race, workingState.getRace());
         this.copyParty(this.votes, workingState.getVotes());
-        this.copyCDistricts(this.congressionalDistricts,workingState.getCongressionalDistricts());
+        this.copyCDistricts(this.congressionalDistricts,workingState.getCongressionalDistricts(),workingState);
         return workingState;
     }
 
-    private void copyCDistricts(Set<CDistrict> originalCDs,Set<CDistrict> destinationCDs) {
+    private void copyCDistricts(Set<CDistrict> originalCDs,Set<CDistrict> destinationCDs,State workingState) {
         for (CDistrict originalCD : originalCDs) {
             CDistrict destinationCD = new CDistrict();
+            destinationCD.setState(workingState);
             destinationCD.setName(originalCD.getName());
-            destinationCD.setState(originalCD.getState());
             destinationCD.setPopulation(originalCD.getPopulation());
             destinationCD.setCurrentGoodness(originalCD.getCurrentGoodness());
             this.copyWinnerParty(winnerParty, destinationCD.getWinnerParty());
             this.copyRace(originalCD.getRace(), destinationCD.getRace());
             this.copyParty(originalCD.getVotes(), destinationCD.getVotes());
-            this.copyPrecincts(originalCD.getPrecinct(),destinationCD.getPrecinct(),destinationCD);
+            this.copyPrecincts(originalCD.getPrecinct(),destinationCD.getPrecinct(),destinationCD,workingState);
             //ToDo  - map: Set<MapData>
             //ToDo - boundaryPrecincts: Set<Precinct>
             destinationCDs.add(destinationCD);
         }
-        
+        workingState.setCongressionalDistricts(destinationCDs);
     }
 
     private void copyPrecincts(Set<Precinct> originalPrecincts, Set<Precinct> destinationPrecincts,
-            CDistrict destinationCD) {
+            CDistrict destinationCD,State workingState) {
         for (Precinct originalP : originalPrecincts) {
             Precinct workingP = new Precinct();
             workingP.setName(originalP.getName());
+            workingP.setState(workingState);
             workingP.setPrecinctCode(originalP.getPrecinctCode());
             workingP.setRegisteredVoters(originalP.getRegisteredVoters());
             workingP.setTotalVoters(originalP.getTotalVoters());
@@ -368,7 +366,6 @@ public class State {
         CDistrict cd2 = getCdByName("cd2");
         for (Feature feature : features) {
             if(feature.getProperties().getCD115FP().equals("01")){
-                System.out.println(cd1.getPopulation());
                 feature.getProperties().setPOPULATION(cd1.getPopulation());
                 feature.getProperties().setFill(PropertyManager.getInstance().getValue("color"+feature.getProperties().getCD115FP()));
                 feature.getProperties().setRVOTES(cd1.getVotes().get(Party.REPUBLICAN));
