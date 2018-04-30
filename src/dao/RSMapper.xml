@@ -91,9 +91,16 @@
 	<select id="getPrecinctId" parameterType="String" resultType="int">
 		select IFNULL(MAX(pid),0) pid from precinct where pCode=#{precinctCode}
 	</select>
+	<select id="getNeighborsCode" parameterType="String" resultType="String">
+		SELECT neighborCode FROM neighbors WHERE pCode = #{pCode,jdbcType=VARCHAR}
+	</select>
 	<insert id="savePrecinctVotes" >
 			INSERT INTO vote (pCode,rVotes,dVotes,totalVoters,registerVoters,year) VALUES
 			(#{0},#{1},#{2},#{3},#{4},#{5})
+	</insert>
+	<insert id="saveNeighbors" >
+			INSERT INTO neighbors(pCode,neighborCode) VALUES
+			(#{0},#{1})
 	</insert>
 
 

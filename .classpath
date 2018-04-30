@@ -44,5 +44,12 @@
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/gson-2.2.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/ojdbc6-11.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/java-json.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/geotools-main-1.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/geotools-geoapi-1.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/geotools_r.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/geotools-vecmath-1.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/geotools-units-1.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/geotools-epsg-hsql-2.1.1_gvsig.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/gt-geometry-19.0.jar"/>
 	<classpathentry kind="output" path="WebRoot/WEB-INF/classes"/>
 </classpath>

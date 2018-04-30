@@ -2,6 +2,7 @@ package pojo;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import pojo.mapJson.Feature;
@@ -172,10 +173,13 @@ public class State {
     public Precinct startAlgorithm() {
         this.redistrictTimes++;
         Precinct  startedPrecinct = this.selectStartPrecinct();
+        System.out.println(startedPrecinct.getName()+","+startedPrecinct.getCDistrict().getName());
         CDistrict neighborCD    = startedPrecinct.getRandomNeighborCDistrict();
         if(this.tryMove(startedPrecinct,neighborCD)){
+            System.out.println("move");
             return startedPrecinct;
         }else{
+            System.out.println("no move");
             return null;
         }
     }
@@ -211,7 +215,7 @@ public class State {
             return false;
         }
         if(validateGoodnessImprovement(originCD,destinationCD)){
-        		destinationCD.removePrecinct(selectedPrecinct);
+            destinationCD.removePrecinct(selectedPrecinct);
             originCD.addPrecinct(selectedPrecinct);
             selectedPrecinct.setCDistrict(originCD);
             return false;
@@ -222,6 +226,8 @@ public class State {
     private boolean validateGoodnessImprovement(CDistrict originCD, CDistrict destinationCD) {
         float newGoodnessOCD = originCD.calculateObjectiveFunction();
         float newGoodnessDCD = destinationCD.calculateObjectiveFunction();
+        System.out.println(newGoodnessOCD);
+        System.out.println(newGoodnessDCD);
         float goodnessDiff= originCD.getGoodnessDiff(newGoodnessOCD) + destinationCD.getGoodnessDiff(newGoodnessDCD);
         if(goodnessDiff > 0){
             originCD.setCurrentGoodness(newGoodnessOCD);
@@ -296,6 +302,7 @@ public class State {
             workingP.setIsFixed(originalP.getIsFixed());
             workingP.setCDistrict(destinationCD);
             workingP.setMap(originalP.getMap());
+            workingP.setFeature(originalP.getFeature());
             this.copyRace(originalP.getRace(), workingP.getRace());
             this.copyParty(originalP.getVotes(), workingP.getVotes());
             //Todo - neighborPrecinctList: Set<Precinct>
@@ -386,4 +393,5 @@ public class State {
         }
         return null;
     }
+    
 }

@@ -38,6 +38,29 @@ public class LoadNHData {
     public void test() throws Exception{
         State workingState = getState();
     }
+    @Test
+    public ArrayList<ArrayList<String>> loadNeighbors() throws Exception{
+        File file = new File(path+"/"+"NH_candidateNeighbors_v2(1).txt");
+//        File file = new File("NH_candidateNeighbors_v2(1).txt");
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        ArrayList<String> pList = new ArrayList<String>();
+        ArrayList<String> neighborList = new ArrayList<String>();
+        String st;
+        int i=1;
+        while ((st = br.readLine()) != null){
+            if(i%2==1){
+                pList.add(st);
+            }else{
+                neighborList.add(st);
+            }
+            i++;
+        }
+        ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+        list.add(pList);
+        list.add(neighborList);
+        return list;
+        
+    }
     //cd2 647464   cd1 669006
     public State getState() throws Exception{
         State workingState = new State();

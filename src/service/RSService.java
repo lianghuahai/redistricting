@@ -98,9 +98,6 @@ public class RSService {
     }
 
     public void updatePrecinctVotes(Precinct p) {
-        //1 R   2 D
-//        int pid = rsMapper.getPrecinctId(precinct.getPrecinctCode());
-//        if(pid!=0){
         if(p.getPrecinctCode()==null){
             System.out.println(p);
         }
@@ -108,6 +105,21 @@ public class RSService {
             rsMapper.savePrecinctVotes(p.getPrecinctCode(),p.getVotes().get(Party.REPUBLICAN)
                     ,p.getVotes().get(Party.DEMOCRATIC),p.getTotalVoters(),p.getRegisteredVoters(),2016);
         }
-//        }
+    }
+    
+    public void saveNeighbors(String string, String string2) {
+        rsMapper.saveNeighbors(string,string2);
+    }
+    public void setUpNeighbors(State workingState) {
+        Set<CDistrict> cds = workingState.getCongressionalDistricts();
+        for (CDistrict cd : cds) {
+            Set<Precinct> precincts = cd.getPrecinct();
+            for (Precinct precinct : precincts) {
+                    List<String> neighbors = rsMapper.getNeighborsCode(precinct.getPrecinctCode());
+                    System.out.println(neighbors);
+                    break;
+            }
+        }
+        
     }
 }

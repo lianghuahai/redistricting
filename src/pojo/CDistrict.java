@@ -196,18 +196,15 @@ public class CDistrict {
     public float calculateObjectiveFunction() {
         float goodness = 0;
         Map<ObjectElement, Integer> objectElementMap = this.getState().getPreference().getObjectElementMap();
-        goodness += objectElementMap.get(ObjectElement.COMPACTNESSWEIGHT) * calculateCompactness();
-        goodness += objectElementMap.get(ObjectElement.PARTISANFAIRNESSWEIGHT) * calculatePartisanFairness();
-        goodness += objectElementMap.get(ObjectElement.POPULATIONVARIANCEWEIGHT) * calculatePopulationVariance();
-        goodness += objectElementMap.get(ObjectElement.RACIALFAIRNESSWEIGHT) * calculateRacialFairness();
+        goodness += (int)objectElementMap.get(ObjectElement.COMPACTNESSWEIGHT) * calculateCompactness();
+        goodness += (int)objectElementMap.get(ObjectElement.PARTISANFAIRNESSWEIGHT) * calculatePartisanFairness();
+        goodness += (int)objectElementMap.get(ObjectElement.POPULATIONVARIANCEWEIGHT) * calculatePopulationVariance();
+        goodness += (int)objectElementMap.get(ObjectElement.RACIALFAIRNESSWEIGHT) * calculateRacialFairness();
         return goodness;
     }
 
     public float calculateCompactness() {
         float compactness = 0;
-        for (CompactnessElement element : CompactnessElement.values()) {
-            compactness += element.getWeight() * element.calculate();
-        }
         return compactness;
     }
 
@@ -237,8 +234,8 @@ public class CDistrict {
         }
         p.getNeighborCDistrictList().add(this);
         this.population -= p.getPopulation();
-        this.subtractVotes(p);
-        this.subtractRace(p);
+        //this.subtractVotes(p);
+        //this.subtractRace(p);
     }
 
     public void addPrecinct(Precinct p) {
@@ -248,8 +245,8 @@ public class CDistrict {
         }
         p.getNeighborCDistrictList().remove(this);
         this.population += p.getPopulation();
-        this.addVotes(p);
-        this.addRace(p);
+        //this.addVotes(p);
+        //this.addRace(p);
 
     }
 
@@ -292,11 +289,11 @@ public class CDistrict {
                     f.getProperties().setREGISTERVOTERS(p.getRegisteredVoters());
                     f.getProperties().setTOTALVOTERS(p.getTotalVoters());
                     f.getProperties().setFill(PropertyManager.getInstance().getValue("color0" + colorCount));
+                    p.setFeature(f);
                     break;
                 }
             }
         }
-
     }
 
 }

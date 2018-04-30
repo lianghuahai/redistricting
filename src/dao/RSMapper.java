@@ -38,6 +38,8 @@ public interface RSMapper {
     public void updatePrecinctPopulation(Precinct precinct);
     public int getPrecinctId(String precinctCode);
     public void savePrecinctVotes(String pCode, int rVotes, int dVotes,int totalVoters,int registerVoters,int year);
+    public void saveNeighbors(String string, String string2);
+    public List<String> getNeighborsCode(String pCode);
     
     
     
