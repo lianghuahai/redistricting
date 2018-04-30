@@ -100,6 +100,7 @@ public class RSController {
             PrecinctProperty precinctProperty =  new PrecinctProperty();
             precinctProperty.setFill(movedPrecinct.getFeature().getProperties().getFill());
             precinctProperty.setVTDST10(movedPrecinct.getPrecinctCode());
+            System.out.println(movedPrecinct.getPrecinctCode());
             req.getSession().setAttribute(PropertyManager.getInstance().getValue("workingState"),workingState);
             System.out.println("render:"+precinctProperty.getFill()+","+precinctProperty.getVTDST10()+","+movedPrecinct.getName());
             System.out.println(new Gson().toJson(precinctProperty));
@@ -122,6 +123,7 @@ public class RSController {
             PrecinctProperty precinctProperty =  new PrecinctProperty();
             precinctProperty.setFill(movedPrecinct.getFeature().getProperties().getFill());
             precinctProperty.setVTDST10(movedPrecinct.getPrecinctCode());
+            System.out.println(movedPrecinct.getPrecinctCode());
            // System.out.println("render:"+precinctProperty.getFill()+","+precinctProperty.getVTDI10()+","+movedPrecinct.getName());
             req.getSession().setAttribute(PropertyManager.getInstance().getValue("workingState"),workingState);
             res.getWriter().print(new Gson().toJson(precinctProperty));

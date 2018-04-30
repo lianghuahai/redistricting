@@ -7,7 +7,7 @@ public class PrecinctProperty {
         return VTDST10;
     }
     public void setVTDST10(String VTDST10) {
-        VTDST10 = VTDST10;
+        this.VTDST10 = VTDST10;
     }
     public String getFill() {
         return fill;
