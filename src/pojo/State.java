@@ -358,6 +358,16 @@ public class State {
     private boolean checkContiguityConstraints() {
         return true;
     }
+    public void setupNeighbors(Precinct targetPrecinct,List<String> neighbors) {
+        Set<CDistrict> cds = this.getCongressionalDistricts();
+        for (String neighborPrecinctCode : neighbors) {
+            for (CDistrict cDistrict : cds) {
+                if(cDistrict.foundNeighborPrecinct(targetPrecinct,neighborPrecinctCode)){
+                    break;
+                }
+            }
+        }
+    }
     
     public void initialStateByNumOfCDs( int NumOfCDs){
         Set<CDistrict> cds = this.getCongressionalDistricts();
@@ -393,5 +403,6 @@ public class State {
         }
         return null;
     }
+    
     
 }

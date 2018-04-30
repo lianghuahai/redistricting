@@ -92,7 +92,14 @@ public class RSController {
 //            State originalState= (State) req.getSession().getAttribute(stateName+"originalState");
         State originalState= (State) req.getSession().getAttribute("originalState");
         State workingState= originalState.clone();
-        rsService.setUpNeighbors(workingState);
+        rsService.findNeighbors(workingState);
+        Set<CDistrict> cds = workingState.getCongressionalDistricts();
+        for (CDistrict cDistrict : cds) {
+            Set<Precinct> precincts = cDistrict.getPrecinct();
+            for (Precinct precinct : precincts) {
+                System.out.println(precinct.getPrecinctCode()+","+precinct.getName()+":"+precinct.getNeighborPrecincts().size());
+            }
+        }
         /*
         preference= new Preference();
         preference.getObjectElementMap().put(ObjectElement.COMPACTNESSWEIGHT, 0);

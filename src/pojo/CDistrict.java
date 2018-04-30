@@ -3,6 +3,7 @@ package pojo;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -294,6 +295,17 @@ public class CDistrict {
                 }
             }
         }
+    }
+
+    public boolean foundNeighborPrecinct(Precinct targetPrecinct,String neighborPrecinctCode) {
+        Set<Precinct> precincts = this.getPrecinct();
+        for (Precinct precinct : precincts) {
+            if(neighborPrecinctCode.equals(targetPrecinct.getPrecinctCode())){
+                targetPrecinct.addNeighborPrecinct(precinct);
+                return true;
+            }
+        }
+        return false;
     }
 
 }
