@@ -367,8 +367,15 @@ public class State {
                 }
             }
         }
+        setupBoundaryPrecincts();
     }
     
+    private void setupBoundaryPrecincts() {
+        for (CDistrict cDistrict : this.congressionalDistricts) {
+            cDistrict.setupBoundaryPrecincts();
+        }
+        
+    }
     public void initialStateByNumOfCDs( int NumOfCDs){
         Set<CDistrict> cds = this.getCongressionalDistricts();
         for (int a = 1; a <= NumOfCDs; a++) {

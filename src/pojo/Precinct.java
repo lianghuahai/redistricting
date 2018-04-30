@@ -25,6 +25,7 @@ public class Precinct {
     private Set<Precinct> neighborPrecincts = new HashSet<Precinct>();
     private Set<CDistrict> neighborCDistricts = new HashSet<CDistrict>();
     private  Feature feature = new Feature();
+    int cdistrictId;
     //getter and setter
     public String getName() {
         return name;
@@ -44,6 +45,14 @@ public class Precinct {
     public Feature getFeature() {
         return feature;
     }
+    
+    public int getCdistrictId() {
+        return cdistrictId;
+    }
+    public void setCdistrictId(int cdistrictId) {
+        this.cdistrictId = cdistrictId;
+    }
+
     private HashMap<String, Integer> vote =  new HashMap<String, Integer>();
     public HashMap<String, Integer> getVote() {
         return vote;
@@ -142,19 +151,6 @@ public class Precinct {
     public void setIsBorder(boolean isBorder) {
         this.isBorder = isBorder;
     }
-    public Set<Precinct> getNeighborPrecinctList() {
-        return neighborPrecincts;
-    }
-    public void setNeighborPrecinctList(Set<Precinct> neighborPrecincts) {
-        this.neighborPrecincts = neighborPrecincts;
-    }
-    public Set<CDistrict> getNeighborCDistrictList() {
-        return neighborCDistricts;
-    }
-    public void setNeighborCDistrictList(Set<CDistrict> neighborCDistricts) {
-        this.neighborCDistricts = neighborCDistricts;
-    }
-    
   
     @Override
     public String toString() {

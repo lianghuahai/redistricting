@@ -300,12 +300,26 @@ public class CDistrict {
     public boolean foundNeighborPrecinct(Precinct targetPrecinct,String neighborPrecinctCode) {
         Set<Precinct> precincts = this.getPrecinct();
         for (Precinct precinct : precincts) {
-            if(neighborPrecinctCode.equals(targetPrecinct.getPrecinctCode())){
-                targetPrecinct.addNeighborPrecinct(precinct);
+            if(neighborPrecinctCode.equals(precinct.getPrecinctCode())){
+                targetPrecinct.getNeighborPrecincts().add(precinct);
                 return true;
             }
         }
         return false;
+    }
+
+    public void setupBoundaryPrecincts() {
+        for (Precinct precinct : this.getPrecinct()) {
+            if(precinct.getNeighborPrecincts()!=null){
+                for (Precinct neighborPrecincts : precinct.getNeighborPrecincts()) {
+                    if(!precinct.getCDistrict().getName().equals(neighborPrecincts.getCDistrict().getName())){
+                        this.getBoundaryPrecincts().add(neighborPrecincts);
+                        precinct.getNeighborCDistricts().add(neighborPrecincts.getCDistrict());
+                    }
+                }
+            }
+        }
+        
     }
 
 }

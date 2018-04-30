@@ -88,19 +88,12 @@ public class RSController {
     
     @RequestMapping("redistrict")
     public void redistrict(String stateName,String userEmail,Preference preference,HttpServletRequest req, HttpServletResponse res) throws IOException{
-        System.out.println("redistrict");
+        System.out.println("------------redistrict--------------");
 //            State originalState= (State) req.getSession().getAttribute(stateName+"originalState");
         State originalState= (State) req.getSession().getAttribute("originalState");
         State workingState= originalState.clone();
         rsService.findNeighbors(workingState);
-        Set<CDistrict> cds = workingState.getCongressionalDistricts();
-        for (CDistrict cDistrict : cds) {
-            Set<Precinct> precincts = cDistrict.getPrecinct();
-            for (Precinct precinct : precincts) {
-                System.out.println(precinct.getPrecinctCode()+","+precinct.getName()+":"+precinct.getNeighborPrecincts().size());
-            }
-        }
-        /*
+        
         preference= new Preference();
         preference.getObjectElementMap().put(ObjectElement.COMPACTNESSWEIGHT, 0);
         preference.getObjectElementMap().put(ObjectElement.POPULATIONVARIANCEWEIGHT, 1);
@@ -108,34 +101,6 @@ public class RSController {
         preference.getObjectElementMap().put(ObjectElement.RACIALFAIRNESSWEIGHT, 0);
         workingState.setPreference(preference);
         //测试object function
-        Set<CDistrict> cds = workingState.getCongressionalDistricts();
-        CDistrict cd1 = new CDistrict();
-        CDistrict cd2 = new CDistrict();
-        for (CDistrict cDistrict : cds) {
-            if(cDistrict.getName().equals("cd1")){
-                cd1 = cDistrict;
-            }else{
-                cd2 = cDistrict;
-              }
-        }
-        for (CDistrict cDistrict : cds) {
-            Set<Precinct> precinct = cDistrict.getPrecinct();
-            if(cDistrict.getName().equals("cd1")){
-                for (Precinct p : precinct) {
-                    cDistrict.getBoundaryPrecincts().add(p);
-                    p.getNeighborCDistrictList().add(cd2);
-                    break;
-                }
-            }else{
-                for (Precinct p : precinct) {
-                    cDistrict.getBoundaryPrecincts().add(p);
-                    p.getNeighborCDistrictList().add(cd1);
-                    break;
-                }
-            }
-            break;
-        }
-        
         Precinct movedPrecinct = workingState.startAlgorithm();
         if(!workingState.checkTermination()){
             while(movedPrecinct==null){
@@ -148,19 +113,12 @@ public class RSController {
             res.getWriter().print(new Gson().toJson(precinctProperty));
         }else{
             System.out.println("null----------------");
-           // res.getWriter().print(new Gson().toJson("{terminated:true}"));
+            res.getWriter().print(new Gson().toJson("{terminated:true}"));
         }
-            
-            
-        
-            req.getSession().setAttribute("workingState",originalState);          */
-//            PrecinctProperty precinctProperty =  new PrecinctProperty();
-//            precinctProperty.setFill("#f3370f");
-//            precinctProperty.setVTDI10("A");
-//            res.getWriter().print(new Gson().toJson(precinctProperty));
     }
     @RequestMapping("process")
     public void process(String userEmail,HttpServletRequest req, HttpServletResponse res) throws IOException{
+        System.out.println("--------------process-----------------");
         State workingState = (State) req.getSession().getAttribute("workingState");
         Precinct movedPrecinct = workingState.startAlgorithm();
         if(!workingState.checkTermination()){

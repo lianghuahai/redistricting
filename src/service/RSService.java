@@ -111,16 +111,18 @@ public class RSService {
         rsMapper.saveNeighbors(string,string2);
     }
     public void findNeighbors(State workingState) {
+        int count=0;
         Set<CDistrict> cds = workingState.getCongressionalDistricts();
         for (CDistrict cd : cds) {
             Set<Precinct> precincts = cd.getPrecinct();
             for (Precinct precinct : precincts) {
                 List<String> neighbors = rsMapper.getNeighborsCode(precinct.getPrecinctCode());
                 if(neighbors.size()>0){
+                    count++;
                     workingState.setupNeighbors(precinct,neighbors);
                 }
             }
         }
-        
+        System.out.println("几个precinct"+count);
     }
 }

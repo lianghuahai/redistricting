@@ -63,6 +63,7 @@
 				<result column="registerVoters" property="registeredVoters"/>
 				<result column="totalVoters" property="totalVoters"/>
 				<result column="pp" property="population"/>
+				<result column="cdistrictId" property="cdistrictId"/>
 				<collection property="vote" ofType="java.util.HashMap">
 					<result column="rVotes" property="REPUBLICAN" />
 					<result column="dVotes" property="DEMOCRATIC"/>
@@ -74,7 +75,7 @@
 		SELECT COUNT(*) FROM cdistrict
 	</select>
 	<select id="getCdById" parameterType="int" resultMap="Precincts">
-		SELECT p.pCode,p.pName ,v.registerVoters,v.totalVoters,v.rVotes,v.dVotes, p.population AS pp, cid,cdName ,c.population AS cp
+		SELECT p.pCode,p.cdistrictId,p.pName ,v.registerVoters,v.totalVoters,v.rVotes,v.dVotes, p.population AS pp, cid,cdName ,c.population AS cp
 		FROM precinct AS p, cdistrict AS c, vote AS v
 		WHERE p.cdistrictId=#{id} AND p.cdistrictId=c.cid AND v.pCode=p.pCode
 	
