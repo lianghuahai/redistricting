@@ -1,13 +1,13 @@
 package pojo;
 
 public class PrecinctProperty {
-    private String VTDI10;
+    private String VTDST10;
     private String fill;
-    public String getVTDI10() {
-        return VTDI10;
+    public String getVTDST10() {
+        return VTDST10;
     }
-    public void setVTDI10(String vTDI10) {
-        VTDI10 = vTDI10;
+    public void setVTDST10(String VTDST10) {
+        VTDST10 = VTDST10;
     }
     public String getFill() {
         return fill;

@@ -89,7 +89,6 @@ public class RSService {
     public boolean findState (String stateID){return true;}
 
     public void updatePrecinctField(Precinct precinct) {
-        System.out.println(precinct.getPrecinctCode()+","+precinct.getVotes().get(Party.REPUBLICAN)+","+precinct.getVotes().get(Party.REPUBLICAN));
         rsMapper.updatePrecinctField(precinct.getPrecinctCode(),precinct.getVotes().get(Party.REPUBLICAN),precinct.getVotes().get(Party.DEMOCRATIC));
     }
 
@@ -98,9 +97,6 @@ public class RSService {
     }
 
     public void updatePrecinctVotes(Precinct p) {
-        if(p.getPrecinctCode()==null){
-            System.out.println(p);
-        }
         if(p.getPrecinctCode()!=null){
             rsMapper.savePrecinctVotes(p.getPrecinctCode(),p.getVotes().get(Party.REPUBLICAN)
                     ,p.getVotes().get(Party.DEMOCRATIC),p.getTotalVoters(),p.getRegisteredVoters(),2016);
@@ -111,18 +107,16 @@ public class RSService {
         rsMapper.saveNeighbors(string,string2);
     }
     public void findNeighbors(State workingState) {
-        int count=0;
         Set<CDistrict> cds = workingState.getCongressionalDistricts();
         for (CDistrict cd : cds) {
             Set<Precinct> precincts = cd.getPrecinct();
             for (Precinct precinct : precincts) {
                 List<String> neighbors = rsMapper.getNeighborsCode(precinct.getPrecinctCode());
                 if(neighbors.size()>0){
-                    count++;
                     workingState.setupNeighbors(precinct,neighbors);
                 }
             }
         }
-        System.out.println("几个precinct"+count);
+        workingState.setupBoundaryPrecincts();
     }
 }

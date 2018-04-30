@@ -42,6 +42,8 @@ public class CDistrict {
     // setter and getter
     private int stateId;
 
+    private String color;
+
     public String getName() {
         return name;
     }
@@ -66,6 +68,14 @@ public class CDistrict {
 
     public State getState() {
         return state;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public int getRegisterVoters() {
@@ -183,14 +193,17 @@ public class CDistrict {
 
     public Precinct getRandomBoundaryPrecinct() {
         int length = this.boundaryPrecincts.size();
+        System.out.println("length"+length);
         int index = (int) ((length) * Math.random());
         int i = 0;
         for (Precinct precinct : boundaryPrecincts) {
             if (i == index) {
+                System.out.println("return precinct");
                 return precinct;
             }
             i++;
         }
+        System.out.println("return null precinct");
         return null;
     }
 
@@ -233,7 +246,7 @@ public class CDistrict {
         if (p.getIsBorder()) {
             this.boundaryPrecincts.remove(p);
         }
-        p.getNeighborCDistrictList().add(this);
+        p.getNeighborCDistricts().add(this);
         this.population -= p.getPopulation();
         //this.subtractVotes(p);
         //this.subtractRace(p);
@@ -244,7 +257,7 @@ public class CDistrict {
         if (p.getIsBorder()) {
             this.boundaryPrecincts.add(p);
         }
-        p.getNeighborCDistrictList().remove(this);
+        p.getNeighborCDistricts().remove(this);
         this.population += p.getPopulation();
         //this.addVotes(p);
         //this.addRace(p);
@@ -291,6 +304,7 @@ public class CDistrict {
                     f.getProperties().setTOTALVOTERS(p.getTotalVoters());
                     f.getProperties().setFill(PropertyManager.getInstance().getValue("color0" + colorCount));
                     p.setFeature(f);
+                    this.setColor(f.getProperties().getFill());
                     break;
                 }
             }
@@ -310,16 +324,17 @@ public class CDistrict {
 
     public void setupBoundaryPrecincts() {
         for (Precinct precinct : this.getPrecinct()) {
-            if(precinct.getNeighborPrecincts()!=null){
+            if(precinct.getNeighborPrecincts().size()!=0){
                 for (Precinct neighborPrecincts : precinct.getNeighborPrecincts()) {
                     if(!precinct.getCDistrict().getName().equals(neighborPrecincts.getCDistrict().getName())){
-                        this.getBoundaryPrecincts().add(neighborPrecincts);
+                        this.getBoundaryPrecincts().add(precinct);
                         precinct.getNeighborCDistricts().add(neighborPrecincts.getCDistrict());
+                        precinct.setIsBorder(true);
+                        break;
                     }
                 }
             }
         }
-        
     }
 
 }
