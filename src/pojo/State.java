@@ -1,5 +1,6 @@
 package pojo;
 
+import java.io.ObjectOutputStream.PutField;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +18,7 @@ public class State {
     private long population;
     private HashMap<Race, Integer> race = new HashMap<Race, Integer>();
     private HashMap<Party, Integer> votes = new HashMap<Party, Integer>();
+    private HashMap<String, Integer> vote = new HashMap<String, Integer>();
     private Preference preference = new Preference();
     private int redistrictTimes;
     private float fairness;
@@ -29,6 +31,11 @@ public class State {
     private String sName;
     private float populationMean;
     private boolean isTerminated;
+    private double aveIncome;
+    private int numOfCds;
+    private int numOfPrecincts;
+    private double area;
+    
     
     public State(){
         super();
@@ -43,6 +50,12 @@ public class State {
         return MINGOODNESS;
     }
 
+    public HashMap<String, Integer> getVote() {
+        return vote;
+    }
+    public void setVote(HashMap<String, Integer> vote) {
+        this.vote = vote;
+    }
     public float getPopulationMean() {
         return populationMean;
     }
@@ -57,6 +70,30 @@ public class State {
         return sName;
     }
     
+    public double getAveIncome() {
+        return aveIncome;
+    }
+    public void setAveIncome(double aveIncome) {
+        this.aveIncome = aveIncome;
+    }
+    public int getNumOfCds() {
+        return numOfCds;
+    }
+    public void setNumOfCds(int numOfCds) {
+        this.numOfCds = numOfCds;
+    }
+    public int getNumOfPrecincts() {
+        return numOfPrecincts;
+    }
+    public void setNumOfPrecincts(int numOfPrecincts) {
+        this.numOfPrecincts = numOfPrecincts;
+    }
+    public double getArea() {
+        return area;
+    }
+    public void setArea(double area) {
+        this.area = area;
+    }
     public boolean getIsTerminated() {
         return isTerminated;
     }
@@ -180,13 +217,13 @@ public class State {
     // methods to be implemented
     public Precinct startAlgorithm() {
         this.redistrictTimes++;
-        System.out.println("redistrictTimes"+redistrictTimes);
         Precinct  startedPrecinct = this.selectStartPrecinct();
         CDistrict neighborCD    = startedPrecinct.getRandomNeighborCDistrict();
         if(this.tryMove(startedPrecinct,neighborCD)){
-            System.out.println(startedPrecinct.getName()+","+startedPrecinct.getFeature().getProperties().getFill()+","+startedPrecinct.getPrecinctCode());
+            //System.out.println("move :"+redistrictTimes);
             return startedPrecinct;
         }else{
+            //System.out.println("cant move :"+redistrictTimes);
             return null;
         }
     }
@@ -197,7 +234,7 @@ public class State {
         return startedPrecinct;
     }
 
-    private CDistrict getLowestGoodnessCDistrict() {
+    public CDistrict getLowestGoodnessCDistrict() {
         float minGoodness = Float.MAX_VALUE;
         CDistrict cd = new CDistrict();
         for (CDistrict cDistrict : congressionalDistricts) {
@@ -215,40 +252,49 @@ public class State {
         destinationCD.addPrecinct(selectedPrecinct);
         selectedPrecinct.setCDistrict(destinationCD);
         selectedPrecinct.setOriginCDistrict(originCD);
-        System.out.println("开始updata"+selectedPrecinct.getFeature().getProperties().getFill()+selectedPrecinct.getName()+selectedPrecinct.getPrecinctCode());
         this.updateTwoCdsProperties(selectedPrecinct,originCD,destinationCD);
-        if (!isValidConstraints()) {
-            destinationCD.removePrecinct(selectedPrecinct);
-            originCD.addPrecinct(selectedPrecinct);
-            selectedPrecinct.setCDistrict(originCD);
-            this.updateTwoCdsProperties(selectedPrecinct,destinationCD,originCD);
-            return false;
-        }
         if(!validateGoodnessImprovement(originCD,destinationCD)){
-            System.out.println("false");
             destinationCD.removePrecinct(selectedPrecinct);
             originCD.addPrecinct(selectedPrecinct);
             selectedPrecinct.setCDistrict(originCD);
             this.updateTwoCdsProperties(selectedPrecinct,destinationCD,originCD);
             return false;
         }
-        System.out.println("trymove 成功"+selectedPrecinct.getFeature().getProperties().getFill()+selectedPrecinct.getName()+selectedPrecinct.getPrecinctCode());
+        if (!isValidConstraints(selectedPrecinct)) {
+            destinationCD.removePrecinct(selectedPrecinct);
+            originCD.addPrecinct(selectedPrecinct);
+            selectedPrecinct.setCDistrict(originCD);
+            this.updateTwoCdsProperties(selectedPrecinct,destinationCD,originCD);
+            return false;
+        }
+        Set<CDistrict> cds = this.getCongressionalDistricts();
+        for (CDistrict cDistrict : cds) {
+            this.currentGoodness = this.currentGoodness +cDistrict.getCurrentGoodness();
+        }
         return true;
     }
 
-    private void updateTwoCdsProperties(Precinct selectedPrecinct, CDistrict originCD, CDistrict destinationCD) {
+    public void updateTwoCdsProperties(Precinct selectedPrecinct, CDistrict originCD, CDistrict destinationCD) {
+        //population
         originCD.setPopulation(originCD.getPopulation()-selectedPrecinct.getPopulation());
         destinationCD.setPopulation(destinationCD.getPopulation()+selectedPrecinct.getPopulation());
-        System.out.println(originCD.getColor()+","+destinationCD.getColor());
+        //color
         selectedPrecinct.getFeature().getProperties().setFill(destinationCD.getColor());
+        //votes
+        HashMap<String, Integer> originalVotes = originCD.getVote();
+        HashMap<String, Integer> destinationVotes = destinationCD.getVote();
+        HashMap<String, Integer> precinctVotes = selectedPrecinct.getVote();
+        if(precinctVotes==null ||precinctVotes.size()==0){
+            for (String key : precinctVotes.keySet()) {
+                originalVotes.put(key, originalVotes.get(key)-precinctVotes.get(key));
+                destinationVotes.put(key, destinationVotes.get(key)+precinctVotes.get(key));
+            }
+        }
     }
-    private boolean validateGoodnessImprovement(CDistrict originCD, CDistrict destinationCD) {
+    public boolean validateGoodnessImprovement(CDistrict originCD, CDistrict destinationCD) {
         float newGoodnessOCD = originCD.calculateObjectiveFunction();
         float newGoodnessDCD = destinationCD.calculateObjectiveFunction();
-        System.out.println(newGoodnessOCD);
-        System.out.println(newGoodnessDCD);
         float goodnessDiff= originCD.getGoodnessDiff(newGoodnessOCD) + destinationCD.getGoodnessDiff(newGoodnessDCD);
-        System.out.println(goodnessDiff);
         if(goodnessDiff > 0){
             originCD.setCurrentGoodness(newGoodnessOCD);
             destinationCD.setCurrentGoodness(newGoodnessDCD);
@@ -265,7 +311,7 @@ public class State {
         return false;
     }
 
-    private boolean checkGoodness() {
+    public boolean checkGoodness() {
         return (currentGoodness > MINGOODNESS);
     }
 
@@ -284,14 +330,18 @@ public class State {
         workingState.setPopulationVariance(this.populationVariance);
         workingState.setCurrentGoodness(this.currentGoodness);
         workingState.setPreference(preference);
+        workingState.setNumOfCds(this.numOfCds);
+        workingState.setAveIncome(this.aveIncome);
+        workingState.setNumOfPrecincts(this.numOfPrecincts);
+        workingState.setArea(this.area);
         this.copyWinnerParty(this.winnerParty, workingState.getWinnerParty());
         this.copyRace(this.race, workingState.getRace());
-        this.copyParty(this.votes, workingState.getVotes());
+        this.copyParty(this.vote, workingState.getVote());
         this.copyCDistricts(this.congressionalDistricts,workingState.getCongressionalDistricts(),workingState);
         return workingState;
     }
 
-    private void copyCDistricts(Set<CDistrict> originalCDs,Set<CDistrict> destinationCDs,State workingState) {
+    public void copyCDistricts(Set<CDistrict> originalCDs,Set<CDistrict> destinationCDs,State workingState) {
         for (CDistrict originalCD : originalCDs) {
             CDistrict destinationCD = new CDistrict();
             destinationCD.setState(workingState);
@@ -301,7 +351,7 @@ public class State {
             destinationCD.setCurrentGoodness(originalCD.getCurrentGoodness());
             this.copyWinnerParty(winnerParty, destinationCD.getWinnerParty());
             this.copyRace(originalCD.getRace(), destinationCD.getRace());
-            this.copyParty(originalCD.getVotes(), destinationCD.getVotes());
+            this.copyParty(originalCD.getVote(), destinationCD.getVote());
             this.copyPrecincts(originalCD.getPrecinct(),destinationCD.getPrecinct(),destinationCD,workingState);
             //ToDo  - map: Set<MapData>
             //ToDo - boundaryPrecincts: Set<Precinct>
@@ -310,7 +360,7 @@ public class State {
         workingState.setCongressionalDistricts(destinationCDs);
     }
 
-    private void copyPrecincts(Set<Precinct> originalPrecincts, Set<Precinct> destinationPrecincts,
+    public void copyPrecincts(Set<Precinct> originalPrecincts, Set<Precinct> destinationPrecincts,
             CDistrict destinationCD,State workingState) {
         for (Precinct originalP : originalPrecincts) {
             Precinct workingP = new Precinct();
@@ -327,7 +377,7 @@ public class State {
             workingP.setMap(originalP.getMap());
             workingP.setFeature(originalP.getFeature());
             this.copyRace(originalP.getRace(), workingP.getRace());
-            this.copyParty(originalP.getVotes(), workingP.getVotes());
+            this.copyParty(originalP.getVote(), workingP.getVote());
             //Todo - neighborPrecinctList: Set<Precinct>
             //Todo - neighborCDistrictList: Set<CDistrict>
             destinationPrecincts.add(workingP);
@@ -349,36 +399,62 @@ public class State {
             }
         }
     }
-    public void copyParty(HashMap<Party, Integer> originalParty, HashMap<Party, Integer> workingParty) {
+    public void copyParty(HashMap<String, Integer> originalParty, HashMap<String, Integer> workingParty) {
         if(originalParty!=null){
-            for (Party precinctParty : originalParty.keySet()) {
-                workingParty.put(precinctParty, originalParty.get(precinctParty));
+            for (String key : originalParty.keySet()) {
+                workingParty.put(key,originalParty.get(key));
             }
         }
     }
 
-    public boolean isValidConstraints() {
+    public boolean isValidConstraints(Precinct selectedPrecinct) {
+        if(this.getPreference().getIsContiguity()){
+            if (!checkContiguityConstraints(selectedPrecinct)) {
+                return false;
+            }
+        }
+        if(this.getPreference().getIsNaturalBoundary()){
+            if (!checkNaturalBoundaryConstraints()) {
+                return false;
+            }
+        }
         if (!checkPreservedPrecinctConstraints()) {
             return false;
         }
-        if (!checkNaturalBoundaryConstraints()) {
+        return true;
+    }
+
+    public boolean checkNaturalBoundaryConstraints() {
+        return true;
+    }
+
+    public boolean checkPreservedPrecinctConstraints() {
+        return true;
+    }
+
+    public boolean checkContiguityConstraints(Precinct selectedPrecinct) {
+        System.out.println("---------------------------check le ma");
+        Set<Precinct> neighborPrecincts = selectedPrecinct.getNeighborPrecincts();
+        if(neighborPrecincts==null||neighborPrecincts.size()==0){
             return false;
         }
-        if (!checkContiguityConstraints()) {
-            return false;
+        //moving precinct  neighbors
+        for (Precinct precinct : neighborPrecincts) {
+            Set<Precinct> neighborPrecincts2 = precinct.getNeighborPrecincts();
+            if(neighborPrecincts2==null||neighborPrecincts2.size()==0){
+                boolean flag = true;
+                //there is at least one precinct has the same color as moving precinct
+                for (Precinct precinct2 : neighborPrecincts2) {
+                    if(precinct2.getFeature().getProperties().getFill().equals(precinct.getFeature().getProperties().getFill())){
+                        flag=false;
+                        break;
+                    }
+                }
+                if(flag){
+                    return false;
+                }
+            }
         }
-        return true;
-    }
-
-    private boolean checkNaturalBoundaryConstraints() {
-        return true;
-    }
-
-    private boolean checkPreservedPrecinctConstraints() {
-        return true;
-    }
-
-    private boolean checkContiguityConstraints() {
         return true;
     }
     public void setupNeighbors(Precinct targetPrecinct,List<String> neighbors) {
@@ -425,7 +501,7 @@ public class State {
             }
         }
     }
-    private  CDistrict getCdByName(String name) {
+    public  CDistrict getCdByName(String name) {
         for (CDistrict cDistrict : this.congressionalDistricts) {
             if (cDistrict.getName().equals(name)) {
                 return cDistrict;
@@ -433,6 +509,12 @@ public class State {
         }
         return null;
     }
-    
+    public void setupGoodness() {
+        Set<CDistrict> cds = this.getCongressionalDistricts();
+        for (CDistrict cDistrict : cds) {
+            cDistrict.setCurrentGoodness(cDistrict.calculateObjectiveFunction());
+            this.currentGoodness = this.currentGoodness +cDistrict.getCurrentGoodness();
+        }
+    }
     
 }

@@ -58,6 +58,11 @@ public class RSService {
         for (int i = 1; i <= numOfCds; i++) {
             CDistrict cd = rsMapper.getCdById(i);
             state.getCongressionalDistricts().add(cd);
+            cd.setState(state);
+            Set<Precinct> ps = cd.getPrecinct();
+            for (Precinct precinct : ps) {
+                precinct.setCDistrict(cd);
+            }
         }
         return state;
     }
@@ -106,7 +111,7 @@ public class RSService {
     public void saveNeighbors(String string, String string2) {
         rsMapper.saveNeighbors(string,string2);
     }
-    public void findNeighbors(State workingState) {
+    public void initializeNeighbors(State workingState) {
         Set<CDistrict> cds = workingState.getCongressionalDistricts();
         for (CDistrict cd : cds) {
             Set<Precinct> precincts = cd.getPrecinct();

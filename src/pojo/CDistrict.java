@@ -26,6 +26,7 @@ public class CDistrict {
     private HashMap<Race, Integer> race = new HashMap<Race, Integer>();
 
     private HashMap<Party, Integer> votes = new HashMap<Party, Integer>();
+    private HashMap<String, Integer> vote = new HashMap<String, Integer>();
 
     private Set<Precinct> boundaryPrecincts = new HashSet<Precinct>();
 
@@ -72,6 +73,14 @@ public class CDistrict {
 
     public String getColor() {
         return color;
+    }
+
+    public HashMap<String, Integer> getVote() {
+        return vote;
+    }
+
+    public void setVote(HashMap<String, Integer> vote) {
+        this.vote = vote;
     }
 
     public void setColor(String color) {
@@ -193,27 +202,33 @@ public class CDistrict {
 
     public Precinct getRandomBoundaryPrecinct() {
         int length = this.boundaryPrecincts.size();
-        System.out.println("length"+length);
         int index = (int) ((length) * Math.random());
         int i = 0;
         for (Precinct precinct : boundaryPrecincts) {
             if (i == index) {
-                System.out.println("return precinct");
                 return precinct;
             }
             i++;
         }
-        System.out.println("return null precinct");
         return null;
     }
 
     public float calculateObjectiveFunction() {
         float goodness = 0;
         Map<ObjectElement, Integer> objectElementMap = this.getState().getPreference().getObjectElementMap();
-        goodness += (int)objectElementMap.get(ObjectElement.COMPACTNESSWEIGHT) * calculateCompactness();
-        goodness += (int)objectElementMap.get(ObjectElement.PARTISANFAIRNESSWEIGHT) * calculatePartisanFairness();
-        goodness += (int)objectElementMap.get(ObjectElement.POPULATIONVARIANCEWEIGHT) * calculatePopulationVariance();
-        goodness += (int)objectElementMap.get(ObjectElement.RACIALFAIRNESSWEIGHT) * calculateRacialFairness();
+        float totalWeight=(int)objectElementMap.get(ObjectElement.COMPACTNESSWEIGHT)
+                +(int)objectElementMap.get(ObjectElement.PARTISANFAIRNESSWEIGHT)
+                +(int)objectElementMap.get(ObjectElement.POPULATIONVARIANCEWEIGHT)
+                +(int)objectElementMap.get(ObjectElement.RACIALFAIRNESSWEIGHT);
+        float compactnessW = (float)objectElementMap.get(ObjectElement.COMPACTNESSWEIGHT)/(float)totalWeight;
+        float partisanW = (float)objectElementMap.get(ObjectElement.PARTISANFAIRNESSWEIGHT)/(float)totalWeight;
+        float populationW = (float)objectElementMap.get(ObjectElement.POPULATIONVARIANCEWEIGHT)/(float)totalWeight;
+        float racialW = (float)objectElementMap.get(ObjectElement.RACIALFAIRNESSWEIGHT)/(float)totalWeight;
+        //System.out.println(compactnessW+","+populationW+","+partisanW+","+racialW);
+        goodness +=  compactnessW* (float)calculateCompactness();
+        goodness += partisanW * (float)calculatePartisanFairness();
+        goodness += populationW * (float)(1-calculatePopulationVariance());
+        goodness += racialW * (float)calculateRacialFairness();
         return goodness;
     }
 
@@ -228,8 +243,10 @@ public class CDistrict {
     }
 
     public float calculatePopulationVariance() {
-        int numOfCDs = this.getState().getCongressionalDistricts().size();
-        float variance = (float)Math.pow((double)(this.population - this.getState().getPopulationMean()),(double) 2);
+        float numOfCDs = this.getState().getCongressionalDistricts().size();
+        float mean = this.getState().getPopulation()/numOfCDs;
+        float variance = (float)Math.pow((double)(this.population - mean),(double) 2);
+        variance = variance/(mean*mean);
         return variance/numOfCDs;
     }
 
@@ -247,7 +264,7 @@ public class CDistrict {
             this.boundaryPrecincts.remove(p);
         }
         p.getNeighborCDistricts().add(this);
-        this.population -= p.getPopulation();
+        //this.population -= p.getPopulation();
         //this.subtractVotes(p);
         //this.subtractRace(p);
     }
@@ -258,18 +275,17 @@ public class CDistrict {
             this.boundaryPrecincts.add(p);
         }
         p.getNeighborCDistricts().remove(this);
-        this.population += p.getPopulation();
+        //this.population += p.getPopulation();
         //this.addVotes(p);
         //this.addRace(p);
 
     }
 
     private void addVotes(Precinct precinct) {
-        HashMap<Party, Integer> precinctVotes = precinct.getVotes();
-        for (Party p : this.votes.keySet()) {
-            precinctVotes.put(p, votes.get(p) + precinctVotes.get(p));
+        HashMap<String, Integer> precinctVotes = precinct.getVote();
+        for (String p : this.vote.keySet()) {
+            precinctVotes.put(p, vote.get(p) + precinctVotes.get(p));
         }
-
     }
 
     private void addRace(Precinct precinct) {
@@ -281,9 +297,9 @@ public class CDistrict {
     }
 
     private void subtractVotes(Precinct precinct) {
-        HashMap<Party, Integer> precinctVotes = precinct.getVotes();
-        for (Party p : this.votes.keySet()) {
-            precinctVotes.put(p, votes.get(p) - precinctVotes.get(p));
+        HashMap<String, Integer> precinctVotes = precinct.getVote();
+        for (String p : this.vote.keySet()) {
+            precinctVotes.put(p, vote.get(p) - precinctVotes.get(p));
         }
     }
 

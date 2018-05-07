@@ -46,6 +46,12 @@ public class Precinct {
         return feature;
     }
     
+    public HashMap<Party, Integer> getVotes() {
+        return votes;
+    }
+    public void setVotes(HashMap<Party, Integer> votes) {
+        this.votes = votes;
+    }
     public int getCdistrictId() {
         return cdistrictId;
     }
@@ -132,12 +138,12 @@ public class Precinct {
     public void setRace(HashMap<Race, Integer> race) {
         this.race = race;
     }
-    public HashMap<Party, Integer> getVotes() {
-        return votes;
-    }
-    public void setVotes(HashMap<Party, Integer> votes) {
-        this.votes = votes;
-    }
+//    public HashMap<Party, Integer> getVotes() {
+//        return votes;
+//    }
+//    public void setVotes(HashMap<Party, Integer> votes) {
+//        this.votes = votes;
+//    }
    
     public boolean getIsFixed() {
         return isFixed;
@@ -157,7 +163,7 @@ public class Precinct {
         return "Precinct [name=" + name + ", precinctCode=" + precinctCode + ", newCDistrict=" + newCDistrict
                 + ", originCDistrict=" + originCDistrict + ", CDistrict=" + CDistrict + ", map=" + map
                 + ", state=" + state + ", registeredVoters=" + registeredVoters + ", totalVoters="
-                + totalVoters + ", population=" + population + ", race=" + race + ", votes=" + votes
+                + totalVoters + ", population=" + population + ", race=" + race + ", votes=" + vote
                 + ", isFixed=" + isFixed + ", isBorder=" + isBorder + ", neighborPrecincts="
                 + neighborPrecincts + ", neighborCDistricts=" + neighborCDistricts + "]";
     }
@@ -179,10 +185,7 @@ public class Precinct {
     public void addNeighborPrecinct (Precinct precinct){}
     public void addNeighborCDistrict (CDistrict cd){}
     public int calculatePopulation (){return 1;}
-    public CDistrict getNeighborCDistrict() {
-        
-        return null;
-    }
+  
     
     
 }
