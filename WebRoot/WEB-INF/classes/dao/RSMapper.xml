@@ -27,6 +27,11 @@
 			SET   population=#{population}
 			WHERE  pCode = #{precinctCode}
 	</update>
+	<update id="increaseRunningTimes" >
+			UPDATE   state
+			SET   runningTimes=#{0}
+			WHERE  sName = #{1}
+	</update>
 	
 	<insert id="saveCds" parameterType="pojo.CDistrict" >
   	  			  INSERT INTO cdistrict  
@@ -80,9 +85,12 @@
 		WHERE p.cdistrictId=#{id} AND p.cdistrictId=c.cid AND v.pCode=p.pCode
 	
 	</select>
+	<select id="getCdInforById" parameterType="int" resultType="pojo.CDInfor">
+		SELECT * FROM information,cdistrict WHERE cdistrictId = #{id} AND cid = cdistrictId
+	</select>
 
 	<select id="getStateByName" parameterType="String" resultType="pojo.State">
-		SELECT s.sName,population,id as stateId FROM state AS s WHERE sName=#{stateName}
+		SELECT s.runningTimes,s.aveIncome,s.sName,population,id as stateId FROM state AS s WHERE sName=#{stateName}
 	</select>
 	<select id="getStateId" parameterType="String" resultType="int">
 		SELECT id from state where sName=#{stateName}

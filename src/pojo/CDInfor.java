@@ -1,6 +1,8 @@
 package pojo;
 
-public class CdInformation {
+public class CDInfor {
+    private String cdName;
+    private int cdistrictId;
     private int male;
     private int female;
     private int white;
@@ -13,8 +15,6 @@ public class CdInformation {
     private int totalHouseHold;
     private int schoolEnroll;
     private int employees;
-    
-    
     public int getMale() {
         return male;
     }
@@ -87,6 +87,25 @@ public class CdInformation {
     public void setEmployees(int employees) {
         this.employees = employees;
     }
-    
+    public String getCdName() {
+        return cdName;
+    }
+    public void setCdName(String cdName) {
+        this.cdName = cdName;
+    }
+    public int getCdistrictId() {
+        return cdistrictId;
+    }
+    public void setCdistrictId(int cdistrictId) {
+        this.cdistrictId = cdistrictId;
+    }
+    @Override
+    public String toString() {
+        return "CDInfor [cdName=" + cdName + ", cdistrictId=" + cdistrictId + ", male=" + male + ", female="
+                + female + ", white=" + white + ", blackAfrican=" + blackAfrican + ", asian=" + asian
+                + ", americanIndian=" + americanIndian + ", others=" + others + ", houseHoldAvg="
+                + houseHoldAvg + ", familyAvg=" + familyAvg + ", totalHouseHold=" + totalHouseHold
+                + ", schoolEnroll=" + schoolEnroll + ", employees=" + employees + "]";
+    }
     
 }

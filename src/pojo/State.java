@@ -35,7 +35,7 @@ public class State {
     private int numOfCds;
     private int numOfPrecincts;
     private double area;
-    
+    private int runningTimes;
     
     public State(){
         super();
@@ -50,6 +50,12 @@ public class State {
         return MINGOODNESS;
     }
 
+    public int getRunningTimes() {
+        return runningTimes;
+    }
+    public void setRunningTimes(int runningTimes) {
+        this.runningTimes = runningTimes;
+    }
     public HashMap<String, Integer> getVote() {
         return vote;
     }
@@ -503,11 +509,38 @@ public class State {
         CDistrict cd2 = getCdByName("cd2");
         for (Feature feature : features) {
             if(feature.getProperties().getCD115FP().equals("01")){
+                //cdinfor
+                feature.getProperties().setMale(cd1.getCdInfor().getMale());
+                feature.getProperties().setFemale(cd1.getCdInfor().getFemale());
+                feature.getProperties().setWhite(cd1.getCdInfor().getWhite());
+                feature.getProperties().setBlackAfrican(cd1.getCdInfor().getBlackAfrican());
+                feature.getProperties().setAsian(cd1.getCdInfor().getAsian());
+                feature.getProperties().setAmericanIndian(cd1.getCdInfor().getAmericanIndian());
+                feature.getProperties().setOthers(cd1.getCdInfor().getOthers());
+                feature.getProperties().setHouseHoldAvg(cd1.getCdInfor().getHouseHoldAvg());
+                feature.getProperties().setFamilyAvg(cd1.getCdInfor().getFamilyAvg());
+                feature.getProperties().setTotalHouseHold(cd1.getCdInfor().getTotalHouseHold());
+                feature.getProperties().setSchoolEnroll(cd1.getCdInfor().getSchoolEnroll());
+                feature.getProperties().setEmployees(cd1.getCdInfor().getEmployees());
+                //
                 feature.getProperties().setPOPULATION(cd1.getPopulation());
                 feature.getProperties().setFill(PropertyManager.getInstance().getValue("color"+feature.getProperties().getCD115FP()));
                 feature.getProperties().setRVOTES(cd1.getVotes().get(Party.REPUBLICAN));
                 feature.getProperties().setDVOTES(cd1.getVotes().get(Party.DEMOCRATIC));
             }else{
+                feature.getProperties().setMale(cd2.getCdInfor().getMale());
+                feature.getProperties().setFemale(cd2.getCdInfor().getFemale());
+                feature.getProperties().setWhite(cd2.getCdInfor().getWhite());
+                feature.getProperties().setBlackAfrican(cd2.getCdInfor().getBlackAfrican());
+                feature.getProperties().setAsian(cd2.getCdInfor().getAsian());
+                feature.getProperties().setAmericanIndian(cd2.getCdInfor().getAmericanIndian());
+                feature.getProperties().setOthers(cd2.getCdInfor().getOthers());
+                feature.getProperties().setHouseHoldAvg(cd2.getCdInfor().getHouseHoldAvg());
+                feature.getProperties().setFamilyAvg(cd2.getCdInfor().getFamilyAvg());
+                feature.getProperties().setTotalHouseHold(cd2.getCdInfor().getTotalHouseHold());
+                feature.getProperties().setSchoolEnroll(cd2.getCdInfor().getSchoolEnroll());
+                feature.getProperties().setEmployees(cd2.getCdInfor().getEmployees());
+                //
                 feature.getProperties().setPOPULATION(cd2.getPopulation());
                 feature.getProperties().setFill(PropertyManager.getInstance().getValue("color"+feature.getProperties().getCD115FP()));
                 feature.getProperties().setRVOTES(cd2.getVotes().get(Party.REPUBLICAN));

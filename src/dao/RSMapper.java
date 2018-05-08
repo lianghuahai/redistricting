@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.apache.ibatis.annotations.Param;
 
+import pojo.CDInfor;
 import pojo.CDistrict;
 import pojo.Precinct;
 import pojo.State;
@@ -40,7 +41,7 @@ public interface RSMapper {
     public void savePrecinctVotes(String pCode, int rVotes, int dVotes,int totalVoters,int registerVoters,int year);
     public void saveNeighbors(String string, String string2);
     public List<String> getNeighborsCode(String pCode);
-    
-    
+    public CDInfor getCdInforById(int id);
+    public void increaseRunningTimes(int i,String sName);
     
 }

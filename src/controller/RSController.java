@@ -96,6 +96,7 @@ public class RSController {
         State originalState= (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("originalState"));
         originalState.setPreference(preference);
         originalState.setupGoodness();
+        rsService.increaseRunningTimes(originalState.getRunningTimes(),originalState.getsName());
 //        Set<CDistrict> cds = originalState.getCongressionalDistricts();
 //        for (CDistrict cDistrict : cds) {
 //            System.out.println(cDistrict.getName()+":"+cDistrict.calculateObjectiveFunction()+","+cDistrict.getCurrentGoodness());
@@ -185,7 +186,7 @@ public class RSController {
                 count++;
             }
         }
-        System.out.println(count);
+        System.out.println(new Gson().toJson(si));
         si.setNumOfPds(count);
         res.getWriter().print(new Gson().toJson(si));
     }

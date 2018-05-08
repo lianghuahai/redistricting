@@ -8,6 +8,7 @@ import dao.RSMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import pojo.CDInfor;
 import pojo.CDistrict;
 import pojo.Party;
 import pojo.Precinct;
@@ -57,6 +58,9 @@ public class RSService {
         int numOfCds = rsMapper.getNumOfCDs(stateId);
         for (int i = 1; i <= numOfCds; i++) {
             CDistrict cd = rsMapper.getCdById(i);
+            CDInfor cdInfor = rsMapper.getCdInforById(i);
+            System.out.println(cdInfor);
+            cd.setCdInfor(cdInfor);
             state.getCongressionalDistricts().add(cd);
             cd.setState(state);
             Set<Precinct> ps = cd.getPrecinct();
@@ -64,6 +68,7 @@ public class RSService {
                 precinct.setCDistrict(cd);
             }
         }
+        //rsMapper.increaseRunningTimes(state.getRunningTimes()+1,state.getsName());
         return state;
     }
     public CDistrict getCdById(int id) {
@@ -123,5 +128,9 @@ public class RSService {
             }
         }
         workingState.setupBoundaryPrecincts();
+    }
+
+    public void increaseRunningTimes(int runningTimes, String getsName) {
+        rsMapper.increaseRunningTimes(runningTimes+1,getsName);
     }
 }

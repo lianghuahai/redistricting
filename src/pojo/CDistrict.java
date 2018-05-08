@@ -1,20 +1,17 @@
 package pojo;
 
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import pojo.mapJson.Feature;
 import utils.PropertyManager;
 
 public class CDistrict {
     private String name;
-    private CdInformation cdInformation;
     private State state = new State();
-
+    
+    private CDInfor cdInfor =  new CDInfor();
     private HashMap<Integer, Party> winnerParty = new HashMap<Integer, Party>();
 
     private Set<MapData> map = new HashSet<MapData>();
@@ -40,6 +37,15 @@ public class CDistrict {
 
     private int totalVoters;
 
+    
+    public CDInfor getCdInfor() {
+        return cdInfor;
+    }
+
+    public void setCdInfor(CDInfor cdInfor) {
+        this.cdInfor = cdInfor;
+    }
+
     // setter and getter
     private int stateId;
 
@@ -63,13 +69,13 @@ public class CDistrict {
         return stateId;
     }
 
-    public CdInformation getCdInformation() {
-        return cdInformation;
-    }
-
-    public void setCdInformation(CdInformation cdInformation) {
-        this.cdInformation = cdInformation;
-    }
+//    public CdInformation getCdInformation() {
+//        return cdInformation;
+//    }
+//
+//    public void setCdInformation(CdInformation cdInformation) {
+//        this.cdInformation = cdInformation;
+//    }
 
     public void setStateId(int stateId) {
         this.stateId = stateId;
