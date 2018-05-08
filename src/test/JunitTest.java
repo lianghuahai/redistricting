@@ -1,5 +1,9 @@
 package test;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 
 import org.junit.Test;
@@ -8,6 +12,11 @@ import pojo.ObjectElement;
 import pojo.State;
 
 public class JunitTest {
+    @Test  //Testing PropertyManager
+    public void juniTest2() throws IOException, URISyntaxException{
+        Desktop.getDesktop().open(new File(this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/constants.properties"));
+        
+    }
     @Test  //Testing PropertyManager
     public void juniTest(){
 //        BasicConfiguration configuration = BasicConfiguration.getInstance(); 
@@ -18,9 +27,5 @@ public class JunitTest {
         System.out.println(ObjectElement.PARTISANFAIRNESSWEIGHT.getWeight());
         System.out.println(ObjectElement.POPULATIONVARIANCEWEIGHT.getWeight());
         System.out.println(ObjectElement.RACIALFAIRNESSWEIGHT.getWeight());
-    }
-    @Test  //Testing PropertyManager
-    public void juniTest2(){
-        System.out.println(3901%100);
     }
 }

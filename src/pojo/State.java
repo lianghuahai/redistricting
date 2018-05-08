@@ -235,15 +235,25 @@ public class State {
     }
 
     public CDistrict getLowestGoodnessCDistrict() {
-        float minGoodness = Float.MAX_VALUE;
-        CDistrict cd = new CDistrict();
-        for (CDistrict cDistrict : congressionalDistricts) {
-            if (minGoodness > cDistrict.getCurrentGoodness()) {
-                minGoodness = cDistrict.getCurrentGoodness();
-                cd=cDistrict;
+//        float minGoodness = Float.MAX_VALUE;
+//        CDistrict cd = new CDistrict();
+//        for (CDistrict cDistrict : congressionalDistricts) {
+//            if (minGoodness > cDistrict.getCurrentGoodness()) {
+//                minGoodness = cDistrict.getCurrentGoodness();
+//                cd=cDistrict;
+//            }
+//        }
+//        return cd;
+        int length = this.congressionalDistricts.size();
+        int index = (int) ((length) * Math.random());
+        int i = 0;
+        for (CDistrict cd : congressionalDistricts) {
+            if (i == index) {
+                return cd;
             }
+            i++;
         }
-        return cd;
+        return null;
     }
 
     public boolean tryMove(Precinct selectedPrecinct,CDistrict destinationCD) {
@@ -442,18 +452,22 @@ public class State {
         for (Precinct precinct : neighborPrecincts) {
             Set<Precinct> neighborPrecincts2 = precinct.getNeighborPrecincts();
             if(neighborPrecincts2==null||neighborPrecincts2.size()==0){
-                boolean flag = true;
+                return false;
+            }
+//                boolean flag = true;
+                  int flag = 0;
                 //there is at least one precinct has the same color as moving precinct
                 for (Precinct precinct2 : neighborPrecincts2) {
                     if(precinct2.getFeature().getProperties().getFill().equals(precinct.getFeature().getProperties().getFill())){
-                        flag=false;
-                        break;
+//                        flag=false;
+                        flag++;
+                        //break;
                     }
                 }
-                if(flag){
+                if(flag<=1){
                     return false;
                 }
-            }
+//            }
         }
         return true;
     }
@@ -511,6 +525,7 @@ public class State {
     }
     public void setupGoodness() {
         Set<CDistrict> cds = this.getCongressionalDistricts();
+        this.currentGoodness=0;
         for (CDistrict cDistrict : cds) {
             cDistrict.setCurrentGoodness(cDistrict.calculateObjectiveFunction());
             this.currentGoodness = this.currentGoodness +cDistrict.getCurrentGoodness();

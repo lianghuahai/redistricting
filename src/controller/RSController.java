@@ -1,6 +1,9 @@
 package controller;
 
+import java.awt.Desktop;
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -83,6 +86,7 @@ public class RSController {
         }else{
             originalState.setUpCdMapJson(mapJson.getFeatures());
         }
+        System.out.println(originalState.getMAXRUNTIME());
         req.getSession().setAttribute(PropertyManager.getInstance().getValue("originalState"),originalState);
         res.getWriter().print(new Gson().toJson(mapJson));
     }
@@ -104,8 +108,12 @@ public class RSController {
             while(movedPrecinct==null){
                 movedPrecinct = workingState.startAlgorithm();
                 if(workingState.checkTermination()){
-                    System.out.println("loop terminate");
-                    res.getWriter().print(new Gson().toJson("{terminated:true}"));
+//                    res.getWriter().print(new Gson().toJson("{terminated:true}"));
+                    PrecinctProperty precinctProperty =  new PrecinctProperty();
+                    precinctProperty.setTerminated(true);
+                    System.out.println("redistrict loop terminate");
+                    res.getWriter().print(new Gson().toJson(precinctProperty));
+                    return ;
                 }
             }
             PrecinctProperty precinctProperty =  new PrecinctProperty();
@@ -115,7 +123,10 @@ public class RSController {
             res.getWriter().print(new Gson().toJson(precinctProperty));
         }else{
             System.out.println("redistrict:Terminated");
-            res.getWriter().print(new Gson().toJson("{terminated:true}"));
+            PrecinctProperty precinctProperty =  new PrecinctProperty();
+            precinctProperty.setTerminated(true);
+            res.getWriter().print(new Gson().toJson(precinctProperty));
+            return ;
         }
     }
     
@@ -128,7 +139,12 @@ public class RSController {
             while(movedPrecinct==null){
                 movedPrecinct = workingState.startAlgorithm();
                 if(workingState.checkTermination()){
-                    res.getWriter().print(new Gson().toJson("{terminated:true}"));
+//                    res.getWriter().print(new Gson().toJson("{terminated:true}"));
+                    PrecinctProperty precinctProperty =  new PrecinctProperty();
+                    precinctProperty.setTerminated(true);
+                    System.out.println("process loop terminate");
+                    res.getWriter().print(new Gson().toJson(precinctProperty));
+                    return ;
                 }
             }
             System.out.println("processs>>>newGoodness : " + workingState.getCurrentGoodness());
@@ -144,7 +160,11 @@ public class RSController {
         }else{
             req.getSession().setAttribute(PropertyManager.getInstance().getValue("workingState"),workingState);
             System.out.println("terminated");
-            res.getWriter().print(new Gson().toJson("{terminated:true}"));
+//            res.getWriter().print(new Gson().toJson("{terminated:true}"));
+            PrecinctProperty precinctProperty =  new PrecinctProperty();
+            precinctProperty.setTerminated(true);
+            res.getWriter().print(new Gson().toJson(precinctProperty));
+            return ;
         }
    }
     
@@ -169,6 +189,15 @@ public class RSController {
         si.setNumOfPds(count);
         res.getWriter().print(new Gson().toJson(si));
     }
+    
+    @RequestMapping("editProperties")
+    public void editProperties(HttpServletRequest req, HttpServletResponse res) throws IOException, URISyntaxException{
+        Desktop.getDesktop().open(new File(this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/constants.properties"));
+        res.getWriter().print(new Gson().toJson(1));
+    }
+    
+    
+    
     
     
     //Todo

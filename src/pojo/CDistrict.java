@@ -12,7 +12,7 @@ import utils.PropertyManager;
 
 public class CDistrict {
     private String name;
-
+    private CdInformation cdInformation;
     private State state = new State();
 
     private HashMap<Integer, Party> winnerParty = new HashMap<Integer, Party>();
@@ -61,6 +61,14 @@ public class CDistrict {
 
     public int getStateId() {
         return stateId;
+    }
+
+    public CdInformation getCdInformation() {
+        return cdInformation;
+    }
+
+    public void setCdInformation(CdInformation cdInformation) {
+        this.cdInformation = cdInformation;
     }
 
     public void setStateId(int stateId) {
