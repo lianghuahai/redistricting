@@ -18,6 +18,7 @@ public class LoadJsonData {
     }
     
     public PrecinctJson getJsonData(String stateName ,String dLevel){
+        System.out.println("stateName,dLevel:"+stateName+","+dLevel);
         String jsonData = readFile(serverPath+"/"+PropertyManager.getInstance().getValue(stateName+dLevel));
         PrecinctJson fromJson = new Gson().fromJson(jsonData, PrecinctJson.class);
         return fromJson;

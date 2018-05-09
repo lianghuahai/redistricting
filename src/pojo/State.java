@@ -500,6 +500,8 @@ public class State {
         for (int a = 1; a <= NumOfCDs; a++) {
             CDistrict cd = new CDistrict();
             cd.setName("cd" + a);
+            cd.setCdCode(a+2);
+            cd.setStateId(2);
             cds.add(cd);
         }
         
@@ -546,6 +548,51 @@ public class State {
                 feature.getProperties().setRVOTES(cd2.getVotes().get(Party.REPUBLICAN));
                 feature.getProperties().setDVOTES(cd2.getVotes().get(Party.DEMOCRATIC));
             }
+        }
+    }
+    public void setUpCoroladoCdMapJson(Set<Feature> features) {
+        CDistrict cd1 = getCdByName("cd1");
+        CDistrict cd2 = getCdByName("cd2");
+        CDistrict cd3 = getCdByName("cd3");
+        CDistrict cd4 = getCdByName("cd4");
+        CDistrict cd5 = getCdByName("cd5");
+        CDistrict cd6 = getCdByName("cd6");
+        CDistrict cd7 = getCdByName("cd7");
+        CDistrict cd = new CDistrict();
+        for (Feature feature : features) {
+            if(feature.getProperties().getCD115FP().equals("01")){
+                cd=cd1;
+            }else if(feature.getProperties().getCD115FP().equals("02")){
+                cd=cd2;
+            }else if(feature.getProperties().getCD115FP().equals("03")){
+                cd=cd3;
+            }else if(feature.getProperties().getCD115FP().equals("04")){
+                cd=cd4;
+            }else if(feature.getProperties().getCD115FP().equals("05")){
+                cd=cd5;
+            }else if(feature.getProperties().getCD115FP().equals("06")){
+                cd=cd6;
+            }else{
+                cd=cd7;
+            }
+            //cdinfor
+            feature.getProperties().setMale(cd.getCdInfor().getMale());
+            feature.getProperties().setFemale(cd.getCdInfor().getFemale());
+            feature.getProperties().setWhite(cd.getCdInfor().getWhite());
+            feature.getProperties().setBlackAfrican(cd.getCdInfor().getBlackAfrican());
+            feature.getProperties().setAsian(cd.getCdInfor().getAsian());
+            feature.getProperties().setAmericanIndian(cd.getCdInfor().getAmericanIndian());
+            feature.getProperties().setOthers(cd.getCdInfor().getOthers());
+            feature.getProperties().setHouseHoldAvg(cd.getCdInfor().getHouseHoldAvg());
+            feature.getProperties().setFamilyAvg(cd.getCdInfor().getFamilyAvg());
+            feature.getProperties().setTotalHouseHold(cd.getCdInfor().getTotalHouseHold());
+            feature.getProperties().setSchoolEnroll(cd.getCdInfor().getSchoolEnroll());
+            feature.getProperties().setEmployees(cd.getCdInfor().getEmployees());
+            //
+            feature.getProperties().setPOPULATION(cd.getPopulation());
+            feature.getProperties().setFill(PropertyManager.getInstance().getValue("color"+feature.getProperties().getCD115FP()));
+            feature.getProperties().setRVOTES(cd.getVotes().get(Party.REPUBLICAN));
+            feature.getProperties().setDVOTES(cd.getVotes().get(Party.DEMOCRATIC));
         }
     }
     public  CDistrict getCdByName(String name) {

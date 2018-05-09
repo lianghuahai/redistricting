@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 import pojo.mapJson.Feature;
 import utils.PropertyManager;
 
@@ -327,20 +328,57 @@ public class CDistrict {
     public void setUpPrecinctMapJson(Set<Feature> features, int colorCount) {
         Set<Precinct> ps = this.getPrecinct();
         for (Precinct p : ps) {
+            if(p.getPrecinctCode().equals("63014")){
+//                System.out.println(p.getFeature().getProperties().getFill()); 
+//                System.out.println(f.getProperties().getFill());
+                System.out.println(p.getName());
+          }
             for (Feature f : features) {
                 if (f.getProperties().getVTDST10().equals(p.getPrecinctCode())) {
+                    
                     f.getProperties().setPOPULATION(p.getPopulation());
                     f.getProperties().setREGISTERVOTERS(p.getRegisteredVoters());
                     f.getProperties().setTOTALVOTERS(p.getTotalVoters());
                     f.getProperties().setFill(PropertyManager.getInstance().getValue("color0" + colorCount));
                     p.setFeature(f);
                     this.setColor(f.getProperties().getFill());
+                    
                     break;
                 }
             }
         }
     }
 
+    public void setUpCoroladoPrecinctMapJson(Set<Feature> features, int colorCount) {
+        Set<Precinct> ps = this.getPrecinct();
+        for (Precinct p : ps) {
+            for (Feature f : features) {
+                if (f.getProperties().getVTDST10().equals(p.getPrecinctCode())) {
+                    String geoid10 = f.getProperties().getGEOID10();
+                    char charAt = geoid10.charAt(3);
+                    String s = String.valueOf(charAt);
+                    int cdId = Integer.parseInt(s);
+                    System.out.println(geoid10);
+                    System.out.println(cdId);
+                    f.getProperties().setPOPULATION(p.getPopulation());
+                    f.getProperties().setREGISTERVOTERS(p.getRegisteredVoters());
+                    f.getProperties().setTOTALVOTERS(p.getTotalVoters());
+                    f.getProperties().setFill(PropertyManager.getInstance().getValue("color0" + cdId));
+                    p.setFeature(f);
+                    this.setColor(f.getProperties().getFill());
+                    return ;
+//                    break;
+                }
+            }
+        }
+        for (Feature f : features) {
+            String geoid10 = f.getProperties().getGEOID10();
+            char charAt = geoid10.charAt(3);
+            String s = String.valueOf(charAt);
+            int cdId = Integer.parseInt(s);
+            f.getProperties().setFill(PropertyManager.getInstance().getValue("color0" + cdId));
+        }
+    }
     public boolean foundNeighborPrecinct(Precinct targetPrecinct,String neighborPrecinctCode) {
         Set<Precinct> precincts = this.getPrecinct();
         for (Precinct precinct : precincts) {

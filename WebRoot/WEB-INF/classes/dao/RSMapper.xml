@@ -32,28 +32,42 @@
 			SET   runningTimes=#{0}
 			WHERE  sName = #{1}
 	</update>
+	<update id="updatePCode" >
+			UPDATE   precinct
+			SET   pCode=#{1}
+			WHERE  pName=#{0}
+	</update>
 	
 	<insert id="saveCds" parameterType="pojo.CDistrict" >
   	  			  INSERT INTO cdistrict  
-	            (cdName,population,stateId)  
+	            (cid,cdName,population,stateId)  
 	            VALUES 
 	             (  
+                    #{cdCode,jdbcType=VARCHAR},  
                     #{name,jdbcType=VARCHAR},  
                     #{population,jdbcType=NUMERIC},  
                     #{stateId,jdbcType=NUMERIC}
 		          )  
 	</insert>
+	<insert id="createVotes"  >
+  	  			INSERT INTO vote  
+				(pCode)  
+				VALUES 
+				(  
+				 #{0}
+				  ) 
+	</insert>
 	<insert id="savePrecincts" parameterType="pojo.Precinct" >
   	  			  INSERT INTO precinct  
-	            (pName,population,registerVoters,totalVoters,cdistrictId,pCode)  
+	            (pName,population,cdistrictId,pCode,stateId,county)  
 	            VALUES 
 	             (  
                     #{name,jdbcType=VARCHAR},  
                     #{population,jdbcType=NUMERIC},  
-                    #{registeredVoters,jdbcType=NUMERIC},
-                    #{totalVoters,jdbcType=NUMERIC},
-                    #{CDistrict.cdCode,jdbcType=NUMERIC},
-                    #{precinctCode,jdbcType=VARCHAR}
+                    #{cdistrictId,jdbcType=NUMERIC},
+                    #{precinctCode,jdbcType=VARCHAR},
+                    #{stateId,jdbcType=NUMERIC},
+                    #{county,jdbcType=VARCHAR}
 		          )  
 	</insert>
 	
@@ -77,7 +91,7 @@
 	</resultMap>
 	
 	<select id="getNumOfCDs" resultType="int">
-		SELECT COUNT(*) FROM cdistrict
+		SELECT COUNT(*) FROM cdistrict where stateId = #{0}
 	</select>
 	<select id="getCdById" parameterType="int" resultMap="Precincts">
 		SELECT p.pCode,p.cdistrictId,p.pName ,v.registerVoters,v.totalVoters,v.rVotes,v.dVotes, p.population AS pp, cid,cdName ,c.population AS cp

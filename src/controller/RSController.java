@@ -28,6 +28,7 @@ import pojo.User;
 import pojo.stateInfo;
 import pojo.mapJson.PrecinctJson;
 import service.RSService;
+import utils.LoadCOData;
 import utils.LoadJsonData;
 import utils.LoadNHData;
 import utils.PropertyManager;
@@ -77,14 +78,26 @@ public class RSController {
     public void displayState(String stateName,String dLevel,String userEmail,HttpServletRequest req, HttpServletResponse res) throws IOException, Exception{
         State originalState = rsService.initializeState(stateName);
         PrecinctJson mapJson = new LoadJsonData().getJsonData(stateName,dLevel);
-        if(dLevel.equals("PD")){
-            int colorCount=1;
-            for (CDistrict cd : originalState.getCongressionalDistricts()) {
-                cd.setUpPrecinctMapJson(mapJson.getFeatures(),colorCount);
-                colorCount++;
+        if(stateName.equals("NH")){
+            if(dLevel.equals("PD")){
+                int colorCount=1;
+                for (CDistrict cd : originalState.getCongressionalDistricts()) {
+                    cd.setUpPrecinctMapJson(mapJson.getFeatures(),colorCount);
+                    colorCount++;
+                }
+            }else{
+                originalState.setUpCdMapJson(mapJson.getFeatures());
             }
-        }else{
-            originalState.setUpCdMapJson(mapJson.getFeatures());
+        }else if(stateName.equals("CO")){
+            if(dLevel.equals("PD")){
+                int colorCount=1;
+                for (CDistrict cd : originalState.getCongressionalDistricts()) {
+                    cd.setUpPrecinctMapJson(mapJson.getFeatures(),colorCount);
+                    colorCount++;
+                }
+            }else{
+                originalState.setUpCoroladoCdMapJson(mapJson.getFeatures());
+            }
         }
         System.out.println(originalState.getMAXRUNTIME());
         req.getSession().setAttribute(PropertyManager.getInstance().getValue("originalState"),originalState);
@@ -208,8 +221,40 @@ public class RSController {
     public boolean getState (String stateName){return true;}
     public boolean deleteState (String stateName){return true;}
     public boolean findState (String stateID){return true;}
+    
+    
+    
+    @RequestMapping("updatePCode")
+    public void updatePCode( HttpServletRequest req, HttpServletResponse res) throws Exception {
+//        rsService.updatePCode();
+        rsService.createVotes();
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     @RequestMapping("test")
     public void test( HttpServletRequest req, HttpServletResponse res) throws Exception {
+        LoadCOData load= new LoadCOData();
+        State workingState = load.getState();
+      Set<CDistrict> cds = workingState.getCongressionalDistricts();
+      for (CDistrict cDistrict : cds) {
+          rsService.saveCds(cDistrict);
+          for (Precinct p : cDistrict.getPrecinct()) {
+              //System.out.println(p);
+              rsService.savePrecincts(p);
+              rsService.updatePrecinctVotes(p);
+          }
+      }
     }
     @RequestMapping("neighbor")
     public void neighbor( HttpServletRequest req, HttpServletResponse res) throws Exception {

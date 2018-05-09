@@ -43,5 +43,7 @@ public interface RSMapper {
     public List<String> getNeighborsCode(String pCode);
     public CDInfor getCdInforById(int id);
     public void increaseRunningTimes(int i,String sName);
+    public void updatePCode(String str, int code);
+    public void createVotes(String code);
     
 }

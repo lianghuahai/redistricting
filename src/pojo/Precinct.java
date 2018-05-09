@@ -26,6 +26,8 @@ public class Precinct {
     private Set<CDistrict> neighborCDistricts = new HashSet<CDistrict>();
     private  Feature feature = new Feature();
     int cdistrictId;
+    private String county;
+    private int stateId;
     //getter and setter
     public String getName() {
         return name;
@@ -46,6 +48,18 @@ public class Precinct {
         return feature;
     }
     
+    public int getStateId() {
+        return stateId;
+    }
+    public void setStateId(int stateId) {
+        this.stateId = stateId;
+    }
+    public String getCounty() {
+        return county;
+    }
+    public void setCounty(String county) {
+        this.county = county;
+    }
     public HashMap<Party, Integer> getVotes() {
         return votes;
     }
@@ -158,14 +172,16 @@ public class Precinct {
         this.isBorder = isBorder;
     }
   
+    
     @Override
     public String toString() {
-        return "Precinct [name=" + name + ", precinctCode=" + precinctCode + ", newCDistrict=" + newCDistrict
-                + ", originCDistrict=" + originCDistrict + ", CDistrict=" + CDistrict + ", map=" + map
-                + ", state=" + state + ", registeredVoters=" + registeredVoters + ", totalVoters="
-                + totalVoters + ", population=" + population + ", race=" + race + ", votes=" + vote
-                + ", isFixed=" + isFixed + ", isBorder=" + isBorder + ", neighborPrecincts="
-                + neighborPrecincts + ", neighborCDistricts=" + neighborCDistricts + "]";
+        return "Precinct [name=" + name + ", precinctCode=" + precinctCode + ", secondStylePrecinctCode="
+                + secondStylePrecinctCode + ", originCDistrict=" + originCDistrict + ", map=" + map
+                + ", registeredVoters=" + registeredVoters + ", totalVoters=" + totalVoters + ", population="
+                + population + ", race=" + race + ", votes=" + votes + ", isFixed=" + isFixed + ", isBorder="
+                + isBorder + ", neighborPrecincts=" + neighborPrecincts + ", neighborCDistricts="
+                + neighborCDistricts + ", feature=" + feature + ", cdistrictId=" + cdistrictId + ", vote="
+                + vote + "]";
     }
     //methods to be implemented
     public CDistrict getRandomNeighborCDistrict (){

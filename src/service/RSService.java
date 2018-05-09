@@ -56,10 +56,18 @@ public class RSService {
         State state = rsMapper.getStateByName(stateName);
         int stateId = rsMapper.getStateId(stateName);
         int numOfCds = rsMapper.getNumOfCDs(stateId);
-        for (int i = 1; i <= numOfCds; i++) {
+        int i = 1;
+        if(stateName.equals("CO")){
+            i=i+2;
+            numOfCds=numOfCds+2;
+        }else if (stateName.equals("SC")){
+            i=i+9;
+            numOfCds=numOfCds+9;
+        }
+        for (; i <= numOfCds; i++) {
             CDistrict cd = rsMapper.getCdById(i);
             CDInfor cdInfor = rsMapper.getCdInforById(i);
-            System.out.println(cdInfor);
+//            System.out.println(cdInfor);
             cd.setCdInfor(cdInfor);
             state.getCongressionalDistricts().add(cd);
             cd.setState(state);
@@ -108,8 +116,8 @@ public class RSService {
 
     public void updatePrecinctVotes(Precinct p) {
         if(p.getPrecinctCode()!=null){
-            rsMapper.savePrecinctVotes(p.getPrecinctCode(),p.getVotes().get(Party.REPUBLICAN)
-                    ,p.getVotes().get(Party.DEMOCRATIC),p.getTotalVoters(),p.getRegisteredVoters(),2016);
+            rsMapper.savePrecinctVotes(p.getPrecinctCode(),p.getVote().get("REPUBLICAN")
+                    ,p.getVote().get("DEMOCRATIC"),p.getTotalVoters(),p.getRegisteredVoters(),2016);
         }
     }
     
@@ -132,5 +140,24 @@ public class RSService {
 
     public void increaseRunningTimes(int runningTimes, String getsName) {
         rsMapper.increaseRunningTimes(runningTimes+1,getsName);
+    }
+
+    public void updatePCode() {
+        int code = 18001;
+        String str = "a";
+        for (int i = 1; i <=153; i++) {
+            str="Douglas"+i;
+            rsMapper.updatePCode(str,code);
+            code++;
+        }
+    }
+
+    public void createVotes() {
+        int code = 18001;
+        for (int i = 1; i <=155; i++) {
+            rsMapper.createVotes(String.valueOf(code));
+            code++;
+        }
+        
     }
 }
