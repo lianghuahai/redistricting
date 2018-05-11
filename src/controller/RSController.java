@@ -31,6 +31,7 @@ import service.RSService;
 import utils.LoadCOData;
 import utils.LoadJsonData;
 import utils.LoadNHData;
+import utils.LoadSCData;
 import utils.PropertyManager;
 
 import com.google.gson.Gson;
@@ -224,22 +225,31 @@ public class RSController {
     
     
     
-    @RequestMapping("updatePCode")
-    public void updatePCode( HttpServletRequest req, HttpServletResponse res) throws Exception {
+    
+    
+    @RequestMapping("testSC")
+    public void testSC( HttpServletRequest req, HttpServletResponse res) throws Exception {
 //        rsService.updatePCode();
-        rsService.createVotes();
+        LoadSCData loadSCData = new LoadSCData();
+        State workingState = loadSCData.getState();
+        Set<CDistrict> cds = workingState.getCongressionalDistricts();
+        for (CDistrict cDistrict : cds) {
+            rsService.saveCds(cDistrict);
+            for (Precinct p : cDistrict.getPrecinct()) {
+                rsService.savePrecincts(p);
+                rsService.updatePrecinctVotes(p);
+            }
+        }
     }
     
     
     
     
-    
-    
-    
-    
-    
-    
-    
+    @RequestMapping("updatePCode")
+    public void updatePCode( HttpServletRequest req, HttpServletResponse res) throws Exception {
+//        rsService.updatePCode();
+        rsService.createVotes();
+    }
     
     
     @RequestMapping("test")

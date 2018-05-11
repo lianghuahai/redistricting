@@ -500,8 +500,8 @@ public class State {
         for (int a = 1; a <= NumOfCDs; a++) {
             CDistrict cd = new CDistrict();
             cd.setName("cd" + a);
-            cd.setCdCode(a+2);
-            cd.setStateId(2);
+            cd.setCdCode(a+9);
+            cd.setStateId(3);
             cds.add(cd);
         }
         

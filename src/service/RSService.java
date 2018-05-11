@@ -115,9 +115,15 @@ public class RSService {
     }
 
     public void updatePrecinctVotes(Precinct p) {
+        int rvote = 0;
+        int dvote = 0;
+        if(p.getVote().size()!=0){
+            rvote=p.getVote().get("REPUBLICAN");
+            dvote=p.getVote().get("DEMOCRATIC");
+        }
         if(p.getPrecinctCode()!=null){
-            rsMapper.savePrecinctVotes(p.getPrecinctCode(),p.getVote().get("REPUBLICAN")
-                    ,p.getVote().get("DEMOCRATIC"),p.getTotalVoters(),p.getRegisteredVoters(),2016);
+            rsMapper.savePrecinctVotes(p.getPrecinctCode(),rvote
+                    ,dvote,p.getTotalVoters(),p.getRegisteredVoters(),2016);
         }
     }
     
