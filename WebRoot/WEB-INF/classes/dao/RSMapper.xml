@@ -35,6 +35,12 @@
 			SET   runningTimes=#{0}
 			WHERE  sName = #{1}
 	</update>
+	<update id="updateNeiCode" >
+			UPDATE   neighbors
+			SET   pCode=#{1},neighborCode=#{2}
+			WHERE  nid = #{0}
+	</update>
+	
 	<update id="updatePCode" >
 			UPDATE   precinct
 			SET   pCode=#{1}
@@ -101,6 +107,14 @@
 	<select id="getNumOfCDs" resultType="int">
 		SELECT COUNT(*) FROM cdistrict where stateId = #{0}
 	</select>
+	<select id="getCDsByStateId" resultType="pojo.Precinct">
+		SELECT precinct.pCode as precinctCode FROM precinct where stateId = 1	
+	</select>
+	<update id="updatePrecinctCounty" >
+			UPDATE   precinct
+			SET   county=#{1}
+			WHERE  pCode = #{0} and stateId = 1
+	</update>
 	<select id="getCdById" parameterType="int" resultMap="Precincts">
 		SELECT p.pCode,p.cdistrictId,p.pName ,v.registerVoters,v.totalVoters,v.rVotes,v.dVotes, p.population AS pp, cid,cdName ,c.population AS cp
 		FROM precinct AS p, cdistrict AS c, vote AS v
@@ -116,6 +130,9 @@
 	</select>
 	<select id="getStateId" parameterType="String" resultType="int">
 		SELECT id from state where sName=#{stateName}
+	</select>
+	<select id="getneighbors"  resultType="pojo.Neighbors">
+		SELECT * from neighbors where nid >1099
 	</select>
 
 

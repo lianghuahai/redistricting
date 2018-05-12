@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import pojo.CDistrict;
+import pojo.Neighbors;
 import pojo.ObjectElement;
 import pojo.Precinct;
 import pojo.PrecinctProperty;
@@ -124,7 +125,7 @@ public class RSController {
 //        for (CDistrict cDistrict : cds) {
 //            System.out.println(cDistrict.getName()+":"+cDistrict.calculateObjectiveFunction()+","+cDistrict.getCurrentGoodness());
 //        }
-        System.out.print("redistrict>>>originalGoodness : " + originalState.getCurrentGoodness());
+        System.out.print("redistrict>>>oriGoodness:" + originalState.getCurrentGoodness()+"pv:"+originalState.getPopulationVariance()+"racialF:"+originalState.getRacialFairness()+"partyF:"+originalState.getPatisanFairness());
         State workingState= originalState.clone(preference);
         rsService.initializeNeighbors(workingState);
         Precinct movedPrecinct = workingState.startAlgorithm();
@@ -132,7 +133,6 @@ public class RSController {
             while(movedPrecinct==null){
                 movedPrecinct = workingState.startAlgorithm();
                 if(workingState.checkTermination()){
-//                    res.getWriter().print(new Gson().toJson("{terminated:true}"));
                     PrecinctProperty precinctProperty =  new PrecinctProperty();
                     precinctProperty.setTerminated(true);
                     System.out.println("redistrict loop terminate");
@@ -140,6 +140,7 @@ public class RSController {
                     return ;
                 }
             }
+            System.out.print("redistrict>>>newGoodness:" + workingState.getCurrentGoodness()+"pv:"+workingState.getPopulationVariance()+"racialF:"+workingState.getRacialFairness()+"partyF:"+workingState.getPatisanFairness());
             PrecinctProperty precinctProperty =  new PrecinctProperty();
             precinctProperty.setFill(movedPrecinct.getFeature().getProperties().getFill());
             precinctProperty.setVTDST10(movedPrecinct.getPrecinctCode());
@@ -171,7 +172,7 @@ public class RSController {
                     return ;
                 }
             }
-            System.out.println("processs>>>newGoodness : " + workingState.getCurrentGoodness());
+            System.out.println("processs>>>newGoodness:" + workingState.getCurrentGoodness()+" pv:"+workingState.getPopulationVariance()+" racialF:"+workingState.getRacialFairness()+" partyF:"+workingState.getPatisanFairness());
             Set<CDistrict> cds = workingState.getCongressionalDistricts();
             for (CDistrict cDistrict : cds) {
                 System.out.println("move!"+cDistrict.getName()+","+cDistrict.getPopulation());
@@ -296,6 +297,16 @@ public class RSController {
 //        rsService.updatePCode();
         rsService.createVotes();
     }
+    @RequestMapping("getCDsByStateId")
+    public void getCDsByStateId( HttpServletRequest req, HttpServletResponse res) throws Exception {
+//        List<String> relationList = new LoadNHData().load();
+//        for (String str : relationList) {
+//            String[] strs=str.split(",");
+//            System.out.println(strs[3].toString());
+//            System.out.println(strs[4].toString());
+//            rsService.updatePrecinctCounty(strs[4].toString(),strs[3].toString());
+//        }
+    }
     @RequestMapping("test")
     public void test( HttpServletRequest req, HttpServletResponse res) throws Exception {
         LoadCOData load= new LoadCOData();
@@ -315,10 +326,12 @@ public class RSController {
         ArrayList<ArrayList<String>> list = new LoadNHData().loadNeighbors();
         ArrayList<String> pList = list.get(0);
         ArrayList<String> nList = list.get(1);
-        System.out.println(pList.size());
-        System.out.println(nList.size());
-        System.out.println(pList.get(0));
-        System.out.println(nList.get(0));
+        
+//        rsService.saveNeighbors(pCode,neighborCode);
+//        State originalState = rsService.initializeState("SC");
+      
+        //State originalState = rsService.initializeState("CO");
+        //State originalState = rsService.initializeState("SC");
         Map<String,String> map = new HashMap<String,String>();
         for (int i = 0; i < pList.size(); i++) {
                 String str = nList.get(i);
@@ -329,6 +342,35 @@ public class RSController {
         }
         res.getWriter().print(new Gson().toJson("ok"));
         
+    }
+    
+    
+    @RequestMapping("getNeighborToSet")
+    public void getNeighborToSet( HttpServletRequest req, HttpServletResponse res) throws Exception {
+        List<Neighbors> neighs= rsService.getneighbors();
+        System.out.println("guolai");
+        for (Neighbors neighbors : neighs) {
+            boolean flag=false;
+            if(neighbors.getpCode().length()==7){
+                neighbors.setpCode(neighbors.getpCode()+"0");
+                flag=true;
+            }
+            if(neighbors.getpCode().length()==6){
+                neighbors.setpCode(neighbors.getpCode()+"00");
+                flag=true;
+            }
+            if(neighbors.getNeighborCode().length()==7){
+                neighbors.setNeighborCode(neighbors.getNeighborCode()+"0");
+                flag=true;
+            }
+            if(neighbors.getNeighborCode().length()==6){
+                neighbors.setNeighborCode(neighbors.getNeighborCode()+"00");
+                flag=true;
+            }
+            if(flag){
+                rsService.updateNeiCode(neighbors);
+            }
+        }
     }
     @RequestMapping("saveData")
     public void a( HttpServletRequest req, HttpServletResponse res) throws Exception {

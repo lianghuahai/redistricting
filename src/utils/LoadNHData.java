@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,7 +41,10 @@ public class LoadNHData {
     }
     @Test
     public ArrayList<ArrayList<String>> loadNeighbors() throws Exception{
-        File file = new File(path+"/"+"NH_candidateNeighbors_v2(1).txt");
+//        File file = new File(path+"/"+"new_hampshire_st33_nh_vtd.txt");
+//        File file = new File(path+"/"+"NH_PNeighbors.txt");
+//        File file = new File(path+"/"+"SC_PNeighbors.txt");
+        File file = new File(path+"/"+"CO_PNeighbors.txt");
 //        File file = new File("NH_candidateNeighbors_v2(1).txt");
         BufferedReader br = new BufferedReader(new FileReader(file));
         ArrayList<String> pList = new ArrayList<String>();
@@ -235,7 +239,23 @@ public class LoadNHData {
         return a1+b1+c1+d1+e1;
     }
 
-
+    
+    public List<String> load() throws IOException{
+        File file = new File(path+"/"+"new_hampshire_st33_nh_vtd.txt");
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        ArrayList<String> relationList = new ArrayList<String>();
+        String st;
+        int i=1;
+        while ((st = br.readLine()) != null){
+            if(i%2==1){
+                relationList.add(st);
+            }
+            i++;
+        }
+        return relationList;
+    }
+    
+    
     private void setUpPrecinctCode(Set<CDistrict> cds) throws IOException{
         File file = new File(path+"/"+"new_hampshire_st33_nh_vtd.txt");
         BufferedReader br = new BufferedReader(new FileReader(file));

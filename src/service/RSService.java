@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import pojo.CDInfor;
 import pojo.CDistrict;
+import pojo.Neighbors;
 import pojo.Party;
 import pojo.Precinct;
 import pojo.State;
@@ -183,8 +184,25 @@ public class RSService {
     public void updateUser(User user) {
          rsMapper.updateUser(user.getParty(),user.getFirstName(),user.getLastName(),user.getEmail());
     }
+    public List<Precinct> getpssByStateId() {
+        return rsMapper.getCDsByStateId();
+    }
 
     public void deleteUser(String email) {
         rsMapper.deleteUser(email);
+    }
+
+    public void updatePrecinctCounty(String precinctCode,String county) {
+        System.out.println(county);
+        System.out.println(precinctCode);
+        rsMapper.updatePrecinctCounty(precinctCode,county);
+        
+    }
+    public List<Neighbors> getneighbors() {
+        return rsMapper.getneighbors();
+    }
+
+    public void updateNeiCode(Neighbors neighbors) {
+        rsMapper.updateNeiCode(neighbors.getNid(),neighbors.getpCode(),neighbors.getNeighborCode());
     }
 }

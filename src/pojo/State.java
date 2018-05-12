@@ -303,10 +303,7 @@ public class State {
             this.updateTwoCdsProperties(selectedPrecinct,destinationCD,originCD);
             return false;
         }
-        Set<CDistrict> cds = this.getCongressionalDistricts();
-        for (CDistrict cDistrict : cds) {
-            this.currentGoodness = this.currentGoodness +cDistrict.getCurrentGoodness();
-        }
+        this.setupGoodness();
         return true;
     }
 
@@ -320,12 +317,46 @@ public class State {
         HashMap<String, Integer> originalVotes = originCD.getVote();
         HashMap<String, Integer> destinationVotes = destinationCD.getVote();
         HashMap<String, Integer> precinctVotes = selectedPrecinct.getVote();
-        if(precinctVotes==null ||precinctVotes.size()==0){
-            for (String key : precinctVotes.keySet()) {
-                originalVotes.put(key, originalVotes.get(key)-precinctVotes.get(key));
-                destinationVotes.put(key, destinationVotes.get(key)+precinctVotes.get(key));
-            }
-        }
+//        if(precinctVotes==null ||precinctVotes.size()==0){
+//            for (String key : precinctVotes.keySet()) {
+//                originalVotes.put(key, originalVotes.get(key)-precinctVotes.get(key));
+//                destinationVotes.put(key, destinationVotes.get(key)+precinctVotes.get(key));
+//            }
+//        }
+        originalVotes.put("REPUBLICAN", originalVotes.get("REPUBLICAN")-precinctVotes.get("REPUBLICAN"));
+        originalVotes.put("DEMOCRATIC", originalVotes.get("DEMOCRATIC")-precinctVotes.get("DEMOCRATIC"));
+        destinationVotes.put("REPUBLICAN", destinationVotes.get("REPUBLICAN")+precinctVotes.get("REPUBLICAN"));
+        destinationVotes.put("DEMOCRATIC", destinationVotes.get("DEMOCRATIC")+precinctVotes.get("DEMOCRATIC"));
+        //racial
+        //cd has white people : selectedPrecinct.getCDistrict().getCdInfor().getAmericanIndian()
+        //updateRacial(selectedPrecinct,originCD,destinationCD);
+        
+    }
+    private void updateRacial(Precinct selectedPrecinct, CDistrict originCD, CDistrict destinationCD) {
+        int precinctRacial = (int) (selectedPrecinct.getPopulation()/selectedPrecinct.getCDistrict().getPopulation());
+        int precinctWhitePeople = precinctRacial*selectedPrecinct.getCDistrict().getCdInfor().getWhite();
+        int precinctAmericanIndianPeople = precinctRacial*selectedPrecinct.getCDistrict().getCdInfor().getAmericanIndian();
+        int precinctOthersPeople = precinctRacial*selectedPrecinct.getCDistrict().getCdInfor().getOthers();
+        int precinctBlackAfricanPeople = precinctRacial*selectedPrecinct.getCDistrict().getCdInfor().getBlackAfrican();
+        int precinctAsianPeople = precinctRacial*selectedPrecinct.getCDistrict().getCdInfor().getAsian();
+        int precinctFemalePeople = precinctRacial*selectedPrecinct.getCDistrict().getCdInfor().getFemale();
+        int precinctMalePeople = precinctRacial*selectedPrecinct.getCDistrict().getCdInfor().getMale();
+        
+        originCD.getCdInfor().setWhite(originCD.getCdInfor().getWhite()-precinctWhitePeople);
+        originCD.getCdInfor().setAmericanIndian(originCD.getCdInfor().getAmericanIndian()-precinctAmericanIndianPeople);
+        originCD.getCdInfor().setOthers(originCD.getCdInfor().getOthers()-precinctOthersPeople);
+        originCD.getCdInfor().setBlackAfrican(originCD.getCdInfor().getBlackAfrican()-precinctBlackAfricanPeople);
+        originCD.getCdInfor().setAsian(originCD.getCdInfor().getAsian()-precinctAsianPeople);
+        originCD.getCdInfor().setFemale(originCD.getCdInfor().getFemale()-precinctFemalePeople);
+        originCD.getCdInfor().setMale(originCD.getCdInfor().getMale()-precinctMalePeople);
+        
+        destinationCD.getCdInfor().setWhite(destinationCD.getCdInfor().getWhite()-precinctWhitePeople);
+        destinationCD.getCdInfor().setAmericanIndian(destinationCD.getCdInfor().getAmericanIndian()-precinctAmericanIndianPeople);
+        destinationCD.getCdInfor().setOthers(destinationCD.getCdInfor().getOthers()-precinctOthersPeople);
+        destinationCD.getCdInfor().setBlackAfrican(destinationCD.getCdInfor().getBlackAfrican()-precinctBlackAfricanPeople);
+        destinationCD.getCdInfor().setAsian(destinationCD.getCdInfor().getAsian()-precinctAsianPeople);
+        destinationCD.getCdInfor().setFemale(destinationCD.getCdInfor().getFemale()-precinctFemalePeople);
+        destinationCD.getCdInfor().setMale(destinationCD.getCdInfor().getMale()-precinctMalePeople);
     }
     public boolean validateGoodnessImprovement(CDistrict originCD, CDistrict destinationCD) {
         float newGoodnessOCD = originCD.calculateObjectiveFunction();
@@ -362,14 +393,16 @@ public class State {
         workingState.setPopulationMean(this.getPopulation()/this.getCongressionalDistricts().size());
         workingState.setEfficiencyGap(this.efficiencyGap);
         workingState.setFairness(this.fairness);
-        workingState.setCompactness(this.compactness);
-        workingState.setPopulationVariance(this.populationVariance);
         workingState.setCurrentGoodness(this.currentGoodness);
         workingState.setPreference(preference);
         workingState.setNumOfCds(this.numOfCds);
         workingState.setAveIncome(this.aveIncome);
         workingState.setNumOfPrecincts(this.numOfPrecincts);
         workingState.setArea(this.area);
+        workingState.setCompactness(this.compactness);
+        workingState.setPopulationVariance(this.populationVariance);
+        workingState.setPatisanFairness(this.patisanFairness);
+        workingState.setRacialFairness(this.racialFairness);
         this.copyWinnerParty(this.winnerParty, workingState.getWinnerParty());
         this.copyRace(this.race, workingState.getRace());
         this.copyParty(this.vote, workingState.getVote());
@@ -670,10 +703,20 @@ public class State {
     public void setupGoodness() {
         Set<CDistrict> cds = this.getCongressionalDistricts();
         this.currentGoodness=0;
+        this.patisanFairness=0;
+        this.racialFairness=0;
+        this.populationVariance=0;
         for (CDistrict cDistrict : cds) {
             cDistrict.setCurrentGoodness(cDistrict.calculateObjectiveFunction());
             this.currentGoodness = this.currentGoodness +cDistrict.getCurrentGoodness();
+            this.patisanFairness = this.patisanFairness + cDistrict.getPartisanFairness();
+            this.racialFairness = this.racialFairness + cDistrict.getRacialFairness();
+            this.populationVariance = this.populationVariance +  cDistrict.getPopulationVariance();
         }
+        this.currentGoodness=this.currentGoodness/this.congressionalDistricts.size();
+        this.patisanFairness=this.patisanFairness/this.congressionalDistricts.size();
+        this.racialFairness=this.racialFairness/this.congressionalDistricts.size();
+        this.populationVariance=this.populationVariance/this.congressionalDistricts.size();
     }
     
 }

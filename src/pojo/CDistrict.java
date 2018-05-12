@@ -37,8 +37,11 @@ public class CDistrict {
     private int registerVoters;
 
     private int totalVoters;
-
     
+    private float compactness;
+    private float partisanFairness;
+    private float populationVariance;
+    private float racialFairness;
     public CDInfor getCdInfor() {
         return cdInfor;
     }
@@ -53,6 +56,38 @@ public class CDistrict {
 
     public String getName() {
         return name;
+    }
+
+    public float getCompactness() {
+        return compactness;
+    }
+
+    public void setCompactness(float compactness) {
+        this.compactness = compactness;
+    }
+
+    public float getPartisanFairness() {
+        return partisanFairness;
+    }
+
+    public void setPartisanFairness(float partisanFairness) {
+        this.partisanFairness = partisanFairness;
+    }
+
+    public float getPopulationVariance() {
+        return populationVariance;
+    }
+
+    public void setPopulationVariance(float populationVariance) {
+        this.populationVariance = populationVariance;
+    }
+
+    public float getRacialFairness() {
+        return racialFairness;
+    }
+
+    public void setRacialFairness(float racialFairness) {
+        this.racialFairness = racialFairness;
     }
 
     public CDistrict() {
@@ -248,24 +283,44 @@ public class CDistrict {
 
     public float calculateCompactness() {
         float compactness = 0;
+        this.compactness = compactness;
         return compactness;
     }
 
     public float calculatePartisanFairness() {
         float pFairness = 0;
+        int dVOtes = this.getVote().get("DEMOCRATIC");
+        int rVOtes = this.getVote().get("REPUBLICAN");
+        int totalVotes = dVOtes+rVOtes;
+        int totalVotesLosing= 0;
+        int totalVotesWinning=0;
+        if(dVOtes<=rVOtes){
+            totalVotesLosing=dVOtes;
+            totalVotesWinning = rVOtes;
+        }else{
+            totalVotesLosing=rVOtes;
+            totalVotesWinning = dVOtes;
+        }
+        int wastedVotes = (int)Math.abs(0.5 * (totalVotes) - totalVotesWinning);
+        pFairness =  ((float) Math.abs(totalVotesLosing - wastedVotes)) / totalVotes;
+//        pFairness = pFairness/totalVotes;
+        this.partisanFairness = pFairness;
         return pFairness;
     }
 
+    public float calculateRacialFairness() {
+        float racialFairness = 0;
+        this.racialFairness = racialFairness;
+        return racialFairness;
+    }
+    
     public float calculatePopulationVariance() {
         float numOfCDs = this.getState().getCongressionalDistricts().size();
         float mean = this.getState().getPopulation()/numOfCDs;
         float variance = (float)Math.pow((double)(this.population - mean),(double) 2);
         variance = variance/(mean*mean);
+        this.populationVariance = (1-(variance/numOfCDs));
         return variance/numOfCDs;
-    }
-
-    public int calculateRacialFairness() {
-        return 0;
     }
 
     public float getGoodnessDiff(float cGoodness) {
