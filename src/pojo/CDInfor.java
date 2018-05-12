@@ -10,11 +10,15 @@ public class CDInfor {
     private int asian;
     private int americanIndian;
     private int others;
+    
     private int houseHoldAvg;
     private int familyAvg;
     private int totalHouseHold;
     private int schoolEnroll;
     private int employees;
+    private int houseHoldMedian;
+
+//    private int houseHoldMean;
     public int getMale() {
         return male;
     }
@@ -106,6 +110,12 @@ public class CDInfor {
                 + ", americanIndian=" + americanIndian + ", others=" + others + ", houseHoldAvg="
                 + houseHoldAvg + ", familyAvg=" + familyAvg + ", totalHouseHold=" + totalHouseHold
                 + ", schoolEnroll=" + schoolEnroll + ", employees=" + employees + "]";
+    }
+    public int getHouseHoldMedian() {
+        return houseHoldMedian;
+    }
+    public void setHouseHoldMedian(int houseHoldMedian) {
+        this.houseHoldMedian = houseHoldMedian;
     }
     
 }

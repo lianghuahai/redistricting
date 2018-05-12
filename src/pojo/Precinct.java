@@ -28,6 +28,11 @@ public class Precinct {
     int cdistrictId;
     private String county;
     private int stateId;
+    public Precinct(){
+        super();
+        vote.put("DEMOCRATIC", 0);
+        vote.put("REPUBLICAN", 0);
+    }
     //getter and setter
     public String getName() {
         return name;

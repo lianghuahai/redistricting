@@ -10,6 +10,11 @@ public class stateInfo {
     private int numOfPds;
     private double area;
     private List<CDInfor> cdInforList = new ArrayList<CDInfor>();
+    private float goodness; 
+    private float compactness; 
+    private float racialFairness; 
+    private float patisanFairness; 
+    
     public long getPopulation() {
         return population;
     }
@@ -45,6 +50,30 @@ public class stateInfo {
     }
     public void setCdInforList(List<CDInfor> cdInforList) {
         this.cdInforList = cdInforList;
+    }
+    public float getGoodness() {
+        return goodness;
+    }
+    public void setGoodness(float goodness) {
+        this.goodness = goodness;
+    }
+    public float getCompactness() {
+        return compactness;
+    }
+    public void setCompactness(float compactness) {
+        this.compactness = compactness;
+    }
+    public float getRacialFairness() {
+        return racialFairness;
+    }
+    public void setRacialFairness(float racialFairness) {
+        this.racialFairness = racialFairness;
+    }
+    public float getPatisanFairness() {
+        return patisanFairness;
+    }
+    public void setPatisanFairness(float patisanFairness) {
+        this.patisanFairness = patisanFairness;
     }
     
     

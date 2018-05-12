@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import pojo.CDInfor;
 import pojo.CDistrict;
+import pojo.Party;
 import pojo.Precinct;
 import pojo.State;
 import pojo.User;
@@ -45,5 +46,7 @@ public interface RSMapper {
     public void increaseRunningTimes(int i,String sName);
     public void updatePCode(String str, int code);
     public void createVotes(String code);
+    public void updateUser(String party, String firstName, String lastName, String email);
+    public void deleteUser(String email);
     
 }

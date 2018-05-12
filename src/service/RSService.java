@@ -35,7 +35,7 @@ public class RSService {
 
     public boolean register(User user) {
         user.encrptPW();
-        user.setRole(UserRole.USER);
+        user.setRole("USER");
         int successCode = rsMapper.createUser(user);
         if(successCode==1){
             return true;
@@ -165,5 +165,17 @@ public class RSService {
             code++;
         }
         
+    }
+
+    public State getStateForCompare(String stateName) {
+        return rsMapper.getStateByName(stateName);
+    }
+
+    public void updateUser(User user) {
+         rsMapper.updateUser(user.getParty(),user.getFirstName(),user.getLastName(),user.getEmail());
+    }
+
+    public void deleteUser(String email) {
+        rsMapper.deleteUser(email);
     }
 }

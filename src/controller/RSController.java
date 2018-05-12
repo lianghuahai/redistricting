@@ -99,8 +99,17 @@ public class RSController {
             }else{
                 originalState.setUpCoroladoCdMapJson(mapJson.getFeatures());
             }
+        }else if(stateName.equals("SC")){
+            if(dLevel.equals("PD")){
+                int colorCount=1;
+                for (CDistrict cd : originalState.getCongressionalDistricts()) {
+                    cd.setUpSCPrecinctMapJson(mapJson.getFeatures(),colorCount);
+                    colorCount++;
+                }
+            }else{
+                originalState.setUpSCCdMapJson(mapJson.getFeatures());
+            }
         }
-        System.out.println(originalState.getMAXRUNTIME());
         req.getSession().setAttribute(PropertyManager.getInstance().getValue("originalState"),originalState);
         res.getWriter().print(new Gson().toJson(mapJson));
     }
@@ -200,8 +209,9 @@ public class RSController {
                 count++;
             }
         }
-        System.out.println(new Gson().toJson(si));
+        //compactness, goodness, fairness , effeciency gap
         si.setNumOfPds(count);
+        si.setArea(originalState.getArea());
         res.getWriter().print(new Gson().toJson(si));
     }
     
@@ -211,12 +221,48 @@ public class RSController {
         res.getWriter().print(new Gson().toJson(1));
     }
     
+    @RequestMapping("getCompareState")
+    public void getCompareState(String stateName,HttpServletRequest req, HttpServletResponse res) throws IOException, URISyntaxException{
+        State originalState = rsService.getStateForCompare(stateName);
+        stateInfo si = new stateInfo();
+        si.setArea(originalState.getArea());
+        si.setAveIncome(originalState.getAveIncome());
+        si.setPopulation(originalState.getPopulation());
+        if(stateName.equals("NH")){
+            si.setNumOfCds(2);
+            si.setNumOfPds(328);
+        }else if(stateName.equals("CO")){
+            si.setNumOfCds(7);
+            si.setNumOfPds(3039);
+        }else{
+            si.setNumOfCds(7);
+            si.setNumOfPds(2122);
+        }
+        //compactness, goodness, fairness , effeciency gap
+        si.setArea(originalState.getArea());
+        res.getWriter().print(new Gson().toJson(si));
+        
+        
+        
+    }
     
     
     
-    
+    @RequestMapping("updateUser")
+    public void updateUser(User user,HttpServletRequest req, HttpServletResponse res) throws IOException, URISyntaxException{
+        System.out.println(user);
+        rsService.updateUser(user);
+    }
+    @RequestMapping("addUser")
+    public void addUser(User user,HttpServletRequest req, HttpServletResponse res) throws IOException, URISyntaxException{
+        System.out.println(user);
+    }
+    @RequestMapping("deleteUser")
+    public void deleteUser(User user,HttpServletRequest req, HttpServletResponse res) throws IOException, URISyntaxException{
+        System.out.println(user);
+        rsService.deleteUser(user.getEmail());
+    }
     //Todo
-    public boolean addUser (User user){return true;}
     public boolean getMouthlyReport (String mouth){return true;}
     public boolean addNewState (String stateName){return true;}
     public boolean getState (String stateName){return true;}
@@ -241,17 +287,11 @@ public class RSController {
             }
         }
     }
-    
-    
-    
-    
     @RequestMapping("updatePCode")
     public void updatePCode( HttpServletRequest req, HttpServletResponse res) throws Exception {
 //        rsService.updatePCode();
         rsService.createVotes();
     }
-    
-    
     @RequestMapping("test")
     public void test( HttpServletRequest req, HttpServletResponse res) throws Exception {
         LoadCOData load= new LoadCOData();

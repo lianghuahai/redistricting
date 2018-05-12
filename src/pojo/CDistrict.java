@@ -46,7 +46,6 @@ public class CDistrict {
     public void setCdInfor(CDInfor cdInfor) {
         this.cdInfor = cdInfor;
     }
-
     // setter and getter
     private int stateId;
 
@@ -58,8 +57,8 @@ public class CDistrict {
 
     public CDistrict() {
         super();
-        votes.put(Party.DEMOCRATIC, 0);
-        votes.put(Party.REPUBLICAN, 0);
+        vote.put("DEMOCRATIC", 0);
+        vote.put("REPUBLICAN", 0);
     }
 
     public void setName(String name) {
@@ -328,27 +327,36 @@ public class CDistrict {
     public void setUpPrecinctMapJson(Set<Feature> features, int colorCount) {
         Set<Precinct> ps = this.getPrecinct();
         for (Precinct p : ps) {
-            if(p.getPrecinctCode().equals("63014")){
-//                System.out.println(p.getFeature().getProperties().getFill()); 
-//                System.out.println(f.getProperties().getFill());
-                System.out.println(p.getName());
-          }
             for (Feature f : features) {
                 if (f.getProperties().getVTDST10().equals(p.getPrecinctCode())) {
-                    
+                    f.getProperties().setVTDI10(p.getPrecinctCode());
                     f.getProperties().setPOPULATION(p.getPopulation());
                     f.getProperties().setREGISTERVOTERS(p.getRegisteredVoters());
                     f.getProperties().setTOTALVOTERS(p.getTotalVoters());
                     f.getProperties().setFill(PropertyManager.getInstance().getValue("color0" + colorCount));
                     p.setFeature(f);
                     this.setColor(f.getProperties().getFill());
-                    
                     break;
                 }
             }
         }
     }
-
+    public void setUpSCPrecinctMapJson(Set<Feature> features, int colorCount) {
+        Set<Precinct> ps = this.getPrecinct();
+        for (Precinct p : ps) {
+            for (Feature f : features) {
+                if (f.getProperties().getGEOID10().equals(p.getPrecinctCode())) {
+                    f.getProperties().setPOPULATION(p.getPopulation());
+                    f.getProperties().setREGISTERVOTERS(p.getRegisteredVoters());
+                    f.getProperties().setTOTALVOTERS(p.getTotalVoters());
+                    f.getProperties().setFill(PropertyManager.getInstance().getValue("color0" + colorCount));
+                    p.setFeature(f);
+                    this.setColor(f.getProperties().getFill());
+                    break;
+                }
+            }
+        }
+    }
     public void setUpCoroladoPrecinctMapJson(Set<Feature> features, int colorCount) {
         Set<Precinct> ps = this.getPrecinct();
         for (Precinct p : ps) {
@@ -358,8 +366,6 @@ public class CDistrict {
                     char charAt = geoid10.charAt(3);
                     String s = String.valueOf(charAt);
                     int cdId = Integer.parseInt(s);
-                    System.out.println(geoid10);
-                    System.out.println(cdId);
                     f.getProperties().setPOPULATION(p.getPopulation());
                     f.getProperties().setREGISTERVOTERS(p.getRegisteredVoters());
                     f.getProperties().setTOTALVOTERS(p.getTotalVoters());

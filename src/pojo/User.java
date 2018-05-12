@@ -10,9 +10,9 @@ public class User {
     private String password;
     private String firstName;
     private String lastName;
-    private Party preferParty;
-    private UserRole role;
-    
+    //private Party preferParty;
+    private String role;
+    private String party;
     //getter and setter
     public String getEmail() {
         return email;
@@ -44,16 +44,16 @@ public class User {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-    public Party getPreferParty() {
-        return preferParty;
-    }
-    public void setPreferParty(Party preferParty) {
-        this.preferParty = preferParty;
-    }
-    public UserRole getRole() {
+//    public Party getPreferParty() {
+//        return preferParty;
+//    }
+//    public void setPreferParty(Party preferParty) {
+//        this.preferParty = preferParty;
+//    }
+    public String getRole() {
         return role;
     }
-    public void setRole(UserRole role) {
+    public void setRole(String role) {
         this.role = role;
     }
     private int id;
@@ -61,7 +61,8 @@ public class User {
     @Override
     public String toString() {
         return "User [email=" + email + ", password=" + password + ", firstName=" + firstName + ", lastName="
-                + lastName + ", preferParty=" + preferParty + ", role=" + role + ", id=" + id + "]";
+                + lastName + ", preferParty=" + party + ", role=" + role + ", party=" + party + ", id="
+                + id + "]";
     }
     //methods to be implemented
     public boolean identifyPassword (String password){
@@ -80,6 +81,12 @@ public class User {
         return true;
     }
     
+    public String getParty() {
+        return party;
+    }
+    public void setParty(String party) {
+        this.party = party;
+    }
     public void logout (){
         
     }
