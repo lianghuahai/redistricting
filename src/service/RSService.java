@@ -67,7 +67,6 @@ public class RSService {
         for (; i <= numOfCds; i++) {
             CDistrict cd = rsMapper.getCdById(i);
             CDInfor cdInfor = rsMapper.getCdInforById(i);
-//            System.out.println(cdInfor);
             cd.setCdInfor(cdInfor);
             state.getCongressionalDistricts().add(cd);
             cd.setState(state);
@@ -75,6 +74,16 @@ public class RSService {
             for (Precinct precinct : ps) {
                 precinct.setCDistrict(cd);
             }
+        }
+        Set<CDistrict> cds = state.getCongressionalDistricts();
+        for (CDistrict cDistrict : cds) {
+            Set<Precinct> precincts = cDistrict.getPrecinct();
+            for (Precinct p : precincts) {
+                cDistrict.getVote().put("REPUBLICAN", p.getVote().get("REPUBLICAN")+cDistrict.getVote().get("REPUBLICAN"));
+                cDistrict.getVote().put("DEMOCRATIC", p.getVote().get("DEMOCRATIC")+cDistrict.getVote().get("DEMOCRATIC"));
+            }
+            cDistrict.getCdInfor().setdVotes(cDistrict.getVote().get("DEMOCRATIC"));
+            cDistrict.getCdInfor().setrVotes(cDistrict.getVote().get("REPUBLICAN"));
         }
         //rsMapper.increaseRunningTimes(state.getRunningTimes()+1,state.getsName());
         return state;

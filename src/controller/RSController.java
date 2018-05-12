@@ -251,7 +251,11 @@ public class RSController {
     @RequestMapping("updateUser")
     public void updateUser(User user,HttpServletRequest req, HttpServletResponse res) throws IOException, URISyntaxException{
         System.out.println(user);
+        if(user.getParty().equals("undefined")){
+            user.setParty("REPUBLICAN");
+        }
         rsService.updateUser(user);
+        
     }
     @RequestMapping("addUser")
     public void addUser(User user,HttpServletRequest req, HttpServletResponse res) throws IOException, URISyntaxException{

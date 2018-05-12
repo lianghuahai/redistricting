@@ -17,7 +17,8 @@ public class CDInfor {
     private int schoolEnroll;
     private int employees;
     private int houseHoldMedian;
-
+    private int dVotes;
+    private int rVotes;
 //    private int houseHoldMean;
     public int getMale() {
         return male;
@@ -117,5 +118,18 @@ public class CDInfor {
     public void setHouseHoldMedian(int houseHoldMedian) {
         this.houseHoldMedian = houseHoldMedian;
     }
+    public int getdVotes() {
+        return dVotes;
+    }
+    public void setdVotes(int dVotes) {
+        this.dVotes = dVotes;
+    }
+    public int getrVotes() {
+        return rVotes;
+    }
+    public void setrVotes(int rVotes) {
+        this.rVotes = rVotes;
+    }
+   
     
 }

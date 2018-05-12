@@ -14,6 +14,8 @@ public class stateInfo {
     private float compactness; 
     private float racialFairness; 
     private float patisanFairness; 
+//    private 
+    
     
     public long getPopulation() {
         return population;
