@@ -18,10 +18,10 @@ public class Precinct {
     private int registeredVoters;
     private int totalVoters;
     private long population;
-    private HashMap<Race, Integer> race = new HashMap<Race, Integer>();
-    private HashMap<Party, Integer> votes =  new HashMap<Party, Integer>();
-    private boolean isFixed;
-    private boolean isBorder;
+//    private HashMap<Race, Integer> race = new HashMap<Race, Integer>();
+//    private HashMap<Party, Integer> votes =  new HashMap<Party, Integer>();
+    private boolean isFixed=false;
+    private boolean isBorder=false;
     private Set<Precinct> neighborPrecincts = new HashSet<Precinct>();
     private Set<CDistrict> neighborCDistricts = new HashSet<CDistrict>();
     private  Feature feature = new Feature();
@@ -65,12 +65,12 @@ public class Precinct {
     public void setCounty(String county) {
         this.county = county;
     }
-    public HashMap<Party, Integer> getVotes() {
-        return votes;
-    }
-    public void setVotes(HashMap<Party, Integer> votes) {
-        this.votes = votes;
-    }
+//    public HashMap<Party, Integer> getVotes() {
+//        return votes;
+//    }
+//    public void setVotes(HashMap<Party, Integer> votes) {
+//        this.votes = votes;
+//    }
     public int getCdistrictId() {
         return cdistrictId;
     }
@@ -151,12 +151,12 @@ public class Precinct {
     public void setPopulation(long population) {
         this.population = population;
     }
-    public HashMap<Race, Integer> getRace() {
-        return race;
-    }
-    public void setRace(HashMap<Race, Integer> race) {
-        this.race = race;
-    }
+//    public HashMap<Race, Integer> getRace() {
+//        return race;
+//    }
+//    public void setRace(HashMap<Race, Integer> race) {
+//        this.race = race;
+//    }
 //    public HashMap<Party, Integer> getVotes() {
 //        return votes;
 //    }
@@ -178,15 +178,14 @@ public class Precinct {
     }
   
     
+  
     @Override
     public String toString() {
         return "Precinct [name=" + name + ", precinctCode=" + precinctCode + ", secondStylePrecinctCode="
-                + secondStylePrecinctCode + ", originCDistrict=" + originCDistrict + ", map=" + map
-                + ", registeredVoters=" + registeredVoters + ", totalVoters=" + totalVoters + ", population="
-                + population + ", race=" + race + ", votes=" + votes + ", isFixed=" + isFixed + ", isBorder="
-                + isBorder + ", neighborPrecincts=" + neighborPrecincts + ", neighborCDistricts="
-                + neighborCDistricts + ", feature=" + feature + ", cdistrictId=" + cdistrictId + ", vote="
-                + vote + "]";
+                + secondStylePrecinctCode + ", state=" + state + ", registeredVoters=" + registeredVoters
+                + ", totalVoters=" + totalVoters + ", population=" + population + ", isFixed=" + isFixed
+                + ", isBorder=" + isBorder + ", feature=" + feature + ", cdistrictId=" + cdistrictId
+                + ", county=" + county + ", stateId=" + stateId + ", vote=" + vote + "]";
     }
     //methods to be implemented
     public CDistrict getRandomNeighborCDistrict (){

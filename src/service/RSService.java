@@ -117,7 +117,7 @@ public class RSService {
     public boolean findState (String stateID){return true;}
 
     public void updatePrecinctField(Precinct precinct) {
-        rsMapper.updatePrecinctField(precinct.getPrecinctCode(),precinct.getVotes().get(Party.REPUBLICAN),precinct.getVotes().get(Party.DEMOCRATIC));
+        //rsMapper.updatePrecinctField(precinct.getPrecinctCode(),precinct.getVotes().get(Party.REPUBLICAN),precinct.getVotes().get(Party.DEMOCRATIC));
     }
 
     public void updatePrecinctPopulation(Precinct precinct) {
@@ -145,7 +145,7 @@ public class RSService {
         for (CDistrict cd : cds) {
             Set<Precinct> precincts = cd.getPrecinct();
             for (Precinct precinct : precincts) {
-                List<String> neighbors = rsMapper.getNeighborsCode(precinct.getPrecinctCode());
+                List<String> neighbors = rsMapper.getNeighborsCode(precinct.getPrecinctCode(),workingState.getsName());
                 if(neighbors.size()>0){
                     workingState.setupNeighbors(precinct,neighbors);
                 }

@@ -97,6 +97,7 @@
 				<result column="totalVoters" property="totalVoters"/>
 				<result column="pp" property="population"/>
 				<result column="cdistrictId" property="cdistrictId"/>
+				<result column="county" property="county"/>
 				<collection property="vote" ofType="java.util.HashMap">
 					<result column="rVotes" property="REPUBLICAN" />
 					<result column="dVotes" property="DEMOCRATIC"/>
@@ -116,7 +117,7 @@
 			WHERE  pCode = #{0} and stateId = 1
 	</update>
 	<select id="getCdById" parameterType="int" resultMap="Precincts">
-		SELECT p.pCode,p.cdistrictId,p.pName ,v.registerVoters,v.totalVoters,v.rVotes,v.dVotes, p.population AS pp, cid,cdName ,c.population AS cp
+		SELECT p.county,p.pCode,p.cdistrictId,p.pName ,v.registerVoters,v.totalVoters,v.rVotes,v.dVotes, p.population AS pp, cid,cdName ,c.population AS cp
 		FROM precinct AS p, cdistrict AS c, vote AS v
 		WHERE p.cdistrictId=#{id} AND p.cdistrictId=c.cid AND v.pCode=p.pCode
 	
@@ -139,8 +140,8 @@
 	<select id="getPrecinctId" parameterType="String" resultType="int">
 		select IFNULL(MAX(pid),0) pid from precinct where pCode=#{precinctCode}
 	</select>
-	<select id="getNeighborsCode" parameterType="String" resultType="String">
-		SELECT neighborCode FROM neighbors WHERE pCode = #{pCode,jdbcType=VARCHAR}
+	<select id="getNeighborsCode"  resultType="String">
+		SELECT neighborCode FROM neighbors WHERE sName=#{1} and pCode = #{0,jdbcType=VARCHAR}
 	</select>
 	<insert id="savePrecinctVotes" >
 			INSERT INTO vote (pCode,rVotes,dVotes,totalVoters,registerVoters,year) VALUES

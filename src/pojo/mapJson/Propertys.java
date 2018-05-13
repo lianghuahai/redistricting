@@ -49,6 +49,7 @@ public class Propertys {
     private int totalHouseHold;
     private int schoolEnroll;
     private int employees;
+    private String county;
     public String getProperties() {
         return properties;
     }
@@ -65,6 +66,12 @@ public class Propertys {
         return COUNTYFP10;
     }
    
+    public String getCounty() {
+        return county;
+    }
+    public void setCounty(String county) {
+        this.county = county;
+    }
     public int getTOTALVOTERS() {
         return TOTALVOTERS;
     }

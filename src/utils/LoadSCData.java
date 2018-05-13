@@ -141,22 +141,22 @@ public class LoadSCData {
     //my method
     
     
-    private void setUpGeoCds(State workingState, PrecinctJson jsonData) {
-        CDistrict cd1 = getCdByName("cd1", workingState.getCongressionalDistricts());
-        CDistrict cd2 = getCdByName("cd2", workingState.getCongressionalDistricts());
-        Set<Feature> features = jsonData.getFeatures();
-        for (Feature feature : features) {
-            if(feature.getProperties().getCD115FP().equals("01")){
-                feature.getProperties().setPOPULATION(cd1.getPopulation());
-                feature.getProperties().setRVOTES(cd1.getVotes().get(Party.REPUBLICAN));
-                feature.getProperties().setDVOTES(cd1.getVotes().get(Party.DEMOCRATIC));
-            }else{
-                feature.getProperties().setPOPULATION(cd2.getPopulation());
-                feature.getProperties().setRVOTES(cd2.getVotes().get(Party.REPUBLICAN));
-                feature.getProperties().setDVOTES(cd2.getVotes().get(Party.DEMOCRATIC));
-            }
-        }
-    }
+//    private void setUpGeoCds(State workingState, PrecinctJson jsonData) {
+//        CDistrict cd1 = getCdByName("cd1", workingState.getCongressionalDistricts());
+//        CDistrict cd2 = getCdByName("cd2", workingState.getCongressionalDistricts());
+//        Set<Feature> features = jsonData.getFeatures();
+//        for (Feature feature : features) {
+//            if(feature.getProperties().getCD115FP().equals("01")){
+//                feature.getProperties().setPOPULATION(cd1.getPopulation());
+//                feature.getProperties().setRVOTES(cd1.getVotes().get(Party.REPUBLICAN));
+//                feature.getProperties().setDVOTES(cd1.getVotes().get(Party.DEMOCRATIC));
+//            }else{
+//                feature.getProperties().setPOPULATION(cd2.getPopulation());
+//                feature.getProperties().setRVOTES(cd2.getVotes().get(Party.REPUBLICAN));
+//                feature.getProperties().setDVOTES(cd2.getVotes().get(Party.DEMOCRATIC));
+//            }
+//        }
+//    }
 
     private void setUpGeoPrecincts(State workingState,PrecinctJson precinctJson) {
         Set<CDistrict> cds = workingState.getCongressionalDistricts();
@@ -170,8 +170,8 @@ public class LoadSCData {
                         f.getProperties().setPOPULATION(p.getPopulation());
                         f.getProperties().setREGISTERVOTERS(p.getRegisteredVoters());
                         f.getProperties().setTOTALVOTERS(p.getTotalVoters());
-                        f.getProperties().setRVOTES(p.getVotes().get(Party.REPUBLICAN));
-                        f.getProperties().setDVOTES(p.getVotes().get(Party.DEMOCRATIC));
+//                        f.getProperties().setRVOTES(p.getVotes().get(Party.REPUBLICAN));
+//                        f.getProperties().setDVOTES(p.getVotes().get(Party.DEMOCRATIC));
                         f.getProperties().setFill(Integer.toString(colorCount));
                         count++;
                         break;

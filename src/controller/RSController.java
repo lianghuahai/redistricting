@@ -14,6 +14,9 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import oracle.net.aso.f;
+
+import org.apache.poi.hssf.util.HSSFColor.GOLD;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +30,8 @@ import pojo.Preference;
 import pojo.State;
 import pojo.User;
 import pojo.stateInfo;
+import pojo.mapJson.Feature;
+import pojo.mapJson.Geometry;
 import pojo.mapJson.PrecinctJson;
 import service.RSService;
 import utils.LoadCOData;
@@ -79,6 +84,7 @@ public class RSController {
     @RequestMapping("displayState")
     public void displayState(String stateName,String dLevel,String userEmail,HttpServletRequest req, HttpServletResponse res) throws IOException, Exception{
         State originalState = rsService.initializeState(stateName);
+        originalState.setsName(stateName);
         PrecinctJson mapJson = new LoadJsonData().getJsonData(stateName,dLevel);
         if(stateName.equals("NH")){
             if(dLevel.equals("PD")){
@@ -125,9 +131,13 @@ public class RSController {
 //        for (CDistrict cDistrict : cds) {
 //            System.out.println(cDistrict.getName()+":"+cDistrict.calculateObjectiveFunction()+","+cDistrict.getCurrentGoodness());
 //        }
-        System.out.print("redistrict>>>oriGoodness:" + originalState.getCurrentGoodness()+"pv:"+originalState.getPopulationVariance()+"racialF:"+originalState.getRacialFairness()+"partyF:"+originalState.getPatisanFairness());
+        System.out.println(originalState.getsName());
+        System.out.print("redistrict>>>oriGoodness:" + originalState.getCurrentGoodness()+"compactness"+originalState.getCompactness()+"pv:"+originalState.getPopulationVariance()+"racialF:"+originalState.getRacialFairness()+"partyF:"+originalState.getPatisanFairness());
         State workingState= originalState.clone(preference);
+        System.out.println(workingState.getsName());
+        System.out.println("clone");
         rsService.initializeNeighbors(workingState);
+        System.out.println("initializeNeighbors");
         Precinct movedPrecinct = workingState.startAlgorithm();
         if(!workingState.checkTermination()){
             while(movedPrecinct==null){
@@ -140,8 +150,20 @@ public class RSController {
                     return ;
                 }
             }
-            System.out.print("redistrict>>>newGoodness:" + workingState.getCurrentGoodness()+"pv:"+workingState.getPopulationVariance()+"racialF:"+workingState.getRacialFairness()+"partyF:"+workingState.getPatisanFairness());
+            System.out.print("redistrict>>>newGoodness:" + workingState.getCurrentGoodness()+" comnpactness: "+workingState.getCompactness()+" pv:"+workingState.getPopulationVariance()+"racialF:"+workingState.getRacialFairness()+"partyF:"+workingState.getPatisanFairness());
             PrecinctProperty precinctProperty =  new PrecinctProperty();
+            //old goodness
+            precinctProperty.setOriginalGoodness(originalState.getCurrentGoodness());
+            precinctProperty.setOriginalCompactness(originalState.getCompactness());
+            precinctProperty.setOriginalRacialFairness(originalState.getRacialFairness());
+            precinctProperty.setOriginalPartisanFairness(originalState.getPatisanFairness());
+            precinctProperty.setOriginalPopulationVariance(originalState.getPopulationVariance());
+            //new goodness
+            precinctProperty.setGoodness(workingState.getCurrentGoodness());
+            precinctProperty.setCompactness(workingState.getCompactness());
+            precinctProperty.setRacialFairness(workingState.getRacialFairness());
+            precinctProperty.setPartisanFairness(workingState.getPatisanFairness());
+            precinctProperty.setPopulationVariance(workingState.getPopulationVariance());
             precinctProperty.setFill(movedPrecinct.getFeature().getProperties().getFill());
             precinctProperty.setVTDST10(movedPrecinct.getPrecinctCode());
             req.getSession().setAttribute(PropertyManager.getInstance().getValue("workingState"),workingState);
@@ -172,7 +194,7 @@ public class RSController {
                     return ;
                 }
             }
-            System.out.println("processs>>>newGoodness:" + workingState.getCurrentGoodness()+" pv:"+workingState.getPopulationVariance()+" racialF:"+workingState.getRacialFairness()+" partyF:"+workingState.getPatisanFairness());
+            System.out.println("processs>>>newGoodness:" + workingState.getCurrentGoodness()+"compactness"+workingState.getCompactness()+" pv:"+workingState.getPopulationVariance()+" racialF:"+workingState.getRacialFairness()+" partyF:"+workingState.getPatisanFairness());
             Set<CDistrict> cds = workingState.getCongressionalDistricts();
             for (CDistrict cDistrict : cds) {
                 System.out.println("move!"+cDistrict.getName()+","+cDistrict.getPopulation());
@@ -247,8 +269,6 @@ public class RSController {
         
     }
     
-    
-    
     @RequestMapping("updateUser")
     public void updateUser(User user,HttpServletRequest req, HttpServletResponse res) throws IOException, URISyntaxException{
         System.out.println(user);
@@ -267,6 +287,21 @@ public class RSController {
         System.out.println(user);
         rsService.deleteUser(user.getEmail());
     }
+    
+    
+    @RequestMapping("importState")
+    public void importState( HttpServletRequest req, HttpServletResponse res) throws Exception {
+        State state = new State();
+        Gson gson = new Gson();
+        res.getWriter().print(gson.toJson(state));
+    }
+    @RequestMapping("exportState")
+    public void exportState( HttpServletRequest req, HttpServletResponse res) throws Exception {
+        State state = new State();
+        Gson gson = new Gson();
+        res.getWriter().print(gson.toJson(state));
+    }
+    
     //Todo
     public boolean getMouthlyReport (String mouth){return true;}
     public boolean addNewState (String stateName){return true;}
@@ -274,8 +309,39 @@ public class RSController {
     public boolean deleteState (String stateName){return true;}
     public boolean findState (String stateID){return true;}
     
+    @RequestMapping("gsonT")
+    public void gsonT( HttpServletRequest req, HttpServletResponse res) throws Exception {
+        State state = new State();
+        Gson gson = new Gson();
+        res.getWriter().print(gson.toJson(state));
+    }
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    @RequestMapping("loadtest")
+    public void loadtest( HttpServletRequest req, HttpServletResponse res) throws Exception {
+        PrecinctJson mapJson = new LoadJsonData().getJsonData("NH","PD");
+        Set<Feature> features = mapJson.getFeatures();
+        for (Feature feature : features) {
+            Geometry geometry = feature.getGeometry();
+            List<List<List<Double>>> coordinates = geometry.getCoordinates();
+            List<List<Double>> list = coordinates.get(0);
+            for (List<Double> codinates : list) {
+                System.out.println(codinates.get(0));
+                System.out.println(codinates.get(1));
+                break;
+            }
+            System.out.println(list.get(1));
+            break;
+        }
+    }
     
     
     @RequestMapping("testSC")

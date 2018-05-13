@@ -42,7 +42,7 @@ public interface RSMapper {
     public int getPrecinctId(String precinctCode);
     public void savePrecinctVotes(String pCode, int rVotes, int dVotes,int totalVoters,int registerVoters,int year);
     public void saveNeighbors(String string, String string2);
-    public List<String> getNeighborsCode(String pCode);
+    public List<String> getNeighborsCode(String pCode,String sName);
     public CDInfor getCdInforById(int id);
     public void increaseRunningTimes(int i,String sName);
     public void updatePCode(String str, int code);

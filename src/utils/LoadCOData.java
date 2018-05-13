@@ -154,22 +154,22 @@ public class LoadCOData {
     //my method
     
     
-    private void setUpGeoCds(State workingState, PrecinctJson jsonData) {
-        CDistrict cd1 = getCdByName("cd1", workingState.getCongressionalDistricts());
-        CDistrict cd2 = getCdByName("cd2", workingState.getCongressionalDistricts());
-        Set<Feature> features = jsonData.getFeatures();
-        for (Feature feature : features) {
-            if(feature.getProperties().getCD115FP().equals("01")){
-                feature.getProperties().setPOPULATION(cd1.getPopulation());
-                feature.getProperties().setRVOTES(cd1.getVotes().get(Party.REPUBLICAN));
-                feature.getProperties().setDVOTES(cd1.getVotes().get(Party.DEMOCRATIC));
-            }else{
-                feature.getProperties().setPOPULATION(cd2.getPopulation());
-                feature.getProperties().setRVOTES(cd2.getVotes().get(Party.REPUBLICAN));
-                feature.getProperties().setDVOTES(cd2.getVotes().get(Party.DEMOCRATIC));
-            }
-        }
-    }
+//    private void setUpGeoCds(State workingState, PrecinctJson jsonData) {
+//        CDistrict cd1 = getCdByName("cd1", workingState.getCongressionalDistricts());
+//        CDistrict cd2 = getCdByName("cd2", workingState.getCongressionalDistricts());
+//        Set<Feature> features = jsonData.getFeatures();
+//        for (Feature feature : features) {
+//            if(feature.getProperties().getCD115FP().equals("01")){
+//                feature.getProperties().setPOPULATION(cd1.getPopulation());
+//                feature.getProperties().setRVOTES(cd1.getVotes().get(Party.REPUBLICAN));
+//                feature.getProperties().setDVOTES(cd1.getVotes().get(Party.DEMOCRATIC));
+//            }else{
+//                feature.getProperties().setPOPULATION(cd2.getPopulation());
+//                feature.getProperties().setRVOTES(cd2.getVotes().get(Party.REPUBLICAN));
+//                feature.getProperties().setDVOTES(cd2.getVotes().get(Party.DEMOCRATIC));
+//            }
+//        }
+//    }
 
     private void setUpGeoPrecincts(State workingState,PrecinctJson precinctJson) {
         Set<CDistrict> cds = workingState.getCongressionalDistricts();
@@ -183,8 +183,8 @@ public class LoadCOData {
                         f.getProperties().setPOPULATION(p.getPopulation());
                         f.getProperties().setREGISTERVOTERS(p.getRegisteredVoters());
                         f.getProperties().setTOTALVOTERS(p.getTotalVoters());
-                        f.getProperties().setRVOTES(p.getVotes().get(Party.REPUBLICAN));
-                        f.getProperties().setDVOTES(p.getVotes().get(Party.DEMOCRATIC));
+//                        f.getProperties().setRVOTES(p.getVotes().get(Party.REPUBLICAN));
+//                        f.getProperties().setDVOTES(p.getVotes().get(Party.DEMOCRATIC));
                         f.getProperties().setFill(Integer.toString(colorCount));
                         count++;
                         break;
@@ -197,7 +197,7 @@ public class LoadCOData {
 
     private void setUpPopulationAndVotes(State workingState) throws Exception {
         Set<CDistrict> cds = workingState.getCongressionalDistricts();
-        HashMap<Party, Integer> voteState = workingState.getVotes();
+        //HashMap<Party, Integer> voteState = workingState.getVotes();
         //set up State votes
         int registerVote=0;
         for (CDistrict cDistrict : cds) {
@@ -243,23 +243,23 @@ public class LoadCOData {
             Map<Integer, Object> row = map.get(i); //election data row
             Precinct p = getPrecintByName((String)row.get(0),workingState);
             if(p!=null){
-                HashMap<Party, Integer> votes = p.getVotes();
+//                HashMap<Party, Integer> votes = p.getVotes();
                 int a =getTotal((String)row.get(1),(String)row.get(2),(String)row.get(3),(String)row.get(4),(String)row.get(5));
                 p.setTotalVoters(a);
-                votes.put(Party.REPUBLICAN, (int) (Double.parseDouble((String) row.get(1))));
-                votes.put(Party.DEMOCRATIC, (int) (Double.parseDouble((String) row.get(2))));
+//                votes.put(Party.REPUBLICAN, (int) (Double.parseDouble((String) row.get(1))));
+//                votes.put(Party.DEMOCRATIC, (int) (Double.parseDouble((String) row.get(2))));
             }
         }
         Set<CDistrict> cds = workingState.getCongressionalDistricts();
-        for (CDistrict cd : cds) {
-            HashMap<Party, Integer> votes = cd.getVotes();
-            Set<Precinct> ps = cd.getPrecinct();
-                for (Precinct p : ps) {
-                    cd.setRegisterVoters(cd.getRegisterVoters()+p.getRegisteredVoters());
-                    votes.put(Party.REPUBLICAN, votes.get(Party.REPUBLICAN) + p.getVotes().get(Party.REPUBLICAN));
-                    votes.put(Party.DEMOCRATIC, votes.get(Party.DEMOCRATIC) + p.getVotes().get(Party.DEMOCRATIC));
-                }
-        }
+//        for (CDistrict cd : cds) {
+//            HashMap<Party, Integer> votes = cd.getVotes();
+//            Set<Precinct> ps = cd.getPrecinct();
+//                for (Precinct p : ps) {
+//                    cd.setRegisterVoters(cd.getRegisterVoters()+p.getRegisteredVoters());
+//                    votes.put(Party.REPUBLICAN, votes.get(Party.REPUBLICAN) + p.getVotes().get(Party.REPUBLICAN));
+//                    votes.put(Party.DEMOCRATIC, votes.get(Party.DEMOCRATIC) + p.getVotes().get(Party.DEMOCRATIC));
+//                }
+//        }
     }
     
     

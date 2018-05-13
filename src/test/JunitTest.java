@@ -9,12 +9,24 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import com.google.gson.Gson;
+
 import pojo.CDistrict;
 import pojo.ObjectElement;
 import pojo.State;
 import utils.test;
 
 public class JunitTest {
+    
+    
+    
+    
+    @Test
+    public void test21() throws Exception{
+        State state = new State();
+        Gson gson = new Gson();
+        gson.toJson(state);
+    }
     @Test
     public void test2() throws Exception{
         State workingState = new State();

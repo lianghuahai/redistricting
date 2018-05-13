@@ -12,19 +12,19 @@ import utils.PropertyManager;
 public class State {
     private final int MAXRUNTIME = Integer.parseInt((PropertyManager.getInstance().getValue("state.MAXRUNTIME")));
     private final double MINGOODNESS = Double.parseDouble((PropertyManager.getInstance().getValue("state.MINGOODNESS")));
-    private StateName name;
-    private HashMap<Integer, Party> winnerParty = new HashMap<Integer, Party>();
+//    private StateName name;
+//    private HashMap<Integer, Party> winnerParty = new HashMap<Integer, Party>();
     private Set<CDistrict> congressionalDistricts = new HashSet<CDistrict>();
     private long population;
-    private HashMap<Race, Integer> race = new HashMap<Race, Integer>();
-    private HashMap<Party, Integer> votes = new HashMap<Party, Integer>();
+//    private HashMap<Race, Integer> race = new HashMap<Race, Integer>();
+//    private HashMap<Party, Integer> votes = new HashMap<Party, Integer>();
     private HashMap<String, Integer> vote = new HashMap<String, Integer>();
     private Preference preference = new Preference();
     private int redistrictTimes;
     private float fairness;
-    private float compactness;
-    private float populationVariance;
-    private float currentGoodness;
+    private double compactness;
+    private double populationVariance;
+    private double currentGoodness;
     private double efficiencyGap;
     private Preference constraints;
     private int stateId;
@@ -36,9 +36,9 @@ public class State {
     private int numOfPrecincts;
     private double area;
     private int runningTimes;
-    private float goodness; 
-    private float racialFairness; 
-    private float patisanFairness;
+    private double goodness; 
+    private double racialFairness; 
+    private double patisanFairness;
     public State(){
         super();
         vote.put("DEMOCRATIC", 0);
@@ -48,22 +48,22 @@ public class State {
         return MAXRUNTIME;
     }
 
-    public float getGoodness() {
+    public double getGoodness() {
         return goodness;
     }
-    public void setGoodness(float goodness) {
+    public void setGoodness(double goodness) {
         this.goodness = goodness;
     }
-    public float getRacialFairness() {
+    public double getRacialFairness() {
         return racialFairness;
     }
-    public void setRacialFairness(float racialFairness) {
+    public void setRacialFairness(double racialFairness) {
         this.racialFairness = racialFairness;
     }
-    public float getPatisanFairness() {
+    public double getPatisanFairness() {
         return patisanFairness;
     }
-    public void setPatisanFairness(float patisanFairness) {
+    public void setPatisanFairness(double patisanFairness) {
         this.patisanFairness = patisanFairness;
     }
     public double getMINGOODNESS() {
@@ -89,9 +89,9 @@ public class State {
         this.populationMean = populationMean;
     }
     // setter and getter
-    public StateName getName() {
-        return name;
-    }
+//    public StateName getName() {
+//        return name;
+//    }
     public String getsName() {
         return sName;
     }
@@ -135,9 +135,9 @@ public class State {
     public void setStateId(int stateId) {
         this.stateId = stateId;
     }
-    public void setName(StateName name) {
-        this.name = name;
-    }
+//    public void setName(StateName name) {
+//        this.name = name;
+//    }
     public Preference getPreference() {
         return preference;
     }
@@ -152,13 +152,13 @@ public class State {
         this.congressionalDistricts = congressionalDistricts;
     }
 
-    public HashMap<Integer, Party> getWinnerParty() {
-        return winnerParty;
-    }
-
-    public void setWinnerParty(HashMap<Integer, Party> winnerParty) {
-        this.winnerParty = winnerParty;
-    }
+//    public HashMap<Integer, Party> getWinnerParty() {
+//        return winnerParty;
+//    }
+//
+//    public void setWinnerParty(HashMap<Integer, Party> winnerParty) {
+//        this.winnerParty = winnerParty;
+//    }
 
     public long getPopulation() {
         return population;
@@ -168,21 +168,21 @@ public class State {
         this.population = population;
     }
 
-    public HashMap<Race, Integer> getRace() {
-        return race;
-    }
-
-    public void setRace(HashMap<Race, Integer> race) {
-        this.race = race;
-    }
-
-    public HashMap<Party, Integer> getVotes() {
-        return votes;
-    }
-
-    public void setVotes(HashMap<Party, Integer> votes) {
-        this.votes = votes;
-    }
+//    public HashMap<Race, Integer> getRace() {
+//        return race;
+//    }
+//
+//    public void setRace(HashMap<Race, Integer> race) {
+//        this.race = race;
+//    }
+//
+//    public HashMap<Party, Integer> getVotes() {
+//        return votes;
+//    }
+//
+//    public void setVotes(HashMap<Party, Integer> votes) {
+//        this.votes = votes;
+//    }
 
     public int getRedistrictTimes() {
         return redistrictTimes;
@@ -192,7 +192,7 @@ public class State {
         this.redistrictTimes = redistrictTimes;
     }
 
-    public float getFairness() {
+    public double getFairness() {
         return fairness;
     }
 
@@ -200,27 +200,27 @@ public class State {
         this.fairness = fairness;
     }
 
-    public float getCompactness() {
+    public double getCompactness() {
         return compactness;
     }
 
-    public void setCompactness(float compactness) {
+    public void setCompactness(double compactness) {
         this.compactness = compactness;
     }
 
-    public float getPopulationVariance() {
+    public double getPopulationVariance() {
         return populationVariance;
     }
 
-    public void setPopulationVariance(float populationVariance) {
+    public void setPopulationVariance(double populationVariance) {
         this.populationVariance = populationVariance;
     }
 
-    public float getCurrentGoodness() {
+    public double getCurrentGoodness() {
         return currentGoodness;
     }
 
-    public void setCurrentGoodness(float currentGoodness) {
+    public void setCurrentGoodness(double currentGoodness) {
         this.currentGoodness = currentGoodness;
     }
 
@@ -246,10 +246,10 @@ public class State {
         Precinct  startedPrecinct = this.selectStartPrecinct();
         CDistrict neighborCD    = startedPrecinct.getRandomNeighborCDistrict();
         if(this.tryMove(startedPrecinct,neighborCD)){
-            //System.out.println("move :"+redistrictTimes);
+            System.out.println("move :"+redistrictTimes);
             return startedPrecinct;
         }else{
-            //System.out.println("cant move :"+redistrictTimes);
+            System.out.println("cant move :"+redistrictTimes);
             return null;
         }
     }
@@ -359,9 +359,9 @@ public class State {
         destinationCD.getCdInfor().setMale(destinationCD.getCdInfor().getMale()-precinctMalePeople);
     }
     public boolean validateGoodnessImprovement(CDistrict originCD, CDistrict destinationCD) {
-        float newGoodnessOCD = originCD.calculateObjectiveFunction();
-        float newGoodnessDCD = destinationCD.calculateObjectiveFunction();
-        float goodnessDiff= originCD.getGoodnessDiff(newGoodnessOCD) + destinationCD.getGoodnessDiff(newGoodnessDCD);
+        double newGoodnessOCD = originCD.calculateObjectiveFunction();
+        double newGoodnessDCD = destinationCD.calculateObjectiveFunction();
+        double goodnessDiff= originCD.getGoodnessDiff(newGoodnessOCD) + destinationCD.getGoodnessDiff(newGoodnessDCD);
         if(goodnessDiff > 0){
             originCD.setCurrentGoodness(newGoodnessOCD);
             destinationCD.setCurrentGoodness(newGoodnessDCD);
@@ -389,7 +389,7 @@ public class State {
     public State clone(Preference preference) {
         State workingState = new State();
         workingState.setPopulation(this.population);
-        workingState.setName(this.name);
+        workingState.setsName(this.getsName());
         workingState.setPopulationMean(this.getPopulation()/this.getCongressionalDistricts().size());
         workingState.setEfficiencyGap(this.efficiencyGap);
         workingState.setFairness(this.fairness);
@@ -403,8 +403,8 @@ public class State {
         workingState.setPopulationVariance(this.populationVariance);
         workingState.setPatisanFairness(this.patisanFairness);
         workingState.setRacialFairness(this.racialFairness);
-        this.copyWinnerParty(this.winnerParty, workingState.getWinnerParty());
-        this.copyRace(this.race, workingState.getRace());
+//        this.copyWinnerParty(this.winnerParty, workingState.getWinnerParty());
+//        this.copyRace(this.race, workingState.getRace());
         this.copyParty(this.vote, workingState.getVote());
         this.copyCDistricts(this.congressionalDistricts,workingState.getCongressionalDistricts(),workingState);
         return workingState;
@@ -418,10 +418,23 @@ public class State {
             destinationCD.setName(originalCD.getName());
             destinationCD.setPopulation(originalCD.getPopulation());
             destinationCD.setCurrentGoodness(originalCD.getCurrentGoodness());
-            this.copyWinnerParty(winnerParty, destinationCD.getWinnerParty());
-            this.copyRace(originalCD.getRace(), destinationCD.getRace());
+//            this.copyWinnerParty(winnerParty, destinationCD.getWinnerParty());
+            //this.copyRace(originalCD.getRace(), destinationCD.getRace());
             this.copyParty(originalCD.getVote(), destinationCD.getVote());
             this.copyPrecincts(originalCD.getPrecinct(),destinationCD.getPrecinct(),destinationCD,workingState);
+            //copy cdInfo
+            originalCD.getCdInfor().setMale(destinationCD.getCdInfor().getMale());
+            originalCD.getCdInfor().setFemale(destinationCD.getCdInfor().getFemale());
+            originalCD.getCdInfor().setWhite(destinationCD.getCdInfor().getWhite());
+            originalCD.getCdInfor().setBlackAfrican(destinationCD.getCdInfor().getBlackAfrican());
+            originalCD.getCdInfor().setAsian(destinationCD.getCdInfor().getAsian());
+            originalCD.getCdInfor().setAmericanIndian(destinationCD.getCdInfor().getAmericanIndian());
+            originalCD.getCdInfor().setOthers(destinationCD.getCdInfor().getOthers());
+            originalCD.getCdInfor().setHouseHoldAvg(destinationCD.getCdInfor().getHouseHoldAvg());
+            originalCD.getCdInfor().setFamilyAvg(destinationCD.getCdInfor().getFamilyAvg());
+            originalCD.getCdInfor().setTotalHouseHold(destinationCD.getCdInfor().getTotalHouseHold());
+            originalCD.getCdInfor().setSchoolEnroll(destinationCD.getCdInfor().getSchoolEnroll());
+            originalCD.getCdInfor().setEmployees(destinationCD.getCdInfor().getEmployees());
             //ToDo  - map: Set<MapData>
             //ToDo - boundaryPrecincts: Set<Precinct>
             destinationCDs.add(destinationCD);
@@ -445,7 +458,8 @@ public class State {
             workingP.setCDistrict(destinationCD);
             workingP.setMap(originalP.getMap());
             workingP.setFeature(originalP.getFeature());
-            this.copyRace(originalP.getRace(), workingP.getRace());
+            workingP.setCounty(originalP.getCounty());
+//            this.copyRace(originalP.getRace(), workingP.getRace());
             this.copyParty(originalP.getVote(), workingP.getVote());
             //Todo - neighborPrecinctList: Set<Precinct>
             //Todo - neighborCDistrictList: Set<CDistrict>
@@ -477,8 +491,12 @@ public class State {
     }
 
     public boolean isValidConstraints(Precinct selectedPrecinct) {
-        if(this.getPreference().getIsContiguity()){
-            if (!checkContiguityConstraints(selectedPrecinct)) {
+        if (!checkContiguityConstraints(selectedPrecinct)) {
+            return false;
+        }
+        if(this.getPreference().getIsContiguity()||this.getsName().equals("SC")){
+            System.out.println("**********************");
+            if (!checkCountyContiguity(selectedPrecinct)) {
                 return false;
             }
         }
@@ -493,6 +511,18 @@ public class State {
         return true;
     }
 
+    private boolean checkCountyContiguity(Precinct selectedPrecinct) {
+        // return false  就是不能移动
+        Set<Precinct> neighborPrecincts = selectedPrecinct.getNeighborPrecincts();
+        for (Precinct precinct : neighborPrecincts) {
+            if(precinct.getCounty().equals(selectedPrecinct.getCounty())){
+                if(precinct.getCdistrictId()!=selectedPrecinct.getCdistrictId()){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
     public boolean checkNaturalBoundaryConstraints() {
         return true;
     }
@@ -502,7 +532,6 @@ public class State {
     }
 
     public boolean checkContiguityConstraints(Precinct selectedPrecinct) {
-        System.out.println("---------------------------check le ma");
         Set<Precinct> neighborPrecincts = selectedPrecinct.getNeighborPrecincts();
         if(neighborPrecincts==null||neighborPrecincts.size()==0){
             return false;
@@ -706,17 +735,20 @@ public class State {
         this.patisanFairness=0;
         this.racialFairness=0;
         this.populationVariance=0;
+        this.compactness =0;
         for (CDistrict cDistrict : cds) {
             cDistrict.setCurrentGoodness(cDistrict.calculateObjectiveFunction());
             this.currentGoodness = this.currentGoodness +cDistrict.getCurrentGoodness();
             this.patisanFairness = this.patisanFairness + cDistrict.getPartisanFairness();
             this.racialFairness = this.racialFairness + cDistrict.getRacialFairness();
             this.populationVariance = this.populationVariance +  cDistrict.getPopulationVariance();
+            this.compactness = this.compactness + cDistrict.getCompactness();
         }
         this.currentGoodness=this.currentGoodness/this.congressionalDistricts.size();
         this.patisanFairness=this.patisanFairness/this.congressionalDistricts.size();
         this.racialFairness=this.racialFairness/this.congressionalDistricts.size();
         this.populationVariance=this.populationVariance/this.congressionalDistricts.size();
+        this.compactness = this.compactness/this.congressionalDistricts.size();
     }
     
 }
