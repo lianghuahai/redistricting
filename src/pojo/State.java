@@ -14,11 +14,11 @@ public class State {
     private final double MINGOODNESS = Double.parseDouble((PropertyManager.getInstance().getValue("state.MINGOODNESS")));
 //    private StateName name;
 //    private HashMap<Integer, Party> winnerParty = new HashMap<Integer, Party>();
-    private Set<CDistrict> congressionalDistricts = new HashSet<CDistrict>();
+    private  Set<CDistrict> congressionalDistricts = new HashSet<CDistrict>();
     private long population;
 //    private HashMap<Race, Integer> race = new HashMap<Race, Integer>();
 //    private HashMap<Party, Integer> votes = new HashMap<Party, Integer>();
-    private HashMap<String, Integer> vote = new HashMap<String, Integer>();
+    private  HashMap<String, Integer> vote = new HashMap<String, Integer>();
     private Preference preference = new Preference();
     private int redistrictTimes;
     private float fairness;

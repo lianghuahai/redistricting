@@ -14,27 +14,27 @@ import utils.PropertyManager;
 
 public class CDistrict {
     private String name;
-    private State state = new State();
+    private transient State state = new State();
     
-    private CDInfor cdInfor =  new CDInfor();
+    private  CDInfor cdInfor =  new CDInfor();
 //    private HashMap<Integer, Party> winnerParty = new HashMap<Integer, Party>();
 
-    private Set<MapData> map = new HashSet<MapData>();
+    private  Set<MapData> map = new HashSet<MapData>();
 
-    private Set<Precinct> precinct = new HashSet<Precinct>();
+    private   Set<Precinct> precinct = new HashSet<Precinct>();
 
     private long population;
 
 //    private HashMap<Race, Integer> race = new HashMap<Race, Integer>();
 //
 //    private HashMap<Party, Integer> votes = new HashMap<Party, Integer>();
-    private HashMap<String, Integer> vote = new HashMap<String, Integer>();
+    private   HashMap<String, Integer> vote = new HashMap<String, Integer>();
 
-    private Set<Precinct> boundaryPrecincts = new HashSet<Precinct>();
+    private  Set<Precinct> boundaryPrecincts = new HashSet<Precinct>();
 
     private double currentGoodness;
 
-    private Feature feature = new Feature();
+    private  Feature feature = new Feature();
 
     private int cdCode;
 
@@ -262,15 +262,15 @@ public class CDistrict {
 
     public double calculateObjectiveFunction() {
         double goodness = 0;
-        Map<ObjectElement, Integer> objectElementMap = this.getState().getPreference().getObjectElementMap();
-        double totalWeight=(int)objectElementMap.get(ObjectElement.COMPACTNESSWEIGHT)
-                +(int)objectElementMap.get(ObjectElement.PARTISANFAIRNESSWEIGHT)
-                +(int)objectElementMap.get(ObjectElement.POPULATIONVARIANCEWEIGHT)
-                +(int)objectElementMap.get(ObjectElement.RACIALFAIRNESSWEIGHT);
-        double compactnessW = (double)objectElementMap.get(ObjectElement.COMPACTNESSWEIGHT)/(double)totalWeight;
-        double partisanW = (double)objectElementMap.get(ObjectElement.PARTISANFAIRNESSWEIGHT)/(double)totalWeight;
-        double populationW = (double)objectElementMap.get(ObjectElement.POPULATIONVARIANCEWEIGHT)/(double)totalWeight;
-        double racialW = (double)objectElementMap.get(ObjectElement.RACIALFAIRNESSWEIGHT)/(double)totalWeight;
+        Preference preference = this.getState().getPreference();
+        double totalWeight=preference.getCOMPACTNESSWEIGHT()
+                +preference.getPARTISANFAIRNESSWEIGHT()
+                +preference.getPOPULATIONVARIANCEWEIGHT()
+                +preference.getRACIALFAIRNESSWEIGHT();
+        double compactnessW = (double)preference.getCOMPACTNESSWEIGHT()/(double)totalWeight;
+        double partisanW = (double)preference.getPARTISANFAIRNESSWEIGHT()/(double)totalWeight;
+        double populationW = (double)preference.getPOPULATIONVARIANCEWEIGHT()/(double)totalWeight;
+        double racialW = (double)preference.getRACIALFAIRNESSWEIGHT()/(double)totalWeight;
         //System.out.println(compactnessW+","+populationW+","+partisanW+","+racialW);
         goodness +=  compactnessW* (double)calculateCompactness();
         goodness += partisanW * (double)calculatePartisanFairness();

@@ -2,7 +2,11 @@ package controller;
 
 import java.awt.Desktop;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -117,7 +121,23 @@ public class RSController {
                 originalState.setUpSCCdMapJson(mapJson.getFeatures());
             }
         }
+        String email ="haha";
+        String filePath = this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email+"/"+"nihao";
+        File file = new File(this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        State workingState = (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("workingState"));
+//        State workingState = new State();
+        System.out.println("这里开始gson");
+        Gson gson = new Gson();
+        String json = gson.toJson(originalState);
+        System.out.println("这里结束gson");
+        FileOutputStream of = new FileOutputStream(filePath); // 输出文件路径
+        of.write(json.getBytes());
+        of.close();
         req.getSession().setAttribute(PropertyManager.getInstance().getValue("originalState"),originalState);
+        req.getSession().setAttribute("nihao","nadaole");
         res.getWriter().print(new Gson().toJson(mapJson));
     }
     
@@ -126,6 +146,7 @@ public class RSController {
         State originalState= (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("originalState"));
         originalState.setPreference(preference);
         originalState.setupGoodness();
+        System.out.println(preference);
         rsService.increaseRunningTimes(originalState.getRunningTimes(),originalState.getsName());
 //        Set<CDistrict> cds = originalState.getCongressionalDistricts();
 //        for (CDistrict cDistrict : cds) {
@@ -146,6 +167,7 @@ public class RSController {
                     PrecinctProperty precinctProperty =  new PrecinctProperty();
                     precinctProperty.setTerminated(true);
                     System.out.println("redistrict loop terminate");
+                    req.getSession().setAttribute(PropertyManager.getInstance().getValue("workingState"),workingState);
                     res.getWriter().print(new Gson().toJson(precinctProperty));
                     return ;
                 }
@@ -178,9 +200,35 @@ public class RSController {
     }
     
     @RequestMapping("process")
-    public void process(String userEmail,HttpServletRequest req, HttpServletResponse res) throws IOException{
+    public void process(String userEmail,String fileName,HttpServletRequest req, HttpServletResponse res) throws IOException, URISyntaxException{
         State workingState = (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("workingState"));
         System.out.print("processs>>>originalGoodness : " + workingState.getCurrentGoodness());
+        if(fileName!=null){
+           String email ="haha";
+            String filePath = this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email+"/"+fileName;
+            File file = new File(this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+//            State workingState = new State();
+            System.out.println(fileName);
+            Object attribute = req.getSession().getAttribute("nihao");
+            if(attribute==null){
+                System.out.println("attrictu null!!!");
+            }
+            System.out.println(attribute.toString());
+            if(workingState==null){System.out.println("null");}
+            System.out.println("这里开始gson");
+            Gson gson = new Gson();
+            String json = gson.toJson(workingState);
+            System.out.println("这里结束gson");
+            FileOutputStream of = new FileOutputStream(filePath); // 输出文件路径
+            of.write(json.getBytes());
+            of.close();
+        }else{
+            
+        
+        
         Precinct movedPrecinct = workingState.startAlgorithm();
         if(!workingState.checkTermination()){
             while(movedPrecinct==null){
@@ -190,6 +238,7 @@ public class RSController {
                     PrecinctProperty precinctProperty =  new PrecinctProperty();
                     precinctProperty.setTerminated(true);
                     System.out.println("process loop terminate");
+                    req.getSession().setAttribute(PropertyManager.getInstance().getValue("workingState"),workingState);
                     res.getWriter().print(new Gson().toJson(precinctProperty));
                     return ;
                 }
@@ -212,6 +261,7 @@ public class RSController {
             precinctProperty.setTerminated(true);
             res.getWriter().print(new Gson().toJson(precinctProperty));
             return ;
+        }
         }
    }
     
@@ -290,28 +340,150 @@ public class RSController {
     
     
     @RequestMapping("importState")
-    public void importState( HttpServletRequest req, HttpServletResponse res) throws Exception {
-        State state = new State();
+    public void importState(String email,String fileName, HttpServletRequest req, HttpServletResponse res) throws Exception {
+        String filePath = this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email+"/"+fileName;
+        String stateInput = readToString(filePath);
         Gson gson = new Gson();
-        res.getWriter().print(gson.toJson(state));
+        State state = gson.fromJson(stateInput, State.class);
+        state.setRedistrictTimes(0);
+        PrecinctJson precinctJson = new PrecinctJson();
+        precinctJson.setsName(state.getsName());
+        precinctJson.setCOMPACTNESSWEIGHT(state.getPreference().getCOMPACTNESSWEIGHT());
+        precinctJson.setPARTISANFAIRNESSWEIGHT(state.getPreference().getPARTISANFAIRNESSWEIGHT());
+        precinctJson.setPOPULATIONVARIANCEWEIGHT(state.getPreference().getPOPULATIONVARIANCEWEIGHT());
+        precinctJson.setRACIALFAIRNESSWEIGHT(state.getPreference().getRACIALFAIRNESSWEIGHT());
+        precinctJson.setContiguity(state.getPreference().getIsContiguity());
+        precinctJson.setNaturalBoundary(state.getPreference().getIsNaturalBoundary());
+        Set<Feature> features = precinctJson.getFeatures();
+        Set<CDistrict> cds = state.getCongressionalDistricts();
+        for (CDistrict cDistrict : cds) {
+            Set<Precinct> precincts = cDistrict.getPrecinct();
+            for (Precinct precinct : precincts) {
+                features.add(precinct.getFeature());
+            }
+        }
+        String json = gson.toJson(precinctJson);
+        res.getWriter().print(json);
     }
     @RequestMapping("exportState")
-    public void exportState( HttpServletRequest req, HttpServletResponse res) throws Exception {
-        State state = new State();
+    public void exportState( String email,String fileName,HttpServletRequest req, HttpServletResponse res) throws Exception {
+        System.out.println("exportState");
+        email ="haha";
+        String filePath = this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email+"/"+fileName;
+        File file = new File(this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        State workingState = (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("workingState"));
+         State originalState= (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("originalState"));
+        if(originalState==null){
+            System.out.println("original null");
+        }
+//        State workingState = new State();
+        System.out.println(fileName);
+        Object attribute = req.getSession().getAttribute("nihao");
+        if(attribute==null){
+            System.out.println("attrictu null!!!");
+        }
+        System.out.println(attribute.toString());
+        if(workingState==null){System.out.println("null");}
+        System.out.println("这里开始gson");
         Gson gson = new Gson();
-        res.getWriter().print(gson.toJson(state));
+        String json = gson.toJson(workingState);
+        System.out.println("这里结束gson");
+        FileOutputStream of = new FileOutputStream(filePath); // 输出文件路径
+        of.write(json.getBytes());
+        of.close();
     }
-    
+    @RequestMapping("getFileList")
+    public void filetest( String email,HttpServletRequest req, HttpServletResponse res) throws Exception {
+        System.out.println(email);
+        String filePath = this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+"haha";
+        File file = new File(filePath);
+        String [] fileName = file.list();
+        List<String> str = new ArrayList<String>();
+        for (String string : fileName) {
+            if(string!=null){
+                str.add(string);
+            }
+            System.out.println(string);
+        }
+        res.getWriter().print(new Gson().toJson(str));
+    }
+    @RequestMapping("removeFile")
+    public void removeFile( String email,String fileName,HttpServletRequest req, HttpServletResponse res) throws Exception {
+        String filePath = this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+"haha"+"/"+fileName;
+        System.out.println(filePath);
+        File file = new File(filePath);
+        if (file.exists()) {
+            System.out.println("jinlai");
+            file.delete();
+        }
+        res.getWriter().print(new Gson().toJson("ok"));
+    }
+    //helper
+    public String readToString(String fileName) {  
+        String encoding = "UTF-8";  
+        File file = new File(fileName);  
+        Long filelength = file.length();  
+        byte[] filecontent = new byte[filelength.intValue()];  
+        try {  
+            FileInputStream in = new FileInputStream(file);  
+            in.read(filecontent);  
+            in.close();  
+        } catch (FileNotFoundException e) {  
+            e.printStackTrace();  
+        } catch (IOException e) {  
+            e.printStackTrace();  
+        }  
+        try {  
+            return new String(filecontent, encoding);  
+        } catch (UnsupportedEncodingException e) {  
+            System.err.println("The OS does not support " + encoding);  
+            e.printStackTrace();  
+            return null;  
+        }  
+    }
     //Todo
+    @RequestMapping("exportTest")
+    public void exportTest( String email,String fileName,HttpServletRequest req, HttpServletResponse res) throws Exception {
+        System.out.println("exportState");
+        email ="haha";
+        String filePath = this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email+"/"+fileName;
+        File file = new File(this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+//        State workingState = (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("workingState"));
+        State workingState = new State();
+        Set<CDistrict> congressionalDistricts = workingState.getCongressionalDistricts();
+        CDistrict ciCDistrict= new CDistrict();
+        congressionalDistricts.add(ciCDistrict);
+        Precinct precinct= new Precinct();
+        ciCDistrict.getPrecinct().add(precinct);
+        
+        String attribute = (String) req.getSession().getAttribute("nihao");
+        System.out.println(attribute);
+        Gson gson = new Gson();
+        String json = gson.toJson(workingState);
+        FileOutputStream of = new FileOutputStream(filePath); // 输出文件路径
+        of.write(json.getBytes());
+        of.close();
+        res.getWriter().print(json);
+    }
     public boolean getMouthlyReport (String mouth){return true;}
     public boolean addNewState (String stateName){return true;}
     public boolean getState (String stateName){return true;}
     public boolean deleteState (String stateName){return true;}
     public boolean findState (String stateID){return true;}
-    
     @RequestMapping("gsonT")
     public void gsonT( HttpServletRequest req, HttpServletResponse res) throws Exception {
         State state = new State();
+        Set<CDistrict> congressionalDistricts = state.getCongressionalDistricts();
+        CDistrict ciCDistrict= new CDistrict();
+        congressionalDistricts.add(ciCDistrict);
+        Precinct precinct= new Precinct();
+        ciCDistrict.getPrecinct().add(precinct);
         Gson gson = new Gson();
         res.getWriter().print(gson.toJson(state));
     }

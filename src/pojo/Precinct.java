@@ -10,9 +10,9 @@ public class Precinct {
     private String name;
     private String precinctCode;
     private String secondStylePrecinctCode;
-    private CDistrict newCDistrict = new CDistrict();
-    private CDistrict originCDistrict = new CDistrict();
-    private CDistrict CDistrict = new CDistrict();
+    private transient CDistrict newCDistrict = new CDistrict();
+    private transient CDistrict originCDistrict = new CDistrict();
+    private transient CDistrict CDistrict = new CDistrict();
     private Set<MapData> map = new HashSet<MapData>();
     private State state;
     private int registeredVoters;
@@ -22,8 +22,8 @@ public class Precinct {
 //    private HashMap<Party, Integer> votes =  new HashMap<Party, Integer>();
     private boolean isFixed=false;
     private boolean isBorder=false;
-    private Set<Precinct> neighborPrecincts = new HashSet<Precinct>();
-    private Set<CDistrict> neighborCDistricts = new HashSet<CDistrict>();
+    private  Set<Precinct> neighborPrecincts = new HashSet<Precinct>();
+    private  Set<CDistrict> neighborCDistricts = new HashSet<CDistrict>();
     private  Feature feature = new Feature();
     int cdistrictId;
     private String county;
