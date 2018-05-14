@@ -1,10 +1,17 @@
 package pojo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Polygon;
 
 import pojo.mapJson.Feature;
 import pojo.mapJson.Geometry;
@@ -279,75 +286,127 @@ public class CDistrict {
         double partisanW = (double)preference.getPARTISANFAIRNESSWEIGHT()/(double)totalWeight;
         double populationW = (double)preference.getPOPULATIONVARIANCEWEIGHT()/(double)totalWeight;
         double racialW = (double)preference.getRACIALFAIRNESSWEIGHT()/(double)totalWeight;
-        //System.out.println(compactnessW+","+populationW+","+partisanW+","+racialW);
+        System.out.println("-------------------------"+compactnessW+","+populationW+","+partisanW+","+racialW);
         goodness +=  compactnessW* (double)calculateCompactness();
         goodness += partisanW * (double)calculatePartisanFairness();
         goodness += populationW * (double)(1-calculatePopulationVariance());
         goodness += racialW * (double)calculateRacialFairness();
+        System.out.println("calculateObjectiveFunction"+goodness);
+        this.currentGoodness=goodness;
         return goodness;
     }
-
     public double calculateCompactness() {
         double compactness = 0;
+        double reock = 0;
+        double polsbypopper = 0;
+        double schwartzberg = 0;
+        GeometryFactory gf = new GeometryFactory();
         Set<Precinct> precincts = this.getPrecinct();
-        // 先算分子， circle 的面积
-        double maxX = -71.009964;
-        double maxY = 44.284783;
-        double minX = -71.009964;
-        double minY = 44.284783;
-        double sum = 0;
-        int count =0;
+                ArrayList<Polygon> polygonList = new ArrayList<Polygon>();
         for (Precinct precinct : precincts) {
-                Feature feature = precinct.getFeature();
-                Geometry geometry = feature.getGeometry();
-                List<List<List<Double>>> coordinates = geometry.getCoordinates();
-                if(coordinates.size()==0){
-                    count++;
-                    continue;
-                }
-                List<List<Double>> list = coordinates.get(0);
-                for (int i = 0; i < list.size(); i++) {
-                    if(i==list.size()-1){
-                        break;
-                    }
-                    List<Double> codinates = list.get(i);
-                    List<Double> codinates2 = list.get(i+1);
-                    sum = sum + Math.abs((codinates.get(0)*codinates2.get(1)-codinates2.get(0)*codinates.get(1)));
-//                    sum = (sum);
-                    if(codinates.get(0)<=minX){
-                        minX = codinates.get(0);
-                    }
-                    if(codinates.get(0)>=maxX){
-                        maxX=codinates.get(0);
-                    }
-                    if(codinates.get(1)<=minY){
-                        minY = codinates.get(1);
-                    }
-                    if(codinates.get(1)>=maxY){
-                        maxY = codinates.get(1);
-                    }
-                }
+                        Feature feature = precinct.getFeature();
+            Geometry geometry = feature.getGeometry();
+            List<List<List<Double>>> coordinates = geometry.getCoordinates();
+            //for simple polygon only
+            if(coordinates.size() > 0) {
+                        List<List<Double>> list = coordinates.get(0);
+                        ArrayList<Coordinate> pts = new ArrayList<Coordinate>();
+                        for( List<Double> coordinatePair : list){
+                                Coordinate c = new Coordinate(coordinatePair.get(0),coordinatePair.get(1));
+                                pts.add(c);
+                        }
+                        Coordinate[] coor = new Coordinate[pts.size()];
+                        for (int i = 0; i < pts.size(); i++) {
+                                coor[i] = pts.get(i);
+                        }
+                        Polygon polygon = gf.createPolygon(coor);
+                        polygonList.add(polygon);
+                        //precinct.setP(polygon);
+            }
         }
-        sum= sum/2;
-        double circleD = Math.abs(maxX-minX);
-        double circleD2 = Math.abs(maxY-minY);
-        double realD = 0;
-        if(circleD>circleD2){
-            realD= circleD/2;
-        }else{
-            realD= circleD2/2;
-        }
-        double circleArea = 3.1415916 * (realD*realD);
-        compactness = sum/circleArea;
-        System.out.println("circleArea"+circleArea);
-        System.out.println("sum"+sum);
-        System.out.println("compactness"+compactness);
+        Polygon[] pArr = new Polygon[polygonList.size()];
+                for (int i = 0; i < polygonList.size(); i++) {
+                        pArr[i] = polygonList.get(i);
+                }
+        MultiPolygon multPolygon = gf.createMultiPolygon(pArr);
+        double cdArea = multPolygon.getArea();
+        double cdPerimeter = multPolygon.getLength();
+        Envelope envelope = multPolygon.getEnvelopeInternal();
+        double diagonal = Math.sqrt(Math.pow(envelope.getWidth(),2)+Math.pow(envelope.getHeight(),2));
+        double circleArea = Math.PI*Math.pow((diagonal/2), 2);
+        com.vividsolutions.jts.geom.Geometry convexHull = multPolygon.convexHull();
+        reock = cdArea/circleArea;
+        polsbypopper = 4*Math.PI*cdArea/Math.pow(cdPerimeter, 2);
+        schwartzberg = (cdPerimeter/(2*Math.PI*Math.sqrt(cdArea/Math.PI)))/100;
+        double hullRatio = cdArea/convexHull.getArea();
+        System.out.println("cd#: "+this.getCdCode()+" cdArea: "+cdArea+" circleArea: "+circleArea);
+        System.out.println("reock: "+reock+" polsbypopper: "+polsbypopper+" schwartzberg:"+schwartzberg+" hull ratio: "+hullRatio);
+        compactness = (reock+polsbypopper+schwartzberg+hullRatio)/4;
         this.compactness =  compactness;
-        System.out.println("compactness"+compactness);
-        System.out.println("count!!!!!!!!!!!!!!!!!!!"+count);
         return compactness;
     }
-
+//    public double calculateCompactness() {
+//        double compactness = 0;
+//        Set<Precinct> precincts = this.getPrecinct();
+//        System.out.println("precincts.size()"+precincts.size());
+//        // 先算分子， circle 的面积
+//        double maxX = -71.009964;
+//        double maxY = 44.284783;
+//        double minX = -71.009964;
+//        double minY = 44.284783;
+//        double sum = 0;
+//        int count =0;
+//        for (Precinct precinct : precincts) {
+//                Feature feature = precinct.getFeature();
+//                //System.out.println("featurefeaturefeaturefeature"+feature);
+//                Geometry geometry = feature.getGeometry();
+//                List<List<List<Double>>> coordinates = geometry.getCoordinates();
+//                if(coordinates.size()==0){
+//                    count++;
+//                    continue;
+//                }
+//                List<List<Double>> list = coordinates.get(0);
+//                for (int i = 0; i < list.size(); i++) {
+//                    if(i==list.size()-1){
+//                        break;
+//                    }
+//                    List<Double> codinates = list.get(i);
+//                    List<Double> codinates2 = list.get(i+1);
+//                    sum = sum + Math.abs((codinates.get(0)*codinates2.get(1)-codinates2.get(0)*codinates.get(1)));
+////                    sum = (sum);
+//                    if(codinates.get(0)<=minX){
+//                        minX = codinates.get(0);
+//                    }
+//                    if(codinates.get(0)>=maxX){
+//                        maxX=codinates.get(0);
+//                    }
+//                    if(codinates.get(1)<=minY){
+//                        minY = codinates.get(1);
+//                    }
+//                    if(codinates.get(1)>=maxY){
+//                        maxY = codinates.get(1);
+//                    }
+//                }
+//        }
+//        sum= sum/2;
+//        double circleD = Math.abs(maxX-minX);
+//        double circleD2 = Math.abs(maxY-minY);
+//        double realD = 0;
+//        if(circleD>circleD2){
+//            realD= circleD/2;
+//        }else{
+//            realD= circleD2/2;
+//        }
+//        double circleArea = 3.1415916 * (realD*realD);
+//        compactness = sum/circleArea;
+//        System.out.println("circleArea"+circleArea);
+//        System.out.println("sum"+sum);
+//        System.out.println("compactness"+compactness);
+//        this.compactness =  compactness;
+//        System.out.println("compactness"+compactness);
+//        System.out.println("count!!!!!!!!!!!!!!!!!!!"+count);
+//        return compactness;
+//    }
     public double calculatePartisanFairness() {
         double pFairness = 0;
         int dVOtes = this.getVote().get("DEMOCRATIC");
@@ -368,12 +427,42 @@ public class CDistrict {
         this.partisanFairness = pFairness;
         return pFairness;
     }
-
+//    public double calculatePartisanFairness() {
+//        double pFairness = 0;
+//        int dVOtes = this.getVote().get("DEMOCRATIC");
+//        int rVOtes = this.getVote().get("REPUBLICAN");
+//        int totalVotes = dVOtes+rVOtes;
+//        int totalVotesLosing= 0;
+//        int totalVotesWinning=0;
+//        if(dVOtes<=rVOtes){
+//            totalVotesLosing=dVOtes;
+//            totalVotesWinning = rVOtes;
+//        }else{
+//            totalVotesLosing=rVOtes;
+//            totalVotesWinning = dVOtes;
+//        }
+//        int wastedVotes = (int)Math.abs(0.5 * (totalVotes) - totalVotesWinning);
+//        pFairness =  ((double) Math.abs(totalVotesLosing - wastedVotes)) / totalVotes;
+////        pFairness = pFairness/totalVotes;
+//        this.partisanFairness = pFairness;
+//        return pFairness;
+//    }
     public double calculateRacialFairness() {
-        double racialFairness = 0;
-        this.racialFairness = racialFairness;
+        int majorPopu = this.getCdInfor().getWhite();
+        int minorPopu = this.getCdInfor().getAmericanIndian();
+        minorPopu +=  this.getCdInfor().getAsian();
+        minorPopu +=  this.getCdInfor().getBlackAfrican();
+        minorPopu +=  this.getCdInfor().getOthers();
+        int total = majorPopu + minorPopu;
+        this.racialFairness = ((double)minorPopu)/((double)total);
+        System.out.println("CD#: "+this.cdCode+" racialFairness: "+this.racialFairness);
         return racialFairness;
     }
+//    public double calculateRacialFairness() {
+//        double racialFairness = 0;
+//        this.racialFairness = racialFairness;
+//        return racialFairness;
+//    }
     
     public double calculatePopulationVariance() {
         double numOfCDs = this.getState().getCongressionalDistricts().size();

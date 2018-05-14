@@ -3,12 +3,19 @@ package pojo;
 public class Representive {
     private int year;
     private String sName ;
-    private int cdistrictId ;
+    private int cdistricId ;
     private String name ;
     private String party;
     public int getYear() {
         return year;
     }
+    
+    @Override
+    public String toString() {
+        return "Representive [year=" + year + ", sName=" + sName + ", cdistrictId=" + cdistricId + ", name="
+                + name + ", party=" + party + "]";
+    }
+
     public void setYear(int year) {
         this.year = year;
     }
@@ -19,10 +26,10 @@ public class Representive {
         this.sName = sName;
     }
     public int getCdistrictId() {
-        return cdistrictId;
+        return cdistricId;
     }
     public void setCdistrictId(int cdistrictId) {
-        this.cdistrictId = cdistrictId;
+        this.cdistricId = cdistrictId;
     }
     public String getName() {
         return name;

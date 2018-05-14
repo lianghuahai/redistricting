@@ -8,7 +8,7 @@ public class CDGoodness {
     private double partisanFairness;
     private double racialFairness;
     
-    private String representive="nihao";
+    private String representive="N/A";
     public double getGoodness() {
         return goodness;
     }
@@ -50,6 +50,14 @@ public class CDGoodness {
     }
     public void setRepresentive(String representive) {
         this.representive = representive;
+    }
+    public void setupCDgoodness(double d, double e, double f, double g, double h) {
+        // //Equal Population   Partisan Fairness     Racial Fairness  Compactness     Goodness       
+        this.populationVariance=d;
+        this.partisanFairness=e;
+        this.racialFairness=f;
+        this.compactness=g;
+        this.goodness=h;
     }
     
 }

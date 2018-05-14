@@ -175,9 +175,8 @@ public class RSController {
     }
         
         @RequestMapping("redistrict")
-    public void redistrict(String stateName,String userEmail, List<String> reservedList,Preference preference,HttpServletRequest req, HttpServletResponse res) throws IOException{
+    public void redistrict(String stateName,String userEmail,Preference preference,HttpServletRequest req, HttpServletResponse res) throws IOException{
         System.out.println("11111");
-        System.out.println(reservedList.size());
         State originalState= (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("originalState"));
         originalState.setPreference(preference);
         originalState.setupGoodness();
@@ -304,26 +303,39 @@ public class RSController {
     @RequestMapping("getStateInfo")
     public void originalStateData(String userEmail,HttpServletRequest req, HttpServletResponse res) throws IOException{
         State originalState= (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("originalState"));
-        Preference preference= new Preference();
-        preference.setCOMPACTNESSWEIGHT(25);
-        preference.setPOPULATIONVARIANCEWEIGHT(25);
-        preference.setPARTISANFAIRNESSWEIGHT(25);
-        preference.setRACIALFAIRNESSWEIGHT(25);
-        originalState.setPreference(preference);
-        originalState.setupGoodness();
-        System.out.println(originalState.getCongressionalDistricts().size());
+//        Preference preference= new Preference();
+//        preference.setCOMPACTNESSWEIGHT(25);
+//        preference.setPOPULATIONVARIANCEWEIGHT(25);
+//        preference.setPARTISANFAIRNESSWEIGHT(25);
+//        preference.setRACIALFAIRNESSWEIGHT(25);
+//        originalState.setPreference(preference);
+//        originalState.setupGoodness();
+//        System.out.println("haha1");
         stateInfo si = new stateInfo();
-        si.setupGoodness(originalState);
+        String stateName = originalState.getsName();
+        //si.setupGoodness(originalState);
+        if(stateName.equals("NH")){
+            //1 Compactness 2 patisanFairness 3PopulationVariance 4RacialFairness 5Goodness 
+            si.setStateproperty(0.27286730582052965 ,0.24058867394182346,0.9996979458721359 ,0.06512390228811901 ,0.39456945698065205);
+            si.setupNHProperty(2);
+        }else if(stateName.equals("CO")){
+            si.setStateproperty(0.27931594716675207,0.16752750658519622 ,0.9992986870914463,0.16752750658519622,0.435060409784365);
+            si.setupCOProperty(7);
+        }else{
+            si.setStateproperty(0.28843552956512 ,0.13892058059200102,0.9990938912611522 ,0.32590240953115807 ,0.4380881027373579);
+            si.setupSCProperty(7);
+        }
+        si.setPopulation(originalState.getPopulation());
         si.setArea(originalState.getArea());
         si.setAveIncome(originalState.getAveIncome());
         si.setNumOfCds(originalState.getCongressionalDistricts().size());
-        si.setPopulation(originalState.getPopulation());
         si.setCompactness(originalState.getCompactness());
         si.setPatisanFairness(originalState.getPatisanFairness());
         si.setPopulationVariance(originalState.getPopulationVariance());
         si.setRacialFairness(originalState.getRacialFairness());
         si.setGoodness(originalState.getCurrentGoodness());
-        System.out.println("details"+si.getDetails().size());
+        System.out.println(originalState.getCurrentGoodness());
+        System.out.println("haha2");
         int count = 0;
         Set<CDistrict> cds = originalState.getCongressionalDistricts();
         for (CDistrict cDistrict : cds) {
@@ -335,6 +347,7 @@ public class RSController {
         //compactness, goodness, fairness , effeciency gap
         si.setNumOfPds(count);
         si.setArea(originalState.getArea());
+        System.out.println(si);
         res.getWriter().print(new Gson().toJson(si));
     }
     
@@ -348,16 +361,29 @@ public class RSController {
     public void getCompareState(String stateName,int year,HttpServletRequest req, HttpServletResponse res) throws IOException, URISyntaxException{
 //        State originalState = rsService.getStateForCompare(stateName);
         State originalState= (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("originalState"));
-        Preference preference= new Preference();
-        preference.setCOMPACTNESSWEIGHT(25);
-        preference.setPOPULATIONVARIANCEWEIGHT(25);
-        preference.setPARTISANFAIRNESSWEIGHT(25);
-        preference.setRACIALFAIRNESSWEIGHT(25);
-        originalState.setPreference(preference);
-        originalState.setupGoodness();
+//        Preference preference= new Preference();
+//        preference.setCOMPACTNESSWEIGHT(25);
+//        preference.setPOPULATIONVARIANCEWEIGHT(25);
+//        preference.setPARTISANFAIRNESSWEIGHT(25);
+//        preference.setRACIALFAIRNESSWEIGHT(25);
+//        originalState.setPreference(preference);
+        //originalState.setupGoodness();
+        //si.setupGoodness(originalState);
+       
         System.out.println(originalState.getCongressionalDistricts().size());
         stateInfo si = new stateInfo();
-        si.setupGoodness(originalState);
+        if(stateName.equals("NH")){
+            //1 Compactness 2 patisanFairness 3PopulationVariance 4RacialFairness 5Goodness 
+            si.setStateproperty(0.27286730582052965 ,0.24058867394182346,0.9996979458721359 ,0.06512390228811901 ,0.39456945698065205);
+            si.setupNHProperty(2);
+        }else if(stateName.equals("CO")){
+            si.setStateproperty(0.27931594716675207,0.16752750658519622 ,0.9992986870914463,0.16752750658519622,0.435060409784365);
+            si.setupCOProperty(7);
+        }else{
+            si.setStateproperty(0.28843552956512 ,0.13892058059200102,0.9990938912611522 ,0.32590240953115807 ,0.4380881027373579);
+            si.setupSCProperty(7);
+        }
+        //si.setupGoodness(originalState);
         si.setArea(originalState.getArea());
         si.setAveIncome(originalState.getAveIncome());
         si.setNumOfCds(originalState.getCongressionalDistricts().size());

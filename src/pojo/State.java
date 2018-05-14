@@ -491,17 +491,20 @@ public class State {
     }
 
     public boolean isValidConstraints(Precinct selectedPrecinct) {
-        if (!checkContiguityConstraints(selectedPrecinct)) {
-            return false;
-        }
-        if(this.getPreference().getIsContiguity()||this.getsName().equals("SC")){
-            System.out.println("**********************");
-            if (!checkCountyContiguity(selectedPrecinct)) {
-                return false;
-            }
+        
+//        if(this.getPreference().getIsContiguity()||this.getsName().equals("SC")){
+            if(this.getPreference().getIsContiguity()){
+                if (!checkContiguityConstraints(selectedPrecinct)) {
+                    return false;
+                }
+                
         }
         if(this.getPreference().getIsNaturalBoundary()){
-            if (!checkNaturalBoundaryConstraints()) {
+//            if (!checkNaturalBoundaryConstraints()) {
+//                return false;
+//            }
+            System.out.println("**********************");
+            if (!checkCountyContiguity(selectedPrecinct)) {
                 return false;
             }
         }
@@ -633,6 +636,7 @@ public class State {
         
     }
     public void setUpCdMapJson(Set<Feature> features) {
+        System.out.println("features.size()"+features.size());
         CDistrict cd1 = getCdByName("cd1");
         CDistrict cd2 = getCdByName("cd2");
         for (Feature feature : features) {
@@ -729,6 +733,31 @@ public class State {
         }
         return null;
     }
+//    public void setupGoodness() {
+//        Set<CDistrict> cds = this.getCongressionalDistricts();
+//        this.currentGoodness=0;
+//        this.patisanFairness=0;
+//        this.racialFairness=0;
+//        this.populationVariance=0;
+//        this.compactness =0;
+//        for (CDistrict cDistrict : cds) {
+//            cDistrict.setCurrentGoodness(cDistrict.calculateObjectiveFunction());
+//            this.currentGoodness = this.currentGoodness +cDistrict.getCurrentGoodness();
+//            System.out.println("cDistrict.getCurrentGoodness()!!!!!!!!!!!"+cDistrict.getCurrentGoodness());
+//            this.patisanFairness = this.patisanFairness + cDistrict.getPartisanFairness();
+//            this.racialFairness = this.racialFairness + cDistrict.getRacialFairness();
+//            this.populationVariance = this.populationVariance +  cDistrict.getPopulationVariance();
+//            this.compactness = this.compactness + cDistrict.getCompactness();
+//        }
+//        this.currentGoodness=this.currentGoodness/this.congressionalDistricts.size();
+//        this.patisanFairness=this.patisanFairness/this.congressionalDistricts.size();
+//        this.racialFairness=this.racialFairness/this.congressionalDistricts.size();
+//        this.populationVariance=this.populationVariance/this.congressionalDistricts.size();
+//        this.compactness = this.compactness/this.congressionalDistricts.size();
+//        System.out.println("currentGoodness!!!!!!!!!!!!!!!"+currentGoodness);
+//        System.out.println("currentGoodness!!!!!!!!!!!!!!!"+this.congressionalDistricts.size());
+//        System.out.println();
+//    }
     public void setupGoodness() {
         Set<CDistrict> cds = this.getCongressionalDistricts();
         this.currentGoodness=0;
@@ -738,17 +767,63 @@ public class State {
         this.compactness =0;
         for (CDistrict cDistrict : cds) {
             cDistrict.setCurrentGoodness(cDistrict.calculateObjectiveFunction());
-            this.currentGoodness = this.currentGoodness +cDistrict.getCurrentGoodness();
-            this.patisanFairness = this.patisanFairness + cDistrict.getPartisanFairness();
-            this.racialFairness = this.racialFairness + cDistrict.getRacialFairness();
+            //this.currentGoodness = this.currentGoodness +cDistrict.getCurrentGoodness();
             this.populationVariance = this.populationVariance +  cDistrict.getPopulationVariance();
             this.compactness = this.compactness + cDistrict.getCompactness();
         }
-        this.currentGoodness=this.currentGoodness/this.congressionalDistricts.size();
-        this.patisanFairness=this.patisanFairness/this.congressionalDistricts.size();
-        this.racialFairness=this.racialFairness/this.congressionalDistricts.size();
-        this.populationVariance=this.populationVariance/this.congressionalDistricts.size();
+        
+        //this.currentGoodness=this.currentGoodness/this.congressionalDistricts.size();
+        this.patisanFairness=this.calculateStatePartisanFairness();
+        this.racialFairness=this.calculateStateRacialFairness();
         this.compactness = this.compactness/this.congressionalDistricts.size();
+        this.populationVariance=this.populationVariance/this.congressionalDistricts.size();
+        this.currentGoodness = this.populationVariance*((double)preference.getPOPULATIONVARIANCEWEIGHT()) + this.compactness*((double)preference.getCOMPACTNESSWEIGHT())
+                                                                + this.patisanFairness*((double)preference.getPARTISANFAIRNESSWEIGHT()) + this.racialFairness*((double)preference.getRACIALFAIRNESSWEIGHT());
+        System.out.println("patisanFairness: "+this.patisanFairness+" racialFairness: "+this.racialFairness+" compactness: "+this.compactness+" this.populationVariance:"+this.populationVariance+" currentGoodness:"+this.currentGoodness);
+        this.currentGoodness /= 100.0;
     }
+    private double calculateStatePartisanFairness() {
+        Set<CDistrict> cds = this.getCongressionalDistricts();
+        int demWastedVotes = 0;
+           int repWastedVotes = 0;
+           int totalVotes = 0;
+           for (CDistrict d : cds) {
+            int demVotes = d.getVote().get("DEMOCRATIC");
+               int repVotes = d.getVote().get("REPUBLICAN");
+               int cdTotal = demVotes + repVotes;
+               if(demVotes > repVotes) {
+                repWastedVotes += repVotes;
+                demWastedVotes += (int)Math.abs(0.5 * (cdTotal) - demVotes);
+               }
+               else {
+                repWastedVotes += (int)Math.abs(0.5 * (cdTotal) - repVotes);
+                demWastedVotes += demWastedVotes;
+               }
+               totalVotes += cdTotal;
+           }
+           if(demWastedVotes <= repWastedVotes)
+               return ((double) Math.abs(demWastedVotes - repWastedVotes)) / totalVotes;
+           else
+               return ((double) Math.abs(repWastedVotes - demWastedVotes)) / totalVotes;
+           
+    }
+    private double calculateStateRacialFairness() {
+        Set<CDistrict> cds = this.getCongressionalDistricts();
+        int majorPopu = 0;
+        int minorPopu = 0;
+        int total = 0;
+        for(CDistrict d : cds) {
+         majorPopu += d.getCdInfor().getWhite();
+               minorPopu += d.getCdInfor().getAmericanIndian();
+               minorPopu +=  d.getCdInfor().getAsian();
+               minorPopu +=  d.getCdInfor().getBlackAfrican();
+               minorPopu +=  d.getCdInfor().getOthers();
+        }
+           total = majorPopu + minorPopu;
+           this.racialFairness = ((double)minorPopu)/((double)total);
+           System.out.println("State: " +this.racialFairness);
+           return racialFairness;
+    }
+    
     
 }
