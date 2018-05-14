@@ -106,6 +106,7 @@ public class stateInfo {
     }
     private void setupDetails(CDistrict cDistrict) {
         CDGoodness cdGoodness = new CDGoodness();
+//        cdGoodness.setRepresentive(cDistrict.getRepresentive());
         cdGoodness.setCdName(cDistrict.getName());
         cdGoodness.setCompactness(cDistrict.getCompactness());
         cdGoodness.setGoodness(cDistrict.getCurrentGoodness());
@@ -113,6 +114,20 @@ public class stateInfo {
         cdGoodness.setPopulationVariance(cDistrict.getPopulationVariance());
         cdGoodness.setRacialFairness(cDistrict.getRacialFairness());
         this.details.add(cdGoodness);
+    }
+    public void setupRepre(List<Representive> repres) {
+        List<CDGoodness> details2 = this.getDetails();
+        for (CDGoodness cdGoodness : details2) {
+            for (Representive r : repres) {
+                String cdName = "cd"+ r.getCdistrictId();
+                   if(cdName.equals(cdGoodness.getCdName())){
+                       System.out.println("?????????");
+                       cdGoodness.setRepresentive(r.getName());
+                       break;
+                   }
+            }
+        }
+        
     }
     
     

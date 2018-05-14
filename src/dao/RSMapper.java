@@ -10,6 +10,7 @@ import pojo.CDistrict;
 import pojo.Neighbors;
 import pojo.Party;
 import pojo.Precinct;
+import pojo.Representive;
 import pojo.State;
 import pojo.User;
 
@@ -58,5 +59,8 @@ public interface RSMapper {
     public void updateNeiCode(int nid, String getpCode, String neighborCode);
     public void saveSCNeighbors(String string, String string2, String sName);
     public void saveCONeighbors(String string, String string2, String sName);
+    public void updateArea(String pCode, double area);
+    public void saveRR(String sName, int cdistrictId, String name, String party,int year);
+    public List<Representive> getRepresents(String stateName, int year);
     
 }

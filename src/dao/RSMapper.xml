@@ -36,9 +36,14 @@
 			WHERE  sName = #{1}
 	</update>
 	<update id="updateNeiCode" >
-			UPDATE   neighbors
+			UPDATE   Sneighbor
 			SET   pCode=#{1},neighborCode=#{2}
 			WHERE  nid = #{0}
+	</update>
+	<update id="updateArea" >
+			UPDATE   precinct
+			SET   area=#{1}
+			WHERE  pCode=#{0}
 	</update>
 	
 	<update id="updatePCode" >
@@ -133,12 +138,15 @@
 		SELECT id from state where sName=#{stateName}
 	</select>
 	<select id="getneighbors"  resultType="pojo.Neighbors">
-		SELECT * from neighbors where nid >1099
+		SELECT * from Sneighbor
 	</select>
 
 
 	<select id="getPrecinctId" parameterType="String" resultType="int">
 		select IFNULL(MAX(pid),0) pid from precinct where pCode=#{precinctCode}
+	</select>
+	<select id="getRepresents"  resultType="pojo.Representive">
+		select * from representive where sName =#{0} and year = #{1}
 	</select>
 	<select id="getNeighborsCode"  resultType="String">
 		SELECT neighborCode FROM neighbors WHERE  pCode = #{0,jdbcType=VARCHAR}
@@ -157,6 +165,10 @@
 	<insert id="saveNeighbors" >
 			INSERT INTO neighbors(pCode,neighborCode) VALUES
 			(#{0},#{1})
+	</insert>
+	<insert id="saveRR" >
+			INSERT INTO representive(sName,cdistricId,name,party,year) VALUES
+			(#{0},#{1},#{2},#{3},#{4})
 	</insert>
 	<insert id="saveSCNeighbors" >
 			INSERT INTO Sneighbor(pCode,neighborCode) VALUES

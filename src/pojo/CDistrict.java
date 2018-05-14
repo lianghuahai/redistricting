@@ -15,7 +15,7 @@ import utils.PropertyManager;
 public class CDistrict {
     private String name;
     private transient State state = new State();
-    
+    private String Representive;
     private  CDInfor cdInfor =  new CDInfor();
 //    private HashMap<Integer, Party> winnerParty = new HashMap<Integer, Party>();
 
@@ -48,6 +48,14 @@ public class CDistrict {
     private double racialFairness;
     public CDInfor getCdInfor() {
         return cdInfor;
+    }
+
+    public String getRepresentive() {
+        return Representive;
+    }
+
+    public void setRepresentive(String representive) {
+        Representive = representive;
     }
 
     public void setCdInfor(CDInfor cdInfor) {
@@ -304,8 +312,8 @@ public class CDistrict {
                     }
                     List<Double> codinates = list.get(i);
                     List<Double> codinates2 = list.get(i+1);
-                    sum = sum + ((codinates.get(0)*codinates2.get(1)-codinates2.get(0)*codinates.get(1)));
-                    sum = Math.abs(sum);
+                    sum = sum + Math.abs((codinates.get(0)*codinates2.get(1)-codinates2.get(0)*codinates.get(1)));
+//                    sum = (sum);
                     if(codinates.get(0)<=minX){
                         minX = codinates.get(0);
                     }

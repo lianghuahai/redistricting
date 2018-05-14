@@ -1,10 +1,12 @@
 package controller;
 
 import java.awt.Desktop;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
@@ -23,7 +25,9 @@ import oracle.net.aso.f;
 import org.apache.poi.hssf.util.HSSFColor.GOLD;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import pojo.CDistrict;
 import pojo.Neighbors;
@@ -31,6 +35,8 @@ import pojo.ObjectElement;
 import pojo.Precinct;
 import pojo.PrecinctProperty;
 import pojo.Preference;
+import pojo.Representive;
+import pojo.Reserver;
 import pojo.State;
 import pojo.User;
 import pojo.stateInfo;
@@ -43,6 +49,7 @@ import utils.LoadJsonData;
 import utils.LoadNHData;
 import utils.LoadSCData;
 import utils.PropertyManager;
+import utils.test;
 
 import com.google.gson.Gson;
 
@@ -142,8 +149,35 @@ public class RSController {
         res.getWriter().print(new Gson().toJson(mapJson));
     }
     
-    @RequestMapping("redistrict")
-    public void redistrict(String stateName,String userEmail,Preference preference,HttpServletRequest req, HttpServletResponse res) throws IOException{
+    @RequestMapping("reservePrecinct")
+    public void reservePrecinct( String VTDST10,boolean select ,HttpServletRequest req, HttpServletResponse res) throws IOException{
+        System.out.println(VTDST10);
+        System.out.println(select);
+        State originalState= (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("originalState"));
+        Set<CDistrict> cds = originalState.getCongressionalDistricts();
+        for (CDistrict cDistrict : cds) {
+            Set<Precinct> precincts = cDistrict.getPrecinct();
+            boolean flag = false;
+            for (Precinct precinct : precincts) {
+               if(precinct.getPrecinctCode().equals(VTDST10)){
+                   precinct.setIsFixed(select);
+                   flag= true;
+                   break;
+               }
+            }
+            if(flag)
+            {
+                break;
+            }
+        }
+        System.out.println(originalState.getsName());
+        
+    }
+        
+        @RequestMapping("redistrict")
+    public void redistrict(String stateName,String userEmail, List<String> reservedList,Preference preference,HttpServletRequest req, HttpServletResponse res) throws IOException{
+        System.out.println("11111");
+        System.out.println(reservedList.size());
         State originalState= (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("originalState"));
         originalState.setPreference(preference);
         originalState.setupGoodness();
@@ -311,7 +345,7 @@ public class RSController {
     }
     
     @RequestMapping("getCompareState")
-    public void getCompareState(String stateName,HttpServletRequest req, HttpServletResponse res) throws IOException, URISyntaxException{
+    public void getCompareState(String stateName,int year,HttpServletRequest req, HttpServletResponse res) throws IOException, URISyntaxException{
 //        State originalState = rsService.getStateForCompare(stateName);
         State originalState= (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("originalState"));
         Preference preference= new Preference();
@@ -333,6 +367,8 @@ public class RSController {
         si.setPopulationVariance(originalState.getPopulationVariance());
         si.setRacialFairness(originalState.getRacialFairness());
         si.setGoodness(originalState.getCurrentGoodness());
+        List<Representive> repres= rsService.getRepresents(stateName,year);
+        si.setupRepre(repres);
         System.out.println("details"+si.getDetails().size());
         if(stateName.equals("NH")){
             si.setNumOfCds(2);
@@ -530,6 +566,23 @@ public class RSController {
     
     
     
+    @RequestMapping("saveR")
+    public void saveR( HttpServletRequest req, HttpServletResponse res) throws Exception {
+        String filePath = this.getClass().getClassLoader().getResource("/").toURI().getPath();
+//        test excelReader = new test(filePath+"/"+"sc_r.xlsx");
+//        test excelReader = new test(filePath+"/"+"nh_r.xlsx");
+        test excelReader = new test(filePath+"/"+"co_r.xlsx");
+        Map<Integer, Map<Integer, Object>> map = excelReader.readExcelContent();
+        for (int i = 1; i < map.size(); i++) {
+            Map<Integer, Object> row = map.get(i); //election data row
+            int year =(int)(Double.parseDouble((String)row.get(0)));
+            String sName = (String)row.get(1);
+            int cdistrictId = (int)(Double.parseDouble((String)row.get(2)));
+            String name = (String)row.get(3);
+            String party = (String)row.get(4);
+            rsService.saveRR(sName,cdistrictId,name,party,year);
+        }
+    }
     @RequestMapping("loadtest")
     public void loadtest( HttpServletRequest req, HttpServletResponse res) throws Exception {
         PrecinctJson mapJson = new LoadJsonData().getJsonData("NH","PD");
@@ -619,6 +672,35 @@ public class RSController {
     }
     
     
+    @RequestMapping("setPrecintArea")
+    public void setPrecintArea( HttpServletRequest req, HttpServletResponse res) throws Exception {
+        String path  = this.getClass().getClassLoader().getResource("/").toURI().getPath();
+//        File file = new File(path+"/"+"NH_PD_area.txt");
+        File file = new File(path+"/"+"SC_PD_area.txt");
+//        File file = new File(path+"/"+"NH_PD_area.txt");
+      BufferedReader br = new BufferedReader(new FileReader(file));
+      ArrayList<String> pList = new ArrayList<String>();
+      String st;
+      while ((st = br.readLine()) != null){
+              pList.add(st);
+          }
+      for (int i = 0; i < pList.size(); i++) {
+          String str = pList.get(i);
+          String[] strs=str.split(",");
+          String code = strs[0];
+          if(code.length()==7){
+              code = code +"0";
+          }
+          if(code.length()==6){
+              code = code +"00";
+          }
+          rsService.updateArea(code,Double.parseDouble(strs[1]));
+      }
+      System.out.println(pList.size());
+//      for (String string : pList) {
+//        System.out.println(string);
+//    }
+    }
     @RequestMapping("getNeighborToSet")
     public void getNeighborToSet( HttpServletRequest req, HttpServletResponse res) throws Exception {
         List<Neighbors> neighs= rsService.getneighbors();

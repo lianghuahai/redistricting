@@ -14,6 +14,7 @@ import pojo.CDistrict;
 import pojo.Neighbors;
 import pojo.Party;
 import pojo.Precinct;
+import pojo.Representive;
 import pojo.State;
 import pojo.User;
 import pojo.UserRole;
@@ -224,5 +225,18 @@ public class RSService {
 
     public void updateNeiCode(Neighbors neighbors) {
         rsMapper.updateNeiCode(neighbors.getNid(),neighbors.getpCode(),neighbors.getNeighborCode());
+    }
+
+    public void updateArea(String pCode, double area) {
+        rsMapper.updateArea(pCode,area);
+    }
+
+    public void saveRR(String sName, int cdistrictId, String name, String party,int year) {
+        rsMapper.saveRR(sName,cdistrictId,name,party,year);
+        
+    }
+
+    public List<Representive> getRepresents(String stateName, int year) {
+        return rsMapper.getRepresents(stateName,year);
     }
 }

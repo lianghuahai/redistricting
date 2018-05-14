@@ -7,6 +7,8 @@ public class CDGoodness {
     private double populationVariance;
     private double partisanFairness;
     private double racialFairness;
+    
+    private String representive="nihao";
     public double getGoodness() {
         return goodness;
     }
@@ -42,6 +44,12 @@ public class CDGoodness {
     }
     public void setCdName(String cdName) {
         this.cdName = cdName;
+    }
+    public String getRepresentive() {
+        return representive;
+    }
+    public void setRepresentive(String representive) {
+        this.representive = representive;
     }
     
 }
