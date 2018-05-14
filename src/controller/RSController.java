@@ -65,6 +65,7 @@ public class RSController {
     @RequestMapping("register")
     public void register(User user, HttpServletRequest req, HttpServletResponse res) throws IOException {
         boolean createdUser = rsService.register(user);
+        System.out.println(user.getParty());
         Gson gson = new Gson();
         res.getWriter().print(gson.toJson(createdUser));
     }
@@ -127,7 +128,7 @@ public class RSController {
         if (!file.exists()) {
             file.mkdirs();
         }
-        State workingState = (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("workingState"));
+//        State workingState = (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("workingState"));
 //        State workingState = new State();
         System.out.println("这里开始gson");
         Gson gson = new Gson();
@@ -204,6 +205,9 @@ public class RSController {
         State workingState = (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("workingState"));
         System.out.print("processs>>>originalGoodness : " + workingState.getCurrentGoodness());
         if(fileName!=null){
+            System.out.println("save file");
+            System.out.println(workingState.getCongressionalDistricts().size());
+            System.out.println(workingState.getsName());
            String email ="haha";
             String filePath = this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email+"/"+fileName;
             File file = new File(this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email);
@@ -211,20 +215,17 @@ public class RSController {
                 file.mkdirs();
             }
 //            State workingState = new State();
-            System.out.println(fileName);
-            Object attribute = req.getSession().getAttribute("nihao");
-            if(attribute==null){
-                System.out.println("attrictu null!!!");
-            }
-            System.out.println(attribute.toString());
-            if(workingState==null){System.out.println("null");}
+//            if(workingState==null){System.out.println("null");}
             System.out.println("这里开始gson");
             Gson gson = new Gson();
             String json = gson.toJson(workingState);
-            System.out.println("这里结束gson");
+//            String json = gson.toJson("a");
+//            System.out.println("这里结束gson");
             FileOutputStream of = new FileOutputStream(filePath); // 输出文件路径
             of.write(json.getBytes());
+//            of.write("a".getBytes());
             of.close();
+            res.getWriter().print(new Gson().toJson("ok"));
         }else{
             
         
@@ -268,12 +269,26 @@ public class RSController {
     @RequestMapping("getStateInfo")
     public void originalStateData(String userEmail,HttpServletRequest req, HttpServletResponse res) throws IOException{
         State originalState= (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("originalState"));
+        Preference preference= new Preference();
+        preference.setCOMPACTNESSWEIGHT(25);
+        preference.setPOPULATIONVARIANCEWEIGHT(25);
+        preference.setPARTISANFAIRNESSWEIGHT(25);
+        preference.setRACIALFAIRNESSWEIGHT(25);
+        originalState.setPreference(preference);
+        originalState.setupGoodness();
         System.out.println(originalState.getCongressionalDistricts().size());
         stateInfo si = new stateInfo();
+        si.setupGoodness(originalState);
         si.setArea(originalState.getArea());
         si.setAveIncome(originalState.getAveIncome());
         si.setNumOfCds(originalState.getCongressionalDistricts().size());
         si.setPopulation(originalState.getPopulation());
+        si.setCompactness(originalState.getCompactness());
+        si.setPatisanFairness(originalState.getPatisanFairness());
+        si.setPopulationVariance(originalState.getPopulationVariance());
+        si.setRacialFairness(originalState.getRacialFairness());
+        si.setGoodness(originalState.getCurrentGoodness());
+        System.out.println("details"+si.getDetails().size());
         int count = 0;
         Set<CDistrict> cds = originalState.getCongressionalDistricts();
         for (CDistrict cDistrict : cds) {
@@ -296,11 +311,28 @@ public class RSController {
     
     @RequestMapping("getCompareState")
     public void getCompareState(String stateName,HttpServletRequest req, HttpServletResponse res) throws IOException, URISyntaxException{
-        State originalState = rsService.getStateForCompare(stateName);
+//        State originalState = rsService.getStateForCompare(stateName);
+        State originalState= (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("originalState"));
+        Preference preference= new Preference();
+        preference.setCOMPACTNESSWEIGHT(25);
+        preference.setPOPULATIONVARIANCEWEIGHT(25);
+        preference.setPARTISANFAIRNESSWEIGHT(25);
+        preference.setRACIALFAIRNESSWEIGHT(25);
+        originalState.setPreference(preference);
+        originalState.setupGoodness();
+        System.out.println(originalState.getCongressionalDistricts().size());
         stateInfo si = new stateInfo();
+        si.setupGoodness(originalState);
         si.setArea(originalState.getArea());
         si.setAveIncome(originalState.getAveIncome());
+        si.setNumOfCds(originalState.getCongressionalDistricts().size());
         si.setPopulation(originalState.getPopulation());
+        si.setCompactness(originalState.getCompactness());
+        si.setPatisanFairness(originalState.getPatisanFairness());
+        si.setPopulationVariance(originalState.getPopulationVariance());
+        si.setRacialFairness(originalState.getRacialFairness());
+        si.setGoodness(originalState.getCurrentGoodness());
+        System.out.println("details"+si.getDetails().size());
         if(stateName.equals("NH")){
             si.setNumOfCds(2);
             si.setNumOfPds(328);

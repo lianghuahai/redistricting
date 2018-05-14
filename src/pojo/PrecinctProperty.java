@@ -1,5 +1,8 @@
 package pojo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PrecinctProperty {
     private String VTDST10;
     private String fill;
@@ -15,7 +18,8 @@ public class PrecinctProperty {
     private double originalPopulationVariance;
     private double originalPartisanFairness;
     private double originalRacialFairness;
-    
+    private List<CDGoodness> oldGoodness= new ArrayList<CDGoodness>();
+    private List<CDGoodness> newGoodness= new ArrayList<CDGoodness>();
     public String getVTDST10() {
         return VTDST10;
     }
@@ -93,6 +97,18 @@ public class PrecinctProperty {
     }
     public void setOriginalRacialFairness(double originalRacialFairness) {
         this.originalRacialFairness = originalRacialFairness;
+    }
+    public List<CDGoodness> getOldGoodness() {
+        return oldGoodness;
+    }
+    public void setOldGoodness(List<CDGoodness> oldGoodness) {
+        this.oldGoodness = oldGoodness;
+    }
+    public List<CDGoodness> getNewGoodness() {
+        return newGoodness;
+    }
+    public void setNewGoodness(List<CDGoodness> newGoodness) {
+        this.newGoodness = newGoodness;
     }
    
   
