@@ -42,7 +42,10 @@ public interface RSMapper {
     public int getPrecinctId(String precinctCode);
     public void savePrecinctVotes(String pCode, int rVotes, int dVotes,int totalVoters,int registerVoters,int year);
     public void saveNeighbors(String string, String string2);
+    public void saveToNewNeighbors(String string, String string2,String sName);
     public List<String> getNeighborsCode(String pCode,String sName);
+    public List<String> getCONeighborsCode(String pCode,String sName);
+    public List<String> getSCNeighborsCode(String pCode,String sName);
     public CDInfor getCdInforById(int id);
     public void increaseRunningTimes(int i,String sName);
     public void updatePCode(String str, int code);
@@ -53,5 +56,7 @@ public interface RSMapper {
     public void updatePrecinctCounty(String precinctCode,String county);
     public List<Neighbors> getneighbors();
     public void updateNeiCode(int nid, String getpCode, String neighborCode);
+    public void saveSCNeighbors(String string, String string2, String sName);
+    public void saveCONeighbors(String string, String string2, String sName);
     
 }

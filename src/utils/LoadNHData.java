@@ -45,6 +45,7 @@ public class LoadNHData {
 //        File file = new File(path+"/"+"NH_PNeighbors.txt");
 //        File file = new File(path+"/"+"SC_PNeighbors.txt");
         File file = new File(path+"/"+"CO_PNeighbors.txt");
+//        File file = new File(path+"/"+"CO_PNeighbors.txt");
 //        File file = new File("NH_candidateNeighbors_v2(1).txt");
         BufferedReader br = new BufferedReader(new FileReader(file));
         ArrayList<String> pList = new ArrayList<String>();

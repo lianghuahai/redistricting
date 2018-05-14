@@ -147,7 +147,7 @@ public class RSController {
         State originalState= (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("originalState"));
         originalState.setPreference(preference);
         originalState.setupGoodness();
-        System.out.println(preference);
+        System.out.println(originalState.getsName());
         rsService.increaseRunningTimes(originalState.getRunningTimes(),originalState.getsName());
 //        Set<CDistrict> cds = originalState.getCongressionalDistricts();
 //        for (CDistrict cDistrict : cds) {
@@ -204,29 +204,29 @@ public class RSController {
     public void process(String userEmail,String fileName,HttpServletRequest req, HttpServletResponse res) throws IOException, URISyntaxException{
         State workingState = (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("workingState"));
         System.out.print("processs>>>originalGoodness : " + workingState.getCurrentGoodness());
-        if(fileName!=null){
-            System.out.println("save file");
-            System.out.println(workingState.getCongressionalDistricts().size());
-            System.out.println(workingState.getsName());
-           String email ="haha";
-            String filePath = this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email+"/"+fileName;
-            File file = new File(this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email);
-            if (!file.exists()) {
-                file.mkdirs();
-            }
-//            State workingState = new State();
-//            if(workingState==null){System.out.println("null");}
-            System.out.println("这里开始gson");
-            Gson gson = new Gson();
-            String json = gson.toJson(workingState);
-//            String json = gson.toJson("a");
-//            System.out.println("这里结束gson");
-            FileOutputStream of = new FileOutputStream(filePath); // 输出文件路径
-            of.write(json.getBytes());
-//            of.write("a".getBytes());
-            of.close();
-            res.getWriter().print(new Gson().toJson("ok"));
-        }else{
+//        if(fileName!=null){
+//            System.out.println("save file");
+//            System.out.println(workingState.getCongressionalDistricts().size());
+//            System.out.println(workingState.getsName());
+//           String email ="haha";
+//            String filePath = this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email+"/"+fileName;
+//            File file = new File(this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email);
+//            if (!file.exists()) {
+//                file.mkdirs();
+//            }
+////            State workingState = new State();
+////            if(workingState==null){System.out.println("null");}
+//            System.out.println("这里开始gson");
+//            Gson gson = new Gson();
+//            String json = gson.toJson(workingState);
+////            String json = gson.toJson("a");
+////            System.out.println("这里结束gson");
+//            FileOutputStream of = new FileOutputStream(filePath); // 输出文件路径
+//            of.write(json.getBytes());
+////            of.write("a".getBytes());
+//            of.close();
+//            res.getWriter().print(new Gson().toJson("ok"));
+//        }else{
             
         
         
@@ -250,6 +250,7 @@ public class RSController {
                 System.out.println("move!"+cDistrict.getName()+","+cDistrict.getPopulation());
             }
             PrecinctProperty precinctProperty =  new PrecinctProperty();
+            precinctProperty.setupGoodness(workingState);
             precinctProperty.setFill(movedPrecinct.getFeature().getProperties().getFill());
             precinctProperty.setVTDST10(movedPrecinct.getPrecinctCode());
             req.getSession().setAttribute(PropertyManager.getInstance().getValue("workingState"),workingState);
@@ -263,7 +264,7 @@ public class RSController {
             res.getWriter().print(new Gson().toJson(precinctProperty));
             return ;
         }
-        }
+//        }
    }
     
     @RequestMapping("getStateInfo")
@@ -607,7 +608,10 @@ public class RSController {
                 String str = nList.get(i);
                 String[] strs=str.split(",");
                 for (String string : strs) {
-                    rsService.saveNeighbors(pList.get(i),string);
+//                    rsService.saveNeighbors(pList.get(i),string);
+//                    rsService.saveToNewNeighbors(pList.get(i),string,"NH");
+                    rsService.saveToNewNeighbors(pList.get(i),string,"CO");
+//                    rsService.saveToNewNeighbors(pList.get(i),string,"SC");
                 }
         }
         res.getWriter().print(new Gson().toJson("ok"));

@@ -1,5 +1,6 @@
 package service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -140,13 +141,28 @@ public class RSService {
     public void saveNeighbors(String string, String string2) {
         rsMapper.saveNeighbors(string,string2);
     }
+    public void saveToNewNeighbors(String string, String string2,String sName) {
+        if(sName.equals("CO")){
+            rsMapper.saveCONeighbors(string,string2,sName);
+        }else if(sName.equals("SC")){
+            rsMapper.saveSCNeighbors(string,string2,sName);
+        }
+        rsMapper.saveToNewNeighbors(string,string2,sName);
+    }
     public void initializeNeighbors(State workingState) {
         int count =0;
         Set<CDistrict> cds = workingState.getCongressionalDistricts();
         for (CDistrict cd : cds) {
             Set<Precinct> precincts = cd.getPrecinct();
             for (Precinct precinct : precincts) {
-                List<String> neighbors = rsMapper.getNeighborsCode(precinct.getPrecinctCode(),workingState.getsName());
+                List<String> neighbors = new ArrayList<String>();
+                if(workingState.getsName().equals("NH")){
+                     neighbors = rsMapper.getNeighborsCode(precinct.getPrecinctCode(),workingState.getsName());
+                }else if(workingState.getsName().equals("CO")){
+                    neighbors = rsMapper.getCONeighborsCode(precinct.getPrecinctCode(),workingState.getsName());
+                }else{
+                    neighbors = rsMapper.getSCNeighborsCode(precinct.getPrecinctCode(),workingState.getsName());
+                }
                 System.out.println("查询好"+count);
                 if(neighbors.size()>0){
                     workingState.setupNeighbors(precinct,neighbors);

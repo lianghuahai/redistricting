@@ -2,11 +2,14 @@ package pojo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class PrecinctProperty {
     private String VTDST10;
     private String fill;
     private boolean terminated;
+    private boolean isMax;
+    
     private double goodness;
     private double compactness;
     private double populationVariance;
@@ -31,6 +34,13 @@ public class PrecinctProperty {
     }
     public void setFill(String fill) {
         this.fill = fill;
+    }
+    
+    public boolean isMax() {
+        return isMax;
+    }
+    public void setMax(boolean isMax) {
+        this.isMax = isMax;
     }
     public boolean getTerminated() {
         return terminated;
@@ -111,6 +121,26 @@ public class PrecinctProperty {
         this.newGoodness = newGoodness;
     }
    
-  
+    public void setupGoodness(State originalState) {
+        Set<CDistrict> cds = originalState.getCongressionalDistricts();
+        for (int i = 1; i <= cds.size(); i++) {
+            for (CDistrict cDistrict : cds) {
+                if(cDistrict.getName().equals("cd"+i)){
+                    setupDetails(cDistrict);
+                }
+            }
+        }
+        
+    }
+    private void setupDetails(CDistrict cDistrict) {
+        CDGoodness cdGoodness = new CDGoodness();
+        cdGoodness.setCdName(cDistrict.getName());
+        cdGoodness.setCompactness(cDistrict.getCompactness());
+        cdGoodness.setGoodness(cDistrict.getCurrentGoodness());
+        cdGoodness.setPartisanFairness(cDistrict.getPartisanFairness());
+        cdGoodness.setPopulationVariance(cDistrict.getPopulationVariance());
+        cdGoodness.setRacialFairness(cDistrict.getRacialFairness());
+        this.newGoodness.add(cdGoodness);
+    }
     
 }

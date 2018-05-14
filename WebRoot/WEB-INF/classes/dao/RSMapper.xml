@@ -141,8 +141,15 @@
 		select IFNULL(MAX(pid),0) pid from precinct where pCode=#{precinctCode}
 	</select>
 	<select id="getNeighborsCode"  resultType="String">
-		SELECT neighborCode FROM neighbors WHERE sName=#{1} and pCode = #{0,jdbcType=VARCHAR}
+		SELECT neighborCode FROM neighbors WHERE  pCode = #{0,jdbcType=VARCHAR}
 	</select>
+	<select id="getCONeighborsCode"  resultType="String">
+		SELECT neighborCode FROM Cneighbor WHERE  pCode = #{0,jdbcType=VARCHAR}
+	</select>
+	<select id="getSCNeighborsCode"  resultType="String">
+		SELECT neighborCode FROM Sneighbor WHERE  pCode = #{0,jdbcType=VARCHAR}
+	</select>
+    
 	<insert id="savePrecinctVotes" >
 			INSERT INTO vote (pCode,rVotes,dVotes,totalVoters,registerVoters,year) VALUES
 			(#{0},#{1},#{2},#{3},#{4},#{5})
@@ -150,6 +157,18 @@
 	<insert id="saveNeighbors" >
 			INSERT INTO neighbors(pCode,neighborCode) VALUES
 			(#{0},#{1})
+	</insert>
+	<insert id="saveSCNeighbors" >
+			INSERT INTO Sneighbor(pCode,neighborCode) VALUES
+			(#{0},#{1})
+	</insert>
+	<insert id="saveCONeighbors" >
+			INSERT INTO Cneighbor(pCode,neighborCode) VALUES
+			(#{0},#{1})
+	</insert>
+	<insert id="saveToNewNeighbors" >
+			INSERT INTO newNeibors(pCode,neighborCode,sName) VALUES
+			(#{0},#{1},#{2})
 	</insert>
 
 
