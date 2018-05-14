@@ -250,6 +250,7 @@ public class State {
             return startedPrecinct;
         }else{
             System.out.println("cant move :"+redistrictTimes);
+            System.out.print("redistrict>>>newGoodness:" + this.getCurrentGoodness()+" comnpactness: "+this.getCompactness()+" pv:"+this.getPopulationVariance()+"racialF:"+this.getRacialFairness()+"partyF:"+this.getPatisanFairness());
             return null;
         }
     }
@@ -257,6 +258,14 @@ public class State {
     public Precinct selectStartPrecinct() {
         CDistrict cd  = this.getLowestGoodnessCDistrict();
         Precinct  startedPrecinct = cd.getRandomBoundaryPrecinct();
+        int count = 50;
+        while(startedPrecinct==null){
+            if(count>50){
+                break;
+            }
+            startedPrecinct = cd.getRandomBoundaryPrecinct();
+            count++;
+        }
         return startedPrecinct;
     }
 
@@ -303,6 +312,8 @@ public class State {
             this.updateTwoCdsProperties(selectedPrecinct,destinationCD,originCD);
             return false;
         }
+        System.out.println("patisanFairness: "+this.patisanFairness+" racialFairness: "+this.racialFairness+" compactness: "+this.compactness+" this.populationVariance:"+this.populationVariance+" currentGoodness:"+this.currentGoodness);
+        System.out.println("setup new goodness after move");
         this.setupGoodness();
         return true;
     }
@@ -361,7 +372,12 @@ public class State {
     public boolean validateGoodnessImprovement(CDistrict originCD, CDistrict destinationCD) {
         double newGoodnessOCD = originCD.calculateObjectiveFunction();
         double newGoodnessDCD = destinationCD.calculateObjectiveFunction();
+        System.out.println("newGoodnessOCD"+newGoodnessOCD);
+        System.out.println("originCD"+originCD.getCurrentGoodness());
+        System.out.println("newGoodnessDCD"+newGoodnessDCD);
+        System.out.println("destinationCD"+originCD.getCurrentGoodness());
         double goodnessDiff= originCD.getGoodnessDiff(newGoodnessOCD) + destinationCD.getGoodnessDiff(newGoodnessDCD);
+        System.out.println("goodnessDiff"+goodnessDiff);
         if(goodnessDiff > 0){
             originCD.setCurrentGoodness(newGoodnessOCD);
             destinationCD.setCurrentGoodness(newGoodnessDCD);
@@ -423,18 +439,18 @@ public class State {
             this.copyParty(originalCD.getVote(), destinationCD.getVote());
             this.copyPrecincts(originalCD.getPrecinct(),destinationCD.getPrecinct(),destinationCD,workingState);
             //copy cdInfo
-            originalCD.getCdInfor().setMale(destinationCD.getCdInfor().getMale());
-            originalCD.getCdInfor().setFemale(destinationCD.getCdInfor().getFemale());
-            originalCD.getCdInfor().setWhite(destinationCD.getCdInfor().getWhite());
-            originalCD.getCdInfor().setBlackAfrican(destinationCD.getCdInfor().getBlackAfrican());
-            originalCD.getCdInfor().setAsian(destinationCD.getCdInfor().getAsian());
-            originalCD.getCdInfor().setAmericanIndian(destinationCD.getCdInfor().getAmericanIndian());
-            originalCD.getCdInfor().setOthers(destinationCD.getCdInfor().getOthers());
-            originalCD.getCdInfor().setHouseHoldAvg(destinationCD.getCdInfor().getHouseHoldAvg());
-            originalCD.getCdInfor().setFamilyAvg(destinationCD.getCdInfor().getFamilyAvg());
-            originalCD.getCdInfor().setTotalHouseHold(destinationCD.getCdInfor().getTotalHouseHold());
-            originalCD.getCdInfor().setSchoolEnroll(destinationCD.getCdInfor().getSchoolEnroll());
-            originalCD.getCdInfor().setEmployees(destinationCD.getCdInfor().getEmployees());
+            destinationCD.getCdInfor().setMale(originalCD.getCdInfor().getMale());
+            destinationCD.getCdInfor().setFemale(originalCD.getCdInfor().getFemale());
+            destinationCD.getCdInfor().setWhite(originalCD.getCdInfor().getWhite());
+            destinationCD.getCdInfor().setBlackAfrican(originalCD.getCdInfor().getBlackAfrican());
+            destinationCD.getCdInfor().setAsian(originalCD.getCdInfor().getAsian());
+            destinationCD.getCdInfor().setAmericanIndian(originalCD.getCdInfor().getAmericanIndian());
+            destinationCD.getCdInfor().setOthers(originalCD.getCdInfor().getOthers());
+            destinationCD.getCdInfor().setHouseHoldAvg(originalCD.getCdInfor().getHouseHoldAvg());
+            destinationCD.getCdInfor().setFamilyAvg(originalCD.getCdInfor().getFamilyAvg());
+            destinationCD.getCdInfor().setTotalHouseHold(originalCD.getCdInfor().getTotalHouseHold());
+            destinationCD.getCdInfor().setSchoolEnroll(originalCD.getCdInfor().getSchoolEnroll());
+            destinationCD.getCdInfor().setEmployees(originalCD.getCdInfor().getEmployees());
             //ToDo  - map: Set<MapData>
             //ToDo - boundaryPrecincts: Set<Precinct>
             destinationCDs.add(destinationCD);
@@ -775,10 +791,12 @@ public class State {
         //this.currentGoodness=this.currentGoodness/this.congressionalDistricts.size();
         this.patisanFairness=this.calculateStatePartisanFairness();
         this.racialFairness=this.calculateStateRacialFairness();
+        System.out.println("racialFairness794"+racialFairness);
         this.compactness = this.compactness/this.congressionalDistricts.size();
         this.populationVariance=this.populationVariance/this.congressionalDistricts.size();
         this.currentGoodness = this.populationVariance*((double)preference.getPOPULATIONVARIANCEWEIGHT()) + this.compactness*((double)preference.getCOMPACTNESSWEIGHT())
                                                                 + this.patisanFairness*((double)preference.getPARTISANFAIRNESSWEIGHT()) + this.racialFairness*((double)preference.getRACIALFAIRNESSWEIGHT());
+        System.out.println("}}}}}}}}}}}}}}}}}}]]");
         System.out.println("patisanFairness: "+this.patisanFairness+" racialFairness: "+this.racialFairness+" compactness: "+this.compactness+" this.populationVariance:"+this.populationVariance+" currentGoodness:"+this.currentGoodness);
         this.currentGoodness /= 100.0;
     }
@@ -820,9 +838,11 @@ public class State {
                minorPopu +=  d.getCdInfor().getOthers();
         }
            total = majorPopu + minorPopu;
-           this.racialFairness = ((double)minorPopu)/((double)total);
-           System.out.println("State: " +this.racialFairness);
-           return racialFairness;
+           System.out.println(majorPopu+"841" + minorPopu);
+//           this.racialFairness = ((double)minorPopu)/((double)total);
+           double racialFairnessss = ((double)minorPopu)/((double)total);
+           //System.out.println("State: " +this.racialFairness);
+           return racialFairnessss;
     }
     
     

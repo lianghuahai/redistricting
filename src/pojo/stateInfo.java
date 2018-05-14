@@ -102,7 +102,6 @@ public class stateInfo {
     }
     public void setupGoodness(State originalState) {
         Set<CDistrict> cds = originalState.getCongressionalDistricts();
-        System.out.println("cdscdscdscds"+cds.size());
         for (int i = 1; i <= cds.size(); i++) {
             for (CDistrict cDistrict : cds) {
                 if(cDistrict.getName().equals("cd"+i)){
@@ -126,12 +125,9 @@ public class stateInfo {
     public void setupRepre(List<Representive> repres) {
         List<CDGoodness> details2 = this.getDetails();
         for (CDGoodness cdGoodness : details2) {
-            System.out.println("?????????"+","+cdGoodness.getCdName());
             for (Representive r : repres) {
-                System.out.println(r);
                 String cdName = "cd"+ r.getCdistrictId();
                    if(cdName.equals(cdGoodness.getCdName())){
-                       System.out.println("?????????");
                        cdGoodness.setRepresentive(r.getName());
                        break;
                    }

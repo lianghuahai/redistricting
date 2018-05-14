@@ -149,7 +149,7 @@
 		select * from representive where sName =#{0} and year = #{1}
 	</select>
 	<select id="getNeighborsCode"  resultType="String">
-		SELECT neighborCode FROM neighbors WHERE  pCode = #{0,jdbcType=VARCHAR}
+		SELECT neighborCode FROM newNeibors WHERE  pCode = #{0,jdbcType=VARCHAR}
 	</select>
 	<select id="getCONeighborsCode"  resultType="String">
 		SELECT neighborCode FROM Cneighbor WHERE  pCode = #{0,jdbcType=VARCHAR}

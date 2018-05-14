@@ -131,6 +131,13 @@ public class CDistrict {
 //        this.cdInformation = cdInformation;
 //    }
 
+    @Override
+    public String toString() {
+        return "CDistrict [cdInfor=" + cdInfor + ", partisanFairness=" + partisanFairness
+                + ", populationVariance=" + populationVariance + ", racialFairness=" + racialFairness
+                + ", stateId=" + stateId + ", color=" + color + "]";
+    }
+
     public void setStateId(int stateId) {
         this.stateId = stateId;
     }
@@ -286,13 +293,14 @@ public class CDistrict {
         double partisanW = (double)preference.getPARTISANFAIRNESSWEIGHT()/(double)totalWeight;
         double populationW = (double)preference.getPOPULATIONVARIANCEWEIGHT()/(double)totalWeight;
         double racialW = (double)preference.getRACIALFAIRNESSWEIGHT()/(double)totalWeight;
-        System.out.println("-------------------------"+compactnessW+","+populationW+","+partisanW+","+racialW);
+       // System.out.println("-------------------------"+compactnessW+","+populationW+","+partisanW+","+racialW);
         goodness +=  compactnessW* (double)calculateCompactness();
         goodness += partisanW * (double)calculatePartisanFairness();
         goodness += populationW * (double)(1-calculatePopulationVariance());
         goodness += racialW * (double)calculateRacialFairness();
+        System.out.println(compactnessW+"."+partisanW+","+racialW);
         System.out.println("calculateObjectiveFunction"+goodness);
-        this.currentGoodness=goodness;
+        //this.currentGoodness=goodness;
         return goodness;
     }
     public double calculateCompactness() {
@@ -339,8 +347,8 @@ public class CDistrict {
         polsbypopper = 4*Math.PI*cdArea/Math.pow(cdPerimeter, 2);
         schwartzberg = (cdPerimeter/(2*Math.PI*Math.sqrt(cdArea/Math.PI)))/100;
         double hullRatio = cdArea/convexHull.getArea();
-        System.out.println("cd#: "+this.getCdCode()+" cdArea: "+cdArea+" circleArea: "+circleArea);
-        System.out.println("reock: "+reock+" polsbypopper: "+polsbypopper+" schwartzberg:"+schwartzberg+" hull ratio: "+hullRatio);
+//        System.out.println("cd#: "+this.getCdCode()+" cdArea: "+cdArea+" circleArea: "+circleArea);
+//        System.out.println("reock: "+reock+" polsbypopper: "+polsbypopper+" schwartzberg:"+schwartzberg+" hull ratio: "+hullRatio);
         compactness = (reock+polsbypopper+schwartzberg+hullRatio)/4;
         this.compactness =  compactness;
         return compactness;
@@ -448,15 +456,17 @@ public class CDistrict {
 //        return pFairness;
 //    }
     public double calculateRacialFairness() {
-        int majorPopu = this.getCdInfor().getWhite();
-        int minorPopu = this.getCdInfor().getAmericanIndian();
-        minorPopu +=  this.getCdInfor().getAsian();
-        minorPopu +=  this.getCdInfor().getBlackAfrican();
-        minorPopu +=  this.getCdInfor().getOthers();
-        int total = majorPopu + minorPopu;
-        this.racialFairness = ((double)minorPopu)/((double)total);
-        System.out.println("CD#: "+this.cdCode+" racialFairness: "+this.racialFairness);
-        return racialFairness;
+        
+//        int majorPopu = this.getCdInfor().getWhite();
+//        int minorPopu = this.getCdInfor().getAmericanIndian();
+//        minorPopu +=  this.getCdInfor().getAsian();
+//        minorPopu +=  this.getCdInfor().getBlackAfrican();
+//        minorPopu +=  this.getCdInfor().getOthers();
+//        int total = majorPopu + minorPopu;
+//        this.racialFairness = ((double)minorPopu)/((double)total);
+//        System.out.println("CD#: "+this.cdCode+" racialFairness: "+this.racialFairness);
+//        return racialFairness;
+        return 0.0;
     }
 //    public double calculateRacialFairness() {
 //        double racialFairness = 0;
@@ -474,6 +484,9 @@ public class CDistrict {
     }
 
     public double getGoodnessDiff(double cGoodness) {
+//        System.out.println("1,"+cGoodness);
+//        System.out.println("2,"+this.currentGoodness);
+//        System.out.println("getGoodnessDiff"+(cGoodness - this.currentGoodness));
         return (cGoodness - this.currentGoodness);
     }
 

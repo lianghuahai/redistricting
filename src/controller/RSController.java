@@ -95,7 +95,9 @@ public class RSController {
     
     @RequestMapping("displayState")
     public void displayState(String stateName,String dLevel,String userEmail,HttpServletRequest req, HttpServletResponse res) throws IOException, Exception{
+        System.out.println("displayState"+stateName);
         State originalState = rsService.initializeState(stateName);
+        System.out.println("displayState1111111111"+originalState.getsName());
         originalState.setsName(stateName);
         PrecinctJson mapJson = new LoadJsonData().getJsonData(stateName,dLevel);
         if(stateName.equals("NH")){
@@ -129,23 +131,23 @@ public class RSController {
                 originalState.setUpSCCdMapJson(mapJson.getFeatures());
             }
         }
-        String email ="haha";
-        String filePath = this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email+"/"+"nihao";
-        File file = new File(this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
+//        String email ="haha";
+//        String filePath = this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email+"/"+"nihao";
+//        File file = new File(this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email);
+//        if (!file.exists()) {
+//            file.mkdirs();
+//        }
 //        State workingState = (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("workingState"));
 //        State workingState = new State();
-        System.out.println("这里开始gson");
-        Gson gson = new Gson();
-        String json = gson.toJson(originalState);
-        System.out.println("这里结束gson");
-        FileOutputStream of = new FileOutputStream(filePath); // 输出文件路径
-        of.write(json.getBytes());
-        of.close();
+//        System.out.println("这里开始gson");
+//        Gson gson = new Gson();
+//        String json = gson.toJson(originalState);
+//        System.out.println("这里结束gson");
+//        FileOutputStream of = new FileOutputStream(filePath); // 输出文件路径
+//        of.write(json.getBytes());
+//        of.close();
+        System.out.println("display!!!!!!!!!!!!!!!!!!!!"+originalState.getsName());
         req.getSession().setAttribute(PropertyManager.getInstance().getValue("originalState"),originalState);
-        req.getSession().setAttribute("nihao","nadaole");
         res.getWriter().print(new Gson().toJson(mapJson));
     }
     
@@ -175,7 +177,7 @@ public class RSController {
     }
         
         @RequestMapping("redistrict")
-    public void redistrict(String stateName,String userEmail,Preference preference,HttpServletRequest req, HttpServletResponse res) throws IOException{
+    public void redistrict(String userEmail,Preference preference,HttpServletRequest req, HttpServletResponse res) throws IOException, URISyntaxException{
         System.out.println("11111");
         State originalState= (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("originalState"));
         originalState.setPreference(preference);
@@ -191,6 +193,13 @@ public class RSController {
         State workingState= originalState.clone(preference);
         System.out.println(workingState.getsName());
         System.out.println("clone");
+        String email ="haha";
+        String filePath = this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email+"/"+"nihao";
+        String json = new Gson().toJson(workingState);
+        System.out.println("这里结束gson");
+        FileOutputStream of = new FileOutputStream(filePath); // 输出文件路径
+        of.write(json.getBytes());
+        of.close();
         rsService.initializeNeighbors(workingState);
         System.out.println("initializeNeighbors");
         Precinct movedPrecinct = workingState.startAlgorithm();
@@ -334,8 +343,6 @@ public class RSController {
         si.setPopulationVariance(originalState.getPopulationVariance());
         si.setRacialFairness(originalState.getRacialFairness());
         si.setGoodness(originalState.getCurrentGoodness());
-        System.out.println(originalState.getCurrentGoodness());
-        System.out.println("haha2");
         int count = 0;
         Set<CDistrict> cds = originalState.getCongressionalDistricts();
         for (CDistrict cDistrict : cds) {
@@ -359,43 +366,50 @@ public class RSController {
     
     @RequestMapping("getCompareState")
     public void getCompareState(String stateName,int year,HttpServletRequest req, HttpServletResponse res) throws IOException, URISyntaxException{
-//        State originalState = rsService.getStateForCompare(stateName);
-        State originalState= (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("originalState"));
-//        Preference preference= new Preference();
-//        preference.setCOMPACTNESSWEIGHT(25);
-//        preference.setPOPULATIONVARIANCEWEIGHT(25);
-//        preference.setPARTISANFAIRNESSWEIGHT(25);
-//        preference.setRACIALFAIRNESSWEIGHT(25);
-//        originalState.setPreference(preference);
-        //originalState.setupGoodness();
-        //si.setupGoodness(originalState);
-       
-        System.out.println(originalState.getCongressionalDistricts().size());
         stateInfo si = new stateInfo();
         if(stateName.equals("NH")){
             //1 Compactness 2 patisanFairness 3PopulationVariance 4RacialFairness 5Goodness 
             si.setStateproperty(0.27286730582052965 ,0.24058867394182346,0.9996979458721359 ,0.06512390228811901 ,0.39456945698065205);
             si.setupNHProperty(2);
+            si.setArea(9349);
+            si.setAveIncome(70936);
+            si.setPopulation(1334168);
+            si.setNumOfPds(328);
+            si.setCompactness(0.27286730582052965);
+            si.setPatisanFairness(0.24058867394182346);
+            si.setPopulationVariance(0.9996979458721359 );
+            si.setRacialFairness(0.06512390228811901);
+            si.setGoodness(0.39456945698065205);
         }else if(stateName.equals("CO")){
             si.setStateproperty(0.27931594716675207,0.16752750658519622 ,0.9992986870914463,0.16752750658519622,0.435060409784365);
             si.setupCOProperty(7);
+            si.setArea(104185);
+            si.setAveIncome(52334);
+            si.setPopulation(5684203);
+            si.setNumOfPds(3039);
+            
+            si.setCompactness(0.27286730582052976);
+            si.setPatisanFairness(0.2940994982940655);
+            si.setPopulationVariance(0.9992986870914463 );
+            si.setRacialFairness(0.16752750658519622);
+            si.setGoodness(0.4201788177579298);
         }else{
             si.setStateproperty(0.28843552956512 ,0.13892058059200102,0.9990938912611522 ,0.32590240953115807 ,0.4380881027373579);
             si.setupSCProperty(7);
+            si.setArea(32020);
+            si.setAveIncome(65685);
+            si.setPopulation(5088916);
+            si.setNumOfPds(2122);
+            si.setCompactness(0.28843552956512);
+            si.setPatisanFairness(0.13892058059200102);
+            si.setPopulationVariance(0.9990938912611522);
+            si.setRacialFairness(0.32590240953115807);
+            si.setGoodness(0.4380881027373579);
         }
         //si.setupGoodness(originalState);
-        si.setArea(originalState.getArea());
-        si.setAveIncome(originalState.getAveIncome());
-        si.setNumOfCds(originalState.getCongressionalDistricts().size());
-        si.setPopulation(originalState.getPopulation());
-        si.setCompactness(originalState.getCompactness());
-        si.setPatisanFairness(originalState.getPatisanFairness());
-        si.setPopulationVariance(originalState.getPopulationVariance());
-        si.setRacialFairness(originalState.getRacialFairness());
-        si.setGoodness(originalState.getCurrentGoodness());
+        
         List<Representive> repres= rsService.getRepresents(stateName,year);
         si.setupRepre(repres);
-        System.out.println("details"+si.getDetails().size());
         if(stateName.equals("NH")){
             si.setNumOfCds(2);
             si.setNumOfPds(328);
@@ -407,7 +421,6 @@ public class RSController {
             si.setNumOfPds(2122);
         }
         //compactness, goodness, fairness , effeciency gap
-        si.setArea(originalState.getArea());
         res.getWriter().print(new Gson().toJson(si));
         
         
