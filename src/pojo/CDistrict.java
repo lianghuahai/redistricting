@@ -23,10 +23,10 @@ public class CDistrict {
     private String name;
     private transient State state = new State();
     private String Representive;
-    private  CDInfor cdInfor =  new CDInfor();
+    private  transient CDInfor cdInfor =  new CDInfor();
 //    private HashMap<Integer, Party> winnerParty = new HashMap<Integer, Party>();
 
-    private  Set<MapData> map = new HashSet<MapData>();
+    private  transient Set<MapData> map = new HashSet<MapData>();
 
     private   Set<Precinct> precinct = new HashSet<Precinct>();
 
@@ -41,7 +41,7 @@ public class CDistrict {
 
     private double currentGoodness;
 
-    private  Feature feature = new Feature();
+    private transient Feature feature = new Feature();
 
     private int cdCode;
 

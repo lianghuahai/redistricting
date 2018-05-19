@@ -249,8 +249,6 @@ public class State {
             System.out.println("move :"+redistrictTimes);
             return startedPrecinct;
         }else{
-            System.out.println("cant move :"+redistrictTimes);
-            System.out.print("redistrict>>>newGoodness:" + this.getCurrentGoodness()+" comnpactness: "+this.getCompactness()+" pv:"+this.getPopulationVariance()+"racialF:"+this.getRacialFairness()+"partyF:"+this.getPatisanFairness());
             return null;
         }
     }

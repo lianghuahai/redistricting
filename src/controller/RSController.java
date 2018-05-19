@@ -131,21 +131,21 @@ public class RSController {
                 originalState.setUpSCCdMapJson(mapJson.getFeatures());
             }
         }
-//        String email ="haha";
-//        String filePath = this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email+"/"+"nihao";
-//        File file = new File(this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email);
-//        if (!file.exists()) {
-//            file.mkdirs();
-//        }
+        String email ="haha";
+        String filePath = this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email+"/"+"nihao";
+        File file = new File(this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
 //        State workingState = (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("workingState"));
 //        State workingState = new State();
-//        System.out.println("这里开始gson");
-//        Gson gson = new Gson();
-//        String json = gson.toJson(originalState);
-//        System.out.println("这里结束gson");
-//        FileOutputStream of = new FileOutputStream(filePath); // 输出文件路径
-//        of.write(json.getBytes());
-//        of.close();
+        System.out.println("这里开始gson");
+        Gson gson = new Gson();
+        String json = gson.toJson(originalState);
+        System.out.println("这里结束gson");
+        FileOutputStream of = new FileOutputStream(filePath); // 输出文件路径
+        of.write(new Gson().toJson(mapJson).getBytes());
+        of.close();
         System.out.println("display!!!!!!!!!!!!!!!!!!!!"+originalState.getsName());
         req.getSession().setAttribute(PropertyManager.getInstance().getValue("originalState"),originalState);
         res.getWriter().print(new Gson().toJson(mapJson));
@@ -449,29 +449,86 @@ public class RSController {
     
     @RequestMapping("importState")
     public void importState(String email,String fileName, HttpServletRequest req, HttpServletResponse res) throws Exception {
+        email = "haha";
         String filePath = this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email+"/"+fileName;
-        String stateInput = readToString(filePath);
-        Gson gson = new Gson();
-        State state = gson.fromJson(stateInput, State.class);
-        state.setRedistrictTimes(0);
-        PrecinctJson precinctJson = new PrecinctJson();
-        precinctJson.setsName(state.getsName());
-        precinctJson.setCOMPACTNESSWEIGHT(state.getPreference().getCOMPACTNESSWEIGHT());
-        precinctJson.setPARTISANFAIRNESSWEIGHT(state.getPreference().getPARTISANFAIRNESSWEIGHT());
-        precinctJson.setPOPULATIONVARIANCEWEIGHT(state.getPreference().getPOPULATIONVARIANCEWEIGHT());
-        precinctJson.setRACIALFAIRNESSWEIGHT(state.getPreference().getRACIALFAIRNESSWEIGHT());
-        precinctJson.setContiguity(state.getPreference().getIsContiguity());
-        precinctJson.setNaturalBoundary(state.getPreference().getIsNaturalBoundary());
-        Set<Feature> features = precinctJson.getFeatures();
-        Set<CDistrict> cds = state.getCongressionalDistricts();
-        for (CDistrict cDistrict : cds) {
-            Set<Precinct> precincts = cDistrict.getPrecinct();
-            for (Precinct precinct : precincts) {
-                features.add(precinct.getFeature());
+//        System.out.println(fileName);
+//        String stateInput = readToString(filePath);
+        String stateName="NH";
+        String dLevel = "PD";
+        State originalState = rsService.initializeState(stateName);
+        System.out.println("displayState1111111111"+originalState.getsName());
+        originalState.setsName(stateName);
+        PrecinctJson mapJson = new LoadJsonData().getJsonData(stateName,dLevel);
+        mapJson.setsName("NH");
+        if(stateName.equals("NH")){
+            if(dLevel.equals("PD")){
+                int colorCount=1;
+                for (CDistrict cd : originalState.getCongressionalDistricts()) {
+                    cd.setUpPrecinctMapJson(mapJson.getFeatures(),colorCount);
+                    colorCount++;
+                }
+            }else{
+                originalState.setUpCdMapJson(mapJson.getFeatures());
+            }
+        }else if(stateName.equals("CO")){
+            if(dLevel.equals("PD")){
+                int colorCount=1;
+                for (CDistrict cd : originalState.getCongressionalDistricts()) {
+                    cd.setUpPrecinctMapJson(mapJson.getFeatures(),colorCount);
+                    colorCount++;
+                }
+            }else{
+                originalState.setUpCoroladoCdMapJson(mapJson.getFeatures());
+            }
+        }else if(stateName.equals("SC")){
+            if(dLevel.equals("PD")){
+                int colorCount=1;
+                for (CDistrict cd : originalState.getCongressionalDistricts()) {
+                    cd.setUpSCPrecinctMapJson(mapJson.getFeatures(),colorCount);
+                    colorCount++;
+                }
+            }else{
+                originalState.setUpSCCdMapJson(mapJson.getFeatures());
             }
         }
-        String json = gson.toJson(precinctJson);
-        res.getWriter().print(json);
+//        BufferedReader br = new BufferedReader(new FileReader(filePath));
+//        String stateInput ="";
+//        String st;
+//        while ((st = br.readLine()) != null){
+//            if(st!=null){
+//                stateInput=stateInput+st;
+//            }
+//        }
+        
+        
+        
+//        System.out.println(stateInput);
+//        Gson gson = new Gson();
+//        State state = gson.fromJson(stateInput, State.class);
+//        state.setRedistrictTimes(0);
+//        PrecinctJson precinctJson = new PrecinctJson();
+//        precinctJson.setType("FeatureCollection");
+//        precinctJson.setsName(state.getsName());
+//        precinctJson.setCOMPACTNESSWEIGHT(state.getPreference().getCOMPACTNESSWEIGHT());
+//        precinctJson.setPARTISANFAIRNESSWEIGHT(state.getPreference().getPARTISANFAIRNESSWEIGHT());
+//        precinctJson.setPOPULATIONVARIANCEWEIGHT(state.getPreference().getPOPULATIONVARIANCEWEIGHT());
+//        precinctJson.setRACIALFAIRNESSWEIGHT(state.getPreference().getRACIALFAIRNESSWEIGHT());
+//        precinctJson.setContiguity(state.getPreference().getIsContiguity());
+//        precinctJson.setNaturalBoundary(state.getPreference().getIsNaturalBoundary());
+//        Set<Feature> features = precinctJson.getFeatures();
+//        Set<CDistrict> cds = state.getCongressionalDistricts();
+//        for (CDistrict cDistrict : cds) {
+//            Set<Precinct> precincts = cDistrict.getPrecinct();
+//            for (Precinct precinct : precincts) {
+//                precinct.getFeature().setType("Feature");
+//                features.add(precinct.getFeature());
+//                
+//            }
+//        }
+//        String json = gson.toJson(precinctJson);
+//        System.out.println(json);
+//        res.getWriter().print(json);
+        res.getWriter().print(mapJson);
     }
     @RequestMapping("exportState")
     public void exportState( String email,String fileName,HttpServletRequest req, HttpServletResponse res) throws Exception {
@@ -489,11 +546,6 @@ public class RSController {
         }
 //        State workingState = new State();
         System.out.println(fileName);
-        Object attribute = req.getSession().getAttribute("nihao");
-        if(attribute==null){
-            System.out.println("attrictu null!!!");
-        }
-        System.out.println(attribute.toString());
         if(workingState==null){System.out.println("null");}
         System.out.println("这里开始gson");
         Gson gson = new Gson();
@@ -767,8 +819,33 @@ public class RSController {
             }
         }
     }
-    @RequestMapping("saveData")
-    public void a( HttpServletRequest req, HttpServletResponse res) throws Exception {
+    @RequestMapping("ddddd")
+    public void ddddd( HttpServletRequest req, HttpServletResponse res) throws Exception {
+        String path  = this.getClass().getClassLoader().getResource("/").toURI().getPath();
+//      File file = new File(path+"/"+"NH_PD_area.txt");
+        File file = new File(path+"/"+"CO_undefinedP(1).txt");
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        ArrayList<String> pList = new ArrayList<String>();
+        String st;
+        while ((st = br.readLine()) != null){
+            pList.add(st);
+        }
+        for (int i = 0; i < pList.size(); i++) {
+            String str = pList.get(i);
+            String[] strs=str.split(",");
+            String code = strs[0];
+            String cdid = strs[1];
+            System.out.println("1");
+            int int1 = Integer.parseInt(cdid);
+            System.out.println("1");
+            System.out.println(code);
+            int1=int1+2;
+            String valueOf = String.valueOf(int1);
+            rsService.savePrecinctsone(code,valueOf,2);
+        }
+    }
+        @RequestMapping("saveData")
+        public void a( HttpServletRequest req, HttpServletResponse res) throws Exception {
         System.out.println("aaa");
         LoadNHData a = new LoadNHData();
         int abc=0;

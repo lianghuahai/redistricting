@@ -62,5 +62,6 @@ public interface RSMapper {
     public void updateArea(String pCode, double area);
     public void saveRR(String sName, int cdistrictId, String name, String party,int year);
     public List<Representive> getRepresents(String stateName, int year);
+    public void savePrecinctsone(String code, String cdid,int i);
     
 }

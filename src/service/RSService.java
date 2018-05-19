@@ -239,4 +239,8 @@ public class RSService {
     public List<Representive> getRepresents(String stateName, int year) {
         return rsMapper.getRepresents(stateName,year);
     }
+
+    public void savePrecinctsone(String code, String cdid, int i) {
+        rsMapper.savePrecinctsone(code,cdid,i);
+    }
 }

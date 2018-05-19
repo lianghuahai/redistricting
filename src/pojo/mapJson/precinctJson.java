@@ -7,16 +7,16 @@ import java.util.Set;
 import pojo.Preference;
 
 public class PrecinctJson {
-    private String sName ;
     private String type;
-    private boolean isNaturalBoundary;
-    private boolean isContiguity;
-    private int COMPACTNESSWEIGHT;
-    private int PARTISANFAIRNESSWEIGHT;
-    private int POPULATIONVARIANCEWEIGHT;
-    private int RACIALFAIRNESSWEIGHT;
-    
     private Set<Feature> features  = new HashSet<Feature>();
+    private String sName ;
+    private transient boolean isNaturalBoundary;
+    private transient boolean isContiguity;
+    private transient int COMPACTNESSWEIGHT;
+    private transient int PARTISANFAIRNESSWEIGHT;
+    private transient int POPULATIONVARIANCEWEIGHT;
+    private transient int RACIALFAIRNESSWEIGHT;
+    
     public String getType() {
         return type;
     }

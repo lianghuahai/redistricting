@@ -14,7 +14,7 @@ public class Precinct {
     private transient CDistrict originCDistrict = new CDistrict();
     private transient CDistrict CDistrict = new CDistrict();
     private Set<MapData> map = new HashSet<MapData>();
-    private State state;
+    private transient State state;
     private int registeredVoters;
     private int totalVoters;
     private long population;

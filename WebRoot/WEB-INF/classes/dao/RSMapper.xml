@@ -121,6 +121,11 @@
 			SET   county=#{1}
 			WHERE  pCode = #{0} and stateId = 1
 	</update>
+	<update id="updateCDinstrictByPCOde" >
+			UPDATE   precinct
+			SET   county=#{1}
+			WHERE  pCode = #{0} and stateId = 1
+	</update>
 	<select id="getCdById" parameterType="int" resultMap="Precincts">
 		SELECT p.county,p.pCode,p.cdistrictId,p.pName ,v.registerVoters,v.totalVoters,v.rVotes,v.dVotes, p.population AS pp, cid,cdName ,c.population AS cp
 		FROM precinct AS p, cdistrict AS c, vote AS v
@@ -165,6 +170,10 @@
 	<insert id="saveNeighbors" >
 			INSERT INTO neighbors(pCode,neighborCode) VALUES
 			(#{0},#{1})
+	</insert>
+	<insert id="savePrecinctsone" >
+			INSERT INTO precinct(pCode,cdistrictId,stateId) VALUES
+			(#{0},#{1},#{2})
 	</insert>
 	<insert id="saveRR" >
 			INSERT INTO representive(sName,cdistricId,name,party,year) VALUES
