@@ -374,12 +374,9 @@ public class RSController {
     public void importState(String email,String fileName, HttpServletRequest req, HttpServletResponse res) throws Exception {
         email = "haha";
         String filePath = this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email+"/"+fileName;
-//        System.out.println(fileName);
-//        String stateInput = readToString(filePath);
         String stateName="NH";
         String dLevel = "PD";
         State originalState = rsService.initializeState(stateName);
-        System.out.println("displayState1111111111"+originalState.getsName());
         originalState.setsName(stateName);
         PrecinctJson mapJson = new LoadJsonData().getJsonData(stateName,dLevel);
         mapJson.setsName("NH");
@@ -414,43 +411,6 @@ public class RSController {
                 originalState.setUpSCCdMapJson(mapJson.getFeatures());
             }
         }
-//        BufferedReader br = new BufferedReader(new FileReader(filePath));
-//        String stateInput ="";
-//        String st;
-//        while ((st = br.readLine()) != null){
-//            if(st!=null){
-//                stateInput=stateInput+st;
-//            }
-//        }
-        
-        
-        
-//        System.out.println(stateInput);
-//        Gson gson = new Gson();
-//        State state = gson.fromJson(stateInput, State.class);
-//        state.setRedistrictTimes(0);
-//        PrecinctJson precinctJson = new PrecinctJson();
-//        precinctJson.setType("FeatureCollection");
-//        precinctJson.setsName(state.getsName());
-//        precinctJson.setCOMPACTNESSWEIGHT(state.getPreference().getCOMPACTNESSWEIGHT());
-//        precinctJson.setPARTISANFAIRNESSWEIGHT(state.getPreference().getPARTISANFAIRNESSWEIGHT());
-//        precinctJson.setPOPULATIONVARIANCEWEIGHT(state.getPreference().getPOPULATIONVARIANCEWEIGHT());
-//        precinctJson.setRACIALFAIRNESSWEIGHT(state.getPreference().getRACIALFAIRNESSWEIGHT());
-//        precinctJson.setContiguity(state.getPreference().getIsContiguity());
-//        precinctJson.setNaturalBoundary(state.getPreference().getIsNaturalBoundary());
-//        Set<Feature> features = precinctJson.getFeatures();
-//        Set<CDistrict> cds = state.getCongressionalDistricts();
-//        for (CDistrict cDistrict : cds) {
-//            Set<Precinct> precincts = cDistrict.getPrecinct();
-//            for (Precinct precinct : precincts) {
-//                precinct.getFeature().setType("Feature");
-//                features.add(precinct.getFeature());
-//                
-//            }
-//        }
-//        String json = gson.toJson(precinctJson);
-//        System.out.println(json);
-//        res.getWriter().print(json);
         res.getWriter().print(mapJson);
     }
     @RequestMapping("exportState")
@@ -464,20 +424,14 @@ public class RSController {
         }
         State workingState = (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("workingState"));
          State originalState= (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("originalState"));
-        if(originalState==null){
-            System.out.println("original null");
-        }
-//        State workingState = new State();
-        System.out.println(fileName);
         if(workingState==null){System.out.println("null");}
-        System.out.println("这里开始gson");
         Gson gson = new Gson();
         String json = gson.toJson(workingState);
-        System.out.println("这里结束gson");
         FileOutputStream of = new FileOutputStream(filePath); // 输出文件路径
         of.write(json.getBytes());
         of.close();
     }
+    
     @RequestMapping("getFileList")
     public void filetest( String email,HttpServletRequest req, HttpServletResponse res) throws Exception {
         System.out.println(email);
@@ -489,17 +443,14 @@ public class RSController {
             if(string!=null){
                 str.add(string);
             }
-            System.out.println(string);
         }
         res.getWriter().print(new Gson().toJson(str));
     }
     @RequestMapping("removeFile")
     public void removeFile( String email,String fileName,HttpServletRequest req, HttpServletResponse res) throws Exception {
         String filePath = this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+"haha"+"/"+fileName;
-        System.out.println(filePath);
         File file = new File(filePath);
         if (file.exists()) {
-            System.out.println("jinlai");
             file.delete();
         }
         res.getWriter().print(new Gson().toJson("ok"));
@@ -527,7 +478,7 @@ public class RSController {
             return null;  
         }  
     }
-    //Todo
+
     @RequestMapping("exportTest")
     public void exportTest( String email,String fileName,HttpServletRequest req, HttpServletResponse res) throws Exception {
         System.out.println("exportState");
@@ -537,7 +488,6 @@ public class RSController {
         if (!file.exists()) {
             file.mkdirs();
         }
-//        State workingState = (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("workingState"));
         State workingState = new State();
         Set<CDistrict> congressionalDistricts = workingState.getCongressionalDistricts();
         CDistrict ciCDistrict= new CDistrict();
@@ -546,7 +496,6 @@ public class RSController {
         ciCDistrict.getPrecinct().add(precinct);
         
         String attribute = (String) req.getSession().getAttribute("nihao");
-        System.out.println(attribute);
         Gson gson = new Gson();
         String json = gson.toJson(workingState);
         FileOutputStream of = new FileOutputStream(filePath); // 输出文件路径
@@ -554,11 +503,10 @@ public class RSController {
         of.close();
         res.getWriter().print(json);
     }
-    public boolean getMouthlyReport (String mouth){return true;}
-    public boolean addNewState (String stateName){return true;}
-    public boolean getState (String stateName){return true;}
-    public boolean deleteState (String stateName){return true;}
-    public boolean findState (String stateID){return true;}
+    
+    
+  // Load state information and store into DB 
+    
     @RequestMapping("gsonT")
     public void gsonT( HttpServletRequest req, HttpServletResponse res) throws Exception {
         State state = new State();
@@ -570,15 +518,6 @@ public class RSController {
         Gson gson = new Gson();
         res.getWriter().print(gson.toJson(state));
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     @RequestMapping("saveR")
     public void saveR( HttpServletRequest req, HttpServletResponse res) throws Exception {
@@ -606,11 +545,8 @@ public class RSController {
             List<List<List<Double>>> coordinates = geometry.getCoordinates();
             List<List<Double>> list = coordinates.get(0);
             for (List<Double> codinates : list) {
-                System.out.println(codinates.get(0));
-                System.out.println(codinates.get(1));
                 break;
             }
-            System.out.println(list.get(1));
             break;
         }
     }
@@ -769,7 +705,6 @@ public class RSController {
     }
         @RequestMapping("saveData")
         public void a( HttpServletRequest req, HttpServletResponse res) throws Exception {
-        System.out.println("aaa");
         LoadNHData a = new LoadNHData();
         int abc=0;
         State workingState = a.getState();

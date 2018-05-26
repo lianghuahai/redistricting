@@ -88,7 +88,6 @@ public class RSService {
             cDistrict.getCdInfor().setdVotes(cDistrict.getVote().get("DEMOCRATIC"));
             cDistrict.getCdInfor().setrVotes(cDistrict.getVote().get("REPUBLICAN"));
         }
-        //rsMapper.increaseRunningTimes(state.getRunningTimes()+1,state.getsName());
         return state;
     }
     public CDistrict getCdById(int id) {
@@ -106,22 +105,6 @@ public class RSService {
         rsMapper.savePrecincts(p);
     }
     
-    //Todo
-    public boolean addUser (User user){return true;}
-    public boolean validateUser (User user){return true;}
-    public boolean getMouthlyReport (String mouth){return true;}
-    
-    public boolean login (String email, String pw){return true;}
-    public boolean addNewState (String stateName){return true;}
-    public boolean getState (String stateName){return true;}
-    public boolean deleteState (String stateName){return true;}
-    public boolean redistrict(String jsonData){return true;}
-    public boolean findState (String stateID){return true;}
-
-    public void updatePrecinctField(Precinct precinct) {
-        //rsMapper.updatePrecinctField(precinct.getPrecinctCode(),precinct.getVotes().get(Party.REPUBLICAN),precinct.getVotes().get(Party.DEMOCRATIC));
-    }
-
     public void updatePrecinctPopulation(Precinct precinct) {
         rsMapper.updatePrecinctPopulation(precinct);
     }

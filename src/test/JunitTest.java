@@ -32,8 +32,6 @@ public class JunitTest {
         State workingState = new State();
         workingState.initialStateByNumOfCDs(7);
         workingState.setPopulation(1316470);
-        
-        
 //        test excelReader = new test(path+"/"+"Representatives/Congressional District 1-excek.xlsx");
         test excelReader = new test("2016GeneralResultsPrecinctLevel.xlsx");
         Map<Integer, Map<Integer, Object>> map = excelReader.readExcelContent();
