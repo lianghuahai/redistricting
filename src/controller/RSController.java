@@ -72,7 +72,6 @@ public class RSController {
     @RequestMapping("register")
     public void register(User user, HttpServletRequest req, HttpServletResponse res) throws IOException {
         boolean createdUser = rsService.register(user);
-        System.out.println(user.getParty());
         Gson gson = new Gson();
         res.getWriter().print(gson.toJson(createdUser));
     }
@@ -95,9 +94,7 @@ public class RSController {
     
     @RequestMapping("displayState")
     public void displayState(String stateName,String dLevel,String userEmail,HttpServletRequest req, HttpServletResponse res) throws IOException, Exception{
-        System.out.println("displayState"+stateName);
         State originalState = rsService.initializeState(stateName);
-        System.out.println("displayState1111111111"+originalState.getsName());
         originalState.setsName(stateName);
         PrecinctJson mapJson = new LoadJsonData().getJsonData(stateName,dLevel);
         if(stateName.equals("NH")){
@@ -137,24 +134,15 @@ public class RSController {
         if (!file.exists()) {
             file.mkdirs();
         }
-//        State workingState = (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("workingState"));
-//        State workingState = new State();
-        System.out.println("这里开始gson");
-        Gson gson = new Gson();
-        String json = gson.toJson(originalState);
-        System.out.println("这里结束gson");
         FileOutputStream of = new FileOutputStream(filePath); // 输出文件路径
         of.write(new Gson().toJson(mapJson).getBytes());
         of.close();
-        System.out.println("display!!!!!!!!!!!!!!!!!!!!"+originalState.getsName());
         req.getSession().setAttribute(PropertyManager.getInstance().getValue("originalState"),originalState);
         res.getWriter().print(new Gson().toJson(mapJson));
     }
     
     @RequestMapping("reservePrecinct")
     public void reservePrecinct( String VTDST10,boolean select ,HttpServletRequest req, HttpServletResponse res) throws IOException{
-        System.out.println(VTDST10);
-        System.out.println(select);
         State originalState= (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("originalState"));
         Set<CDistrict> cds = originalState.getCongressionalDistricts();
         for (CDistrict cDistrict : cds) {
@@ -172,36 +160,22 @@ public class RSController {
                 break;
             }
         }
-        System.out.println(originalState.getsName());
-        
     }
         
         @RequestMapping("redistrict")
     public void redistrict(String userEmail,Preference preference,HttpServletRequest req, HttpServletResponse res) throws IOException, URISyntaxException{
-        System.out.println("11111");
         State originalState= (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("originalState"));
         originalState.setPreference(preference);
         originalState.setupGoodness();
-        System.out.println(originalState.getsName());
         rsService.increaseRunningTimes(originalState.getRunningTimes(),originalState.getsName());
-//        Set<CDistrict> cds = originalState.getCongressionalDistricts();
-//        for (CDistrict cDistrict : cds) {
-//            System.out.println(cDistrict.getName()+":"+cDistrict.calculateObjectiveFunction()+","+cDistrict.getCurrentGoodness());
-//        }
-        System.out.println(originalState.getsName());
-        System.out.print("redistrict>>>oriGoodness:" + originalState.getCurrentGoodness()+"compactness"+originalState.getCompactness()+"pv:"+originalState.getPopulationVariance()+"racialF:"+originalState.getRacialFairness()+"partyF:"+originalState.getPatisanFairness());
         State workingState= originalState.clone(preference);
-        System.out.println(workingState.getsName());
-        System.out.println("clone");
         String email ="haha";
         String filePath = this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email+"/"+"nihao";
         String json = new Gson().toJson(workingState);
-        System.out.println("这里结束gson");
         FileOutputStream of = new FileOutputStream(filePath); // 输出文件路径
         of.write(json.getBytes());
         of.close();
         rsService.initializeNeighbors(workingState);
-        System.out.println("initializeNeighbors");
         Precinct movedPrecinct = workingState.startAlgorithm();
         if(!workingState.checkTermination()){
             while(movedPrecinct==null){
@@ -209,13 +183,11 @@ public class RSController {
                 if(workingState.checkTermination()){
                     PrecinctProperty precinctProperty =  new PrecinctProperty();
                     precinctProperty.setTerminated(true);
-                    System.out.println("redistrict loop terminate");
                     req.getSession().setAttribute(PropertyManager.getInstance().getValue("workingState"),workingState);
                     res.getWriter().print(new Gson().toJson(precinctProperty));
                     return ;
                 }
             }
-            System.out.print("redistrict>>>newGoodness:" + workingState.getCurrentGoodness()+" comnpactness: "+workingState.getCompactness()+" pv:"+workingState.getPopulationVariance()+"racialF:"+workingState.getRacialFairness()+"partyF:"+workingState.getPatisanFairness());
             PrecinctProperty precinctProperty =  new PrecinctProperty();
             //old goodness
             precinctProperty.setOriginalGoodness(originalState.getCurrentGoodness());
@@ -234,7 +206,6 @@ public class RSController {
             req.getSession().setAttribute(PropertyManager.getInstance().getValue("workingState"),workingState);
             res.getWriter().print(new Gson().toJson(precinctProperty));
         }else{
-            System.out.println("redistrict:Terminated");
             PrecinctProperty precinctProperty =  new PrecinctProperty();
             precinctProperty.setTerminated(true);
             res.getWriter().print(new Gson().toJson(precinctProperty));
@@ -245,51 +216,17 @@ public class RSController {
     @RequestMapping("process")
     public void process(String userEmail,String fileName,HttpServletRequest req, HttpServletResponse res) throws IOException, URISyntaxException{
         State workingState = (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("workingState"));
-        System.out.print("processs>>>originalGoodness : " + workingState.getCurrentGoodness());
-//        if(fileName!=null){
-//            System.out.println("save file");
-//            System.out.println(workingState.getCongressionalDistricts().size());
-//            System.out.println(workingState.getsName());
-//           String email ="haha";
-//            String filePath = this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email+"/"+fileName;
-//            File file = new File(this.getClass().getClassLoader().getResource("/").toURI().getPath()+"/"+email);
-//            if (!file.exists()) {
-//                file.mkdirs();
-//            }
-////            State workingState = new State();
-////            if(workingState==null){System.out.println("null");}
-//            System.out.println("这里开始gson");
-//            Gson gson = new Gson();
-//            String json = gson.toJson(workingState);
-////            String json = gson.toJson("a");
-////            System.out.println("这里结束gson");
-//            FileOutputStream of = new FileOutputStream(filePath); // 输出文件路径
-//            of.write(json.getBytes());
-////            of.write("a".getBytes());
-//            of.close();
-//            res.getWriter().print(new Gson().toJson("ok"));
-//        }else{
-            
-        
-        
         Precinct movedPrecinct = workingState.startAlgorithm();
         if(!workingState.checkTermination()){
             while(movedPrecinct==null){
                 movedPrecinct = workingState.startAlgorithm();
                 if(workingState.checkTermination()){
-//                    res.getWriter().print(new Gson().toJson("{terminated:true}"));
                     PrecinctProperty precinctProperty =  new PrecinctProperty();
                     precinctProperty.setTerminated(true);
-                    System.out.println("process loop terminate");
                     req.getSession().setAttribute(PropertyManager.getInstance().getValue("workingState"),workingState);
                     res.getWriter().print(new Gson().toJson(precinctProperty));
                     return ;
                 }
-            }
-            System.out.println("processs>>>newGoodness:" + workingState.getCurrentGoodness()+"compactness"+workingState.getCompactness()+" pv:"+workingState.getPopulationVariance()+" racialF:"+workingState.getRacialFairness()+" partyF:"+workingState.getPatisanFairness());
-            Set<CDistrict> cds = workingState.getCongressionalDistricts();
-            for (CDistrict cDistrict : cds) {
-                System.out.println("move!"+cDistrict.getName()+","+cDistrict.getPopulation());
             }
             PrecinctProperty precinctProperty =  new PrecinctProperty();
             precinctProperty.setupGoodness(workingState);
@@ -299,8 +236,6 @@ public class RSController {
             res.getWriter().print(new Gson().toJson(precinctProperty));
         }else{
             req.getSession().setAttribute(PropertyManager.getInstance().getValue("workingState"),workingState);
-            System.out.println("terminated");
-//            res.getWriter().print(new Gson().toJson("{terminated:true}"));
             PrecinctProperty precinctProperty =  new PrecinctProperty();
             precinctProperty.setTerminated(true);
             res.getWriter().print(new Gson().toJson(precinctProperty));
@@ -312,19 +247,9 @@ public class RSController {
     @RequestMapping("getStateInfo")
     public void originalStateData(String userEmail,HttpServletRequest req, HttpServletResponse res) throws IOException{
         State originalState= (State) req.getSession().getAttribute(PropertyManager.getInstance().getValue("originalState"));
-//        Preference preference= new Preference();
-//        preference.setCOMPACTNESSWEIGHT(25);
-//        preference.setPOPULATIONVARIANCEWEIGHT(25);
-//        preference.setPARTISANFAIRNESSWEIGHT(25);
-//        preference.setRACIALFAIRNESSWEIGHT(25);
-//        originalState.setPreference(preference);
-//        originalState.setupGoodness();
-//        System.out.println("haha1");
         stateInfo si = new stateInfo();
         String stateName = originalState.getsName();
-        //si.setupGoodness(originalState);
         if(stateName.equals("NH")){
-            //1 Compactness 2 patisanFairness 3PopulationVariance 4RacialFairness 5Goodness 
             si.setStateproperty(0.27286730582052965 ,0.24058867394182346,0.9996979458721359 ,0.06512390228811901 ,0.39456945698065205);
             si.setupNHProperty(2);
         }else if(stateName.equals("CO")){
@@ -351,7 +276,6 @@ public class RSController {
                 count++;
             }
         }
-        //compactness, goodness, fairness , effeciency gap
         si.setNumOfPds(count);
         si.setArea(originalState.getArea());
         System.out.println(si);
@@ -434,7 +358,6 @@ public class RSController {
             user.setParty("REPUBLICAN");
         }
         rsService.updateUser(user);
-        
     }
     @RequestMapping("addUser")
     public void addUser(User user,HttpServletRequest req, HttpServletResponse res) throws IOException, URISyntaxException{
