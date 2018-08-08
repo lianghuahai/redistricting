@@ -1,0 +1,19 @@
+/*
+SQLyog Ultimate v8.32 
+MySQL - 5.7.20-log 
+*********************************************************************
+*/
+/*!40101 SET NAMES utf8 */;
+
+create table `party` (
+	`id` double ,
+	`partyName` varchar (150)
+); 
+insert into `party` (`id`, `partyName`) values('1','Republican Party');
+insert into `party` (`id`, `partyName`) values('2','Democratic Party');
+insert into `party` (`id`, `partyName`) values('3','Green Party');
+insert into `party` (`id`, `partyName`) values('4','Vermont Progressive Party');
+insert into `party` (`id`, `partyName`) values('5','Libertarian Party');
+insert into `party` (`id`, `partyName`) values('6','Working Families Party');
+insert into `party` (`id`, `partyName`) values('7','Independence Party of New York');
+insert into `party` (`id`, `partyName`) values('8','Independent');
